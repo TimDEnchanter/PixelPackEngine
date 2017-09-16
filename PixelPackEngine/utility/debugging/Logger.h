@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LOGGER_H
+#define LOGGER_H
+
 
 #include <string>
 #include <iostream>
@@ -53,3 +55,4 @@ class Logger
 		void log(std::string msg, LogLevel::Level msgLevel);
 };
 
+#endif // !LOGGER_H
