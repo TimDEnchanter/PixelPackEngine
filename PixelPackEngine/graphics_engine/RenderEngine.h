@@ -1,8 +1,8 @@
 #ifndef RENDER_ENGINE_H
 #define RENDER_ENGINE_H
 
-#include "..\dependencies\glew\glew.h"
-#include "..\dependencies\freeglut\freeglut.h"
+#include "GL/glew.h"
+#include "GL/freeglut.h"
 #include <string>
 
 /*
