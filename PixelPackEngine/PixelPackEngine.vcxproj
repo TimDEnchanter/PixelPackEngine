@@ -32,7 +32,7 @@
     <ClCompile Include="common\number_sets\TriFloat.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\RenderObject.cpp" />
-    <ClCompile Include="testing_utils\render_test.cpp" />
+    <ClCompile Include="testing_utils\test.cpp" />
     <ClCompile Include="utility\debugging\Logger.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

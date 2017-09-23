@@ -1,9 +1,9 @@
 #include "../graphics_engine/RenderEngine.h"
 
 /*
-render_test
+test
 
-main function used to test scenarios in the graphics engine
+main function used to test scenarios in the engine
 */
 
 int main(int argc, char **argv)
@@ -11,6 +11,8 @@ int main(int argc, char **argv)
 	RenderEngine renderer = RenderEngine::getInstance();
 
 	renderer.init(argc, argv, "Test_Window");
+
+	//system("pause");
 
 	return 0;
 }
