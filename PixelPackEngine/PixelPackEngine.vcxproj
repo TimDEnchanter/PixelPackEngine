@@ -20,12 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Color.h" />
+    <ClInclude Include="common\number_sets\QuadFloat.h" />
+    <ClInclude Include="common\number_sets\TriFloat.h" />
     <ClInclude Include="graphics_engine\RenderEngine.h" />
     <ClInclude Include="graphics_engine\RenderObject.h" />
     <ClInclude Include="utility\debugging\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\Color.cpp" />
+    <ClCompile Include="common\number_sets\QuadFloat.cpp" />
+    <ClCompile Include="common\number_sets\TriFloat.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\RenderObject.cpp" />
     <ClCompile Include="testing_utils\render_test.cpp" />

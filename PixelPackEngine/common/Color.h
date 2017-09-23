@@ -1,28 +1,23 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include <vector>
+#include "number_sets\QuadFloat.h";
 
-class Color
+class Color : QuadFloat
 {
 	private:
-		float red;
-		float green;
-		float blue;
-		float alpha;
+
 
 	public:
 		Color();
 		~Color();
 
-		float getRed()               { return red; }
-		float getGreen()             { return green; }
-		float getBlue()              { return blue; }
-		float getAlpha()             { return alpha; }
+		float getRed()     { return data[0]; }
+		float getGreen()   { return data[1]; }
+		float getBlue()    { return data[2]; }
+		float getAlpha()   { return data[3]; }
 
-		std::vector<float> getRGB()  { return std::vector<float> {red, green, blue}; }
-		std::vector<float> getRGBA() { return std::vector<float> {red, green, blue, alpha}; }
-
+		TriFloat getRGB()  { return asTri(); }
 };
 
 #endif // !COLOR_H
