@@ -2,7 +2,7 @@
 #define QUAD_FLOAT_H
 
 #include <iostream>
-#include "TriFloat.h";
+#include "TriFloat.h"
 
 class QuadFloat
 {

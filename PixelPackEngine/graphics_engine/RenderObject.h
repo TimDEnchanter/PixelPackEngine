@@ -5,10 +5,12 @@
 #include "GL/freeglut.h"
 #include "../common/Color.h"
 
+#include <vector>
+
 /*
 RenderObject
 
-the phyical 3d object rendered in OpeGL. 
+the 3D object rendered in OpeGL. 
 Usually part of another object
 */
 
@@ -18,6 +20,8 @@ class RenderObject
 		bool isHidden;
 		GLenum drawMode;
 		Color objColor;
+
+		std::vector<QuadFloat> vertexVector;
 
 	public:
 		RenderObject();

@@ -1,7 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include "number_sets\QuadFloat.h";
+#include "number_sets\QuadFloat.h"
 
 class Color : QuadFloat
 {
