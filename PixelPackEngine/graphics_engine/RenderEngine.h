@@ -1,11 +1,13 @@
 #ifndef RENDER_ENGINE_H
 #define RENDER_ENGINE_H
 
-#include "GL/glew.h"
-#include "GL/freeglut.h"
+#include "SharedVariables.h"
 #include "RenderObject.h"
+#include "../utility/debugging/Logger.h"
+
 #include <string>
 #include <vector>
+#include <fstream>
 
 /*
 RenderEngine
@@ -20,6 +22,8 @@ class RenderEngine
 
 		RenderEngine();
 
+		void loadShaders();
+
 	public:
 		static RenderEngine& getInstance()
 		{
@@ -30,6 +34,8 @@ class RenderEngine
 		~RenderEngine();
 
 		void init(int argc, char **argv, std::string windowName);
+
+		void addObject(RenderObject);
 
 		void render();
 };

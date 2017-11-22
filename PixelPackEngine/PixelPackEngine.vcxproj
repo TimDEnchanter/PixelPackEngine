@@ -24,6 +24,7 @@
     <ClInclude Include="common\number_sets\TriFloat.h" />
     <ClInclude Include="graphics_engine\RenderEngine.h" />
     <ClInclude Include="graphics_engine\RenderObject.h" />
+    <ClInclude Include="graphics_engine\SharedVariables.h" />
     <ClInclude Include="utility\debugging\Logger.h" />
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +87,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64;D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64;D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -102,8 +108,8 @@
       <AdditionalIncludeDirectories>D:\programming libraries\freeGLUT\freeglut-2.8.1\include;D:\programming libraries\GLEW\glew-2.1.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,7 +137,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

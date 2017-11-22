@@ -10,6 +10,8 @@ class Color : QuadFloat
 
 	public:
 		Color();
+		using QuadFloat::QuadFloat;
+
 		~Color();
 
 		float getRed()     { return data[0]; }
