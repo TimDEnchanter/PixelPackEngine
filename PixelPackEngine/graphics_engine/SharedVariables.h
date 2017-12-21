@@ -1,8 +1,8 @@
 #ifndef SHARED_VARIABLES_H
 #define SHARED_VARIABLES_H
 
-#include "GL/glew.h"
-#include "GL/freeglut.h"
+#include "../dependencies/GLEW/include/GL/glew.h"
+#include "../dependencies/freeGLUT/include/GL/freeglut.h"
 
 /*
 Shared Variables
