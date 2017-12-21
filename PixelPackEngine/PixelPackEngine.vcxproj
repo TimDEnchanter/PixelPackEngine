@@ -22,6 +22,14 @@
     <ClInclude Include="common\Color.h" />
     <ClInclude Include="common\number_sets\QuadFloat.h" />
     <ClInclude Include="common\number_sets\TriFloat.h" />
+    <ClInclude Include="dependencies\freeGLUT\include\GL\freeglut.h" />
+    <ClInclude Include="dependencies\freeGLUT\include\GL\freeglut_ext.h" />
+    <ClInclude Include="dependencies\freeGLUT\include\GL\freeglut_std.h" />
+    <ClInclude Include="dependencies\freeGLUT\include\GL\glut.h" />
+    <ClInclude Include="dependencies\GLEW\include\GL\eglew.h" />
+    <ClInclude Include="dependencies\GLEW\include\GL\glew.h" />
+    <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
+    <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
     <ClInclude Include="graphics_engine\RenderEngine.h" />
     <ClInclude Include="graphics_engine\RenderObject.h" />
     <ClInclude Include="graphics_engine\SharedVariables.h" />
@@ -37,8 +45,72 @@
     <ClCompile Include="utility\debugging\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dependencies\freeGLUT\include\GL\Makefile.am" />
+    <None Include="dependencies\freeGLUT\include\GL\Makefile.in" />
+    <None Include="dependencies\freeGLUT\include\Makefile.am" />
+    <None Include="dependencies\freeGLUT\include\Makefile.in" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Debug\freeglut.dll" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Debug\freeglut.exp" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Debug\freeglut.ilk" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Debug\freeglut.pdb" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Release\freeglut.dll" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Release\freeglut.exp" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Release\freeglut.iobj" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Release\freeglut.ipdb" />
+    <None Include="dependencies\freeGLUT\Win32\lib\Release\freeglut.pdb" />
+    <None Include="dependencies\freeGLUT\x64\lib\Debug\freeglut.dll" />
+    <None Include="dependencies\freeGLUT\x64\lib\Debug\freeglut.exp" />
+    <None Include="dependencies\freeGLUT\x64\lib\Debug\freeglut.ilk" />
+    <None Include="dependencies\freeGLUT\x64\lib\Debug\freeglut.pdb" />
+    <None Include="dependencies\freeGLUT\x64\lib\Release\freeglut.dll" />
+    <None Include="dependencies\freeGLUT\x64\lib\Release\freeglut.exp" />
+    <None Include="dependencies\freeGLUT\x64\lib\Release\freeglut.iobj" />
+    <None Include="dependencies\freeGLUT\x64\lib\Release\freeglut.ipdb" />
+    <None Include="dependencies\freeGLUT\x64\lib\Release\freeglut.pdb" />
+    <None Include="dependencies\GLEW\Win32\bin\Debug\glew32d.dll" />
+    <None Include="dependencies\GLEW\Win32\bin\Debug\glew32d.pdb" />
+    <None Include="dependencies\GLEW\Win32\bin\Debug\glewinfod.exe" />
+    <None Include="dependencies\GLEW\Win32\bin\Debug\glewinfod.pdb" />
+    <None Include="dependencies\GLEW\Win32\bin\Debug\visualinfod.exe" />
+    <None Include="dependencies\GLEW\Win32\bin\Debug\visualinfod.pdb" />
+    <None Include="dependencies\GLEW\Win32\bin\Release\glew32.dll" />
+    <None Include="dependencies\GLEW\Win32\bin\Release\glew32.pdb" />
+    <None Include="dependencies\GLEW\Win32\bin\Release\glewinfo.exe" />
+    <None Include="dependencies\GLEW\Win32\bin\Release\glewinfo.pdb" />
+    <None Include="dependencies\GLEW\Win32\bin\Release\visualinfo.exe" />
+    <None Include="dependencies\GLEW\Win32\bin\Release\visualinfo.pdb" />
+    <None Include="dependencies\GLEW\Win32\lib\Debug\glew32d.exp" />
+    <None Include="dependencies\GLEW\Win32\lib\Release\glew32.exp" />
+    <None Include="dependencies\GLEW\x64\bin\Debug\glew32d.dll" />
+    <None Include="dependencies\GLEW\x64\bin\Debug\glew32d.pdb" />
+    <None Include="dependencies\GLEW\x64\bin\Debug\glewinfod.exe" />
+    <None Include="dependencies\GLEW\x64\bin\Debug\glewinfod.pdb" />
+    <None Include="dependencies\GLEW\x64\bin\Debug\visualinfod.exe" />
+    <None Include="dependencies\GLEW\x64\bin\Debug\visualinfod.pdb" />
+    <None Include="dependencies\GLEW\x64\bin\Release\glew32.dll" />
+    <None Include="dependencies\GLEW\x64\bin\Release\glew32.pdb" />
+    <None Include="dependencies\GLEW\x64\bin\Release\glewinfo.exe" />
+    <None Include="dependencies\GLEW\x64\bin\Release\glewinfo.pdb" />
+    <None Include="dependencies\GLEW\x64\bin\Release\visualinfo.exe" />
+    <None Include="dependencies\GLEW\x64\bin\Release\visualinfo.pdb" />
+    <None Include="dependencies\GLEW\x64\lib\Debug\glew32d.exp" />
+    <None Include="dependencies\GLEW\x64\lib\Release\glew32.exp" />
     <None Include="graphics_engine\shaders\fragShader.frag" />
     <None Include="graphics_engine\shaders\vertShader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="dependencies\freeGLUT\Win32\lib\Debug\freeglut.lib" />
+    <Library Include="dependencies\freeGLUT\Win32\lib\Release\freeglut.lib" />
+    <Library Include="dependencies\freeGLUT\x64\lib\Debug\freeglut.lib" />
+    <Library Include="dependencies\freeGLUT\x64\lib\Release\freeglut.lib" />
+    <Library Include="dependencies\GLEW\Win32\lib\Debug\glew32d.lib" />
+    <Library Include="dependencies\GLEW\Win32\lib\Debug\glew32sd.lib" />
+    <Library Include="dependencies\GLEW\Win32\lib\Release\glew32.lib" />
+    <Library Include="dependencies\GLEW\Win32\lib\Release\glew32s.lib" />
+    <Library Include="dependencies\GLEW\x64\lib\Debug\glew32d.lib" />
+    <Library Include="dependencies\GLEW\x64\lib\Debug\glew32sd.lib" />
+    <Library Include="dependencies\GLEW\x64\lib\Release\glew32.lib" />
+    <Library Include="dependencies\GLEW\x64\lib\Release\glew32s.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -92,10 +164,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64;D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\lib;$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)dependencies\GLEW\include;$(ProjectDir)dependencies\freeGlut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64;D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\lib;$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)dependencies\GLEW\include;$(ProjectDir)dependencies\freeGlut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,17 +183,19 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\programming libraries\freeGLUT\freeglut-2.8.1\include;D:\programming libraries\GLEW\glew-2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\freeGLUT\include;$(ProjectDir)dependencies\GLEW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)graphics_engine\shaders\*.*" "$(TargetDir)shaders\" /Y</Command>
+      <Command>xcopy "$(ProjectDir)graphics_engine\shaders\*.*" "$(TargetDir)shaders\" /Y
+xcopy "$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y
+xcopy "$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>copies shaders to execution environment</Message>
+      <Message>copies dependencies &amp; shaders to execution environment</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,19 +218,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\programming libraries\freeGLUT\freeglut-2.8.1\include;D:\programming libraries\GLEW\glew-2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\freeGLUT\include;$(ProjectDir)dependencies\GLEW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\programming libraries\GLEW\glew-2.1.0\bin\Debug\x64;D:\programming libraries\freeGLUT\freeglut-2.8.1\lib\x64\Debug;D:\programming libraries\GLEW\glew-2.1.0\lib\Debug\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)graphics_engine\shaders\*.*" "$(TargetDir)shaders\" /Y</Command>
+      <Command>xcopy "$(ProjectDir)graphics_engine\shaders\*.*" "$(TargetDir)shaders\" /Y
+xcopy "$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y
+xcopy "$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>copies shaders to execution environment</Message>
+      <Message>copies dependencies &amp; shaders to execution environment</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
