@@ -8,7 +8,7 @@ main function used to test scenarios in the engine
 
 int main(int argc, char **argv)
 {
-	RenderEngine renderer = RenderEngine::getInstance();
+	RenderEngine renderer;
 	Logger::getInstance().setCurrentLogLevel(LogLevel::info);
 
 	renderer.init(argc, argv, "Test_Window");
@@ -55,6 +55,8 @@ int main(int argc, char **argv)
 
 	testCube.init();
 	renderer.addObject(testCube);
+
+	renderer.startEngine();
 
 	//system("pause");
 

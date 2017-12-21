@@ -1,12 +1,14 @@
 #include "RenderEngine.h"
 
-// external function to redirect the render callback
-void renderScene()
+// callback function to redirect the render callback
+
+void RenderEngine::renderCallback()
 {
-	RenderEngine::getInstance().render();
+	Render::renderEngineInstance->render();
 }
 
-// external GL debug function
+
+// external callback GL debug function
 void APIENTRY openglCallback(
 	GLenum source,
 	GLenum type,
@@ -71,6 +73,7 @@ void APIENTRY openglCallback(
 
 RenderEngine::RenderEngine()
 {
+	Render::renderEngineInstance = this;
 }
 
 void RenderEngine::loadShaders()
@@ -176,6 +179,9 @@ void RenderEngine::loadShaders()
 		delete[] strInfoLog;
 	}
 
+	// tell GL to use the shader program
+	glUseProgram(programID);
+
 	Logger::getInstance().log("Shaders Loaded", LogLevel::info);
 }
 
@@ -199,7 +205,7 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 	glEnable(GL_DEPTH_TEST | GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
 	//register callback functions
-	glutDisplayFunc(renderScene);
+	glutDisplayFunc(renderCallback);
 	glDebugMessageCallback(openglCallback, nullptr);
 	GLuint unusedIDs = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIDs, true);
@@ -207,13 +213,18 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 
 	//load the shaders
 	loadShaders();
+}
 
+void RenderEngine::startEngine()
+{
 	//start main loop
 	glutMainLoop();
 }
 
 void RenderEngine::addObject(RenderObject input)
 {
+	Logger::getInstance().log("adding object", LogLevel::info);
+
 	objects.push_back(input);
 }
 
@@ -224,17 +235,27 @@ RenderEngine::~RenderEngine()
 
 void RenderEngine::render()
 {
+	Logger::getInstance().log("clearing buffer", LogLevel::info);
+
 	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// tell GL to use the shader program
-	glUseProgram(programID);
+	Logger::getInstance().log("setting view", LogLevel::info);
+
+	glLoadIdentity();
+	gluLookAt(0.0, 0.0, 10.0,
+		0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0);
+
+	Logger::getInstance().log("drawing objects", LogLevel::info);
 
 	for (RenderObject i : objects)
 	{
 		i.draw();
 	}
+
+	Logger::getInstance().log("swapping buffer", LogLevel::info);
 
 	//swap buffers
 	glutSwapBuffers();

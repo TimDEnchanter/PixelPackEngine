@@ -3,6 +3,7 @@
 
 #include "SharedVariables.h"
 #include "../common/Color.h"
+#include "../utility/debugging/Logger.h"
 
 #include <vector>
 

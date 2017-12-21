@@ -92,6 +92,8 @@ void RenderObject::init()
 
 void RenderObject::draw()
 {
+	Logger::getInstance().log("drawing Object", LogLevel::info);
+
 	//determine sides from drawMode
 	GLint sides = 3; //default to triangles
 	if (drawMode == GL_QUADS) sides = 4;

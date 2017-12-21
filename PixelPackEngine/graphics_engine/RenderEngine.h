@@ -12,36 +12,47 @@
 /*
 RenderEngine
 
-singleton class that handles main rendernig operation
+handles main rendernig operation
 */
 
 class RenderEngine
 {
 	private:
+
 		std::vector<RenderObject> objects;
 
 		GLuint programID;
 		GLuint vertShaderID;
 		GLuint fragShaderID;
 
-		RenderEngine();
-
 		void loadShaders();
 
 	public:
+		/*
 		static RenderEngine& getInstance()
 		{
 			static RenderEngine instance;
 			return instance;
 		}
-
+		*/
+		RenderEngine();
 		~RenderEngine();
 
 		void init(int argc, char **argv, std::string windowName);
+		void startEngine();
 
 		void addObject(RenderObject);
 
 		void render();
+		static void renderCallback();
 };
+
+namespace Render {
+	namespace {
+		//constant instance pointer
+		RenderEngine *renderEngineInstance = NULL;
+	}
+}
+
 
 #endif // !RENDER_ENGINE_H
