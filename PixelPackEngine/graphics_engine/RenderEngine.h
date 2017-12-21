@@ -20,6 +20,10 @@ class RenderEngine
 	private:
 		std::vector<RenderObject> objects;
 
+		GLuint programID;
+		GLuint vertShaderID;
+		GLuint fragShaderID;
+
 		RenderEngine();
 
 		void loadShaders();

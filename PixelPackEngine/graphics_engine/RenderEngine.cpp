@@ -76,8 +76,8 @@ RenderEngine::RenderEngine()
 void RenderEngine::loadShaders()
 {
 	//create shaders
-	GLuint vertShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint fragShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	vertShaderID = glCreateShader(GL_VERTEX_SHADER);
+	fragShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//find working directory
 	char buf[1000];
@@ -90,8 +90,10 @@ void RenderEngine::loadShaders()
 	std::ifstream vertStream(dir + "/shaders/vertShader.vert", std::ios::in);
 	if (vertStream.is_open())
 	{
-		vertStream >> vertCode;
+		vertCode = std::string(std::istreambuf_iterator<char>(vertStream), std::istreambuf_iterator<char>());
+		//vertStream >> vertCode;
 		vertStream.close();
+		Logger::getInstance().log(vertCode, LogLevel::full);
 	}
 	else
 	{
@@ -103,8 +105,10 @@ void RenderEngine::loadShaders()
 	std::ifstream fragStream(dir + "/shaders/fragShader.frag", std::ios::in);
 	if (fragStream.is_open())
 	{
-		fragStream >> fragCode;
+		fragCode = std::string(std::istreambuf_iterator<char>(fragStream), std::istreambuf_iterator<char>());
+		//fragStream >> fragCode;
 		fragStream.close();
+		Logger::getInstance().log(fragCode, LogLevel::full);
 	}
 	else
 	{
@@ -115,6 +119,62 @@ void RenderEngine::loadShaders()
 	const char* vertPointer = vertCode.c_str();
 	glShaderSource(vertShaderID, 1, &vertPointer, NULL);
 	glCompileShader(vertShaderID);
+	GLint vertStatus;
+	glGetShaderiv(vertShaderID, GL_COMPILE_STATUS, &vertStatus);
+	if (vertStatus == GL_FALSE)
+	{
+		GLint infoLogLength;
+		glGetShaderiv(vertShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
+		glGetShaderInfoLog(vertShaderID, infoLogLength, NULL, strInfoLog);
+
+		std::string logStr = strInfoLog;
+
+		Logger::getInstance().log("Compile failure in vertex shader: " + logStr,LogLevel::errors);
+		delete[] strInfoLog;
+	}
+
+	// compile fragment shader
+	const char* fragPointer = fragCode.c_str();
+	glShaderSource(fragShaderID, 1, &fragPointer, NULL);
+	glCompileShader(fragShaderID);
+	GLint fragStatus;
+	glGetShaderiv(fragShaderID, GL_COMPILE_STATUS, &fragStatus);
+	if (fragStatus == GL_FALSE)
+	{
+		GLint infoLogLength;
+		glGetShaderiv(fragShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
+		glGetShaderInfoLog(fragShaderID, infoLogLength, NULL, strInfoLog);
+
+		std::string logStr = strInfoLog;
+
+		Logger::getInstance().log("Compile failure in fragment shader: " + logStr, LogLevel::errors);
+		delete[] strInfoLog;
+	}
+
+	// add shaders to program
+	programID = glCreateProgram();
+	glAttachShader(programID, vertShaderID);
+	glAttachShader(programID, fragShaderID);
+
+	// link program to GL
+	glLinkProgram(programID);
+	GLint status;
+	glGetProgramiv(programID, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE)
+	{
+		GLint infoLogLength;
+		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
+		glGetProgramInfoLog(programID, infoLogLength, NULL, strInfoLog);
+		std::string logStr = strInfoLog;
+		Logger::getInstance().log("Linker error: " + logStr, LogLevel::errors);
+		delete[] strInfoLog;
+	}
 
 	Logger::getInstance().log("Shaders Loaded", LogLevel::info);
 }
@@ -164,9 +224,12 @@ RenderEngine::~RenderEngine()
 
 void RenderEngine::render()
 {
+	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.5, 0.5, 0.5, 1.0); //clear to black
+
+	// tell GL to use the shader program
+	glUseProgram(programID);
 
 	for (RenderObject i : objects)
 	{
