@@ -16,7 +16,7 @@ Also contains OpenGL library includes.
 namespace RenderVars {
 	//shader attribute indices
 	const GLuint vertexAttributeID = 0;
-	const GLuint normalAttributeID = 1;
+	const GLuint nomalAttributeID = 1;
 	const GLuint colorAttributeID = 2;
 }
 

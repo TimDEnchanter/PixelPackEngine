@@ -4,6 +4,8 @@
 #include "SharedVariables.h"
 #include "RenderObject.h"
 #include "../utility/debugging/Logger.h"
+#include "../dependencies/glm/mat4x4.hpp"
+#include "../dependencies/glm/gtc/matrix_transform.hpp"
 
 #include <string>
 #include <vector>
@@ -18,6 +20,8 @@ handles main rendernig operation
 class RenderEngine
 {
 	private:
+		GLuint vertexbuffer;
+
 
 		std::vector<RenderObject> objects;
 

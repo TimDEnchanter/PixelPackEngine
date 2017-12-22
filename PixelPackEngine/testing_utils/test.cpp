@@ -13,12 +13,15 @@ int main(int argc, char **argv)
 
 	renderer.init(argc, argv, "Test_Window");
 
+	/*
 	RenderObject testCube = RenderObject();
+
 	testCube.setIsHidden(false);
 	testCube.setDrawMode(GL_QUADS);
 	float colorArray[] = { 1.0, 0.0, 0.0, 1.0 };
 	Color testColor = Color(colorArray);
 	testCube.setObjColor(testColor);
+
 
 	//cube vertexes
 	float point1[] = { 0.0, 0.0, 0.0 };
@@ -51,10 +54,13 @@ int main(int argc, char **argv)
 	  2,3,7,6,
 	  3,4,8,7,
 	  5,6,7,8 };
-	testCube.setIndexVector(index);
+	//testCube.setIndexVector(index);
 
 	testCube.init();
+	
+
 	renderer.addObject(testCube);
+	*/
 
 	renderer.startEngine();
 

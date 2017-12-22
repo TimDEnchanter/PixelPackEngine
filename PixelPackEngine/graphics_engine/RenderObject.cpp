@@ -4,6 +4,9 @@
 
 void RenderObject::initBuffers()
 {
+	/*
+	Logger::getInstance().log("loading buffers", LogLevel::info);
+
 	//setup vertex buffer
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
@@ -14,6 +17,7 @@ void RenderObject::initBuffers()
 		GL_STATIC_DRAW
 	);
 
+	
 	//setup element buffer
 	glGenBuffers(1, &elementBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
@@ -23,6 +27,7 @@ void RenderObject::initBuffers()
 		&indexVector.front(),
 		GL_STATIC_DRAW
 	);
+	*/
 }
 
 RenderObject::RenderObject()
@@ -96,11 +101,13 @@ void RenderObject::draw()
 
 	//determine sides from drawMode
 	GLint sides = 3; //default to triangles
-	if (drawMode == GL_QUADS) sides = 4;
+	//if (drawMode == GL_QUADS) sides = 4;
 
 	//enable use of vertex attribute
 	glEnableVertexAttribArray(RenderVars::vertexAttributeID);
 
+
+	/*
 	//set focus to this object's vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
@@ -114,6 +121,7 @@ void RenderObject::draw()
 		(void*)0
 	);
 
+	
 	//set focus to element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
 
@@ -121,9 +129,10 @@ void RenderObject::draw()
 	glDrawElements(
 		drawMode,
 		indexVector.size(),
-		GL_UNSIGNED_INT,
+		GL_UNSIGNED_SHORT,
 		(void*)0
 	);
+	*/
 
 	//disable use of vertex attribute
 	glDisableVertexAttribArray(RenderVars::vertexAttributeID);
