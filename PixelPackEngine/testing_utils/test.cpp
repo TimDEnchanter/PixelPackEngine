@@ -9,7 +9,7 @@ main function used to test scenarios in the engine
 int main(int argc, char **argv)
 {
 	RenderEngine renderer;
-	Logger::getInstance().setCurrentLogLevel(LogLevel::info);
+	Logger::getInstance().setCurrentLogLevel(LogLevel::full);
 
 	renderer.init(argc, argv, "Test_Window");
 

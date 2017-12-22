@@ -179,6 +179,12 @@ void RenderEngine::loadShaders()
 		delete[] strInfoLog;
 	}
 
+	glDetachShader(programID, vertShaderID);
+	glDetachShader(programID, fragShaderID);
+
+	glDeleteShader(vertShaderID);
+	glDeleteShader(fragShaderID);
+
 	Logger::getInstance().log("Shaders Loaded", LogLevel::info);
 }
 
@@ -254,6 +260,7 @@ void RenderEngine::render()
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)1280 / (float)720, 0.1f, 100.0f);
 
 	glm::mat4 View = glm::lookAt(
@@ -271,6 +278,9 @@ void RenderEngine::render()
 	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
 
 	Logger::getInstance().log("drawing objects", LogLevel::info);
+
+	glUseProgram(programID);
+
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
