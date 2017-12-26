@@ -4,15 +4,15 @@
 
 void RenderObject::initBuffers()
 {
-	/*
+	
 	Logger::getInstance().log("loading buffers", LogLevel::info);
-
+	/*
 	//setup vertex buffer
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		vertexVector.size() * sizeof(TriFloat),
+		vertexVector.size() * sizeof(glm::vec3),
 		&vertexVector.front(),
 		GL_STATIC_DRAW
 	);
@@ -28,6 +28,23 @@ void RenderObject::initBuffers()
 		GL_STATIC_DRAW
 	);
 	*/
+
+	//test triangle
+	static const GLfloat buffer_data[] =
+	{
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f,  1.0f, 0.0f,
+	};
+
+	// This will identify our vertex buffer
+	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	glGenBuffers(1, &vertexbuffer);
+	// The following commands will talk about our 'vertexbuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
+	
 }
 
 RenderObject::RenderObject()
@@ -54,7 +71,7 @@ Color RenderObject::getObjColor()
 	return objColor;
 }
 
-std::vector<TriFloat> RenderObject::getVertexVector()
+std::vector<glm::vec3> RenderObject::getVertexVector()
 {
 	return vertexVector;
 }
@@ -79,7 +96,7 @@ void RenderObject::setObjColor(Color input)
 	objColor = input;
 }
 
-void RenderObject::setVertexVector(std::vector<TriFloat> input)
+void RenderObject::setVertexVector(std::vector<glm::vec3> input)
 {
 	vertexVector = input;
 }
@@ -99,6 +116,8 @@ void RenderObject::draw()
 {
 	Logger::getInstance().log("drawing Object", LogLevel::info);
 
+
+	/*
 	//determine sides from drawMode
 	GLint sides = 3; //default to triangles
 	//if (drawMode == GL_QUADS) sides = 4;
@@ -106,8 +125,6 @@ void RenderObject::draw()
 	//enable use of vertex attribute
 	glEnableVertexAttribArray(RenderVars::vertexAttributeID);
 
-
-	/*
 	//set focus to this object's vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
@@ -132,8 +149,24 @@ void RenderObject::draw()
 		GL_UNSIGNED_SHORT,
 		(void*)0
 	);
-	*/
+	
 
 	//disable use of vertex attribute
 	glDisableVertexAttribArray(RenderVars::vertexAttributeID);
+	*/
+
+	// 1rst attribute buffer : vertices
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glVertexAttribPointer(
+		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		3,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+	// Draw the triangle !
+	glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+	glDisableVertexAttribArray(0);
 }

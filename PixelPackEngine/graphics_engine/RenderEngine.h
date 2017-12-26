@@ -20,7 +20,7 @@ handles main rendernig operation
 class RenderEngine
 {
 	private:
-		GLuint vertexbuffer;
+		//GLuint vertexbuffer;
 
 
 		std::vector<RenderObject> objects;

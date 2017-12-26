@@ -4,6 +4,7 @@
 #include "SharedVariables.h"
 #include "../common/Color.h"
 #include "../utility/debugging/Logger.h"
+#include "../dependencies/glm/vec3.hpp"
 
 #include <vector>
 
@@ -24,8 +25,10 @@ class RenderObject
 		QuadFloat orientation;                  //orientation in quaternions
 
 		//vertex and index data for indexed VBO
-		std::vector<TriFloat> vertexVector;
+		std::vector<glm::vec3> vertexVector;
 		std::vector<GLuint> indexVector;
+
+		GLuint vertexbuffer;
 
 		//buffer IDs
 		GLuint vertexBufferID;
@@ -42,13 +45,13 @@ class RenderObject
 		bool getIsHidden();
 		GLenum getDrawMode();
 		Color getObjColor();
-		std::vector<TriFloat> getVertexVector();
+		std::vector<glm::vec3> getVertexVector();
 		std::vector<GLuint> getIndexVector();
 
 		void setIsHidden(bool);
 		void setDrawMode(GLenum);
 		void setObjColor(Color);
-		void setVertexVector(std::vector<TriFloat>);
+		void setVertexVector(std::vector<glm::vec3>);
 		void setIndexVector(std::vector<GLuint>);
 
 		void init();

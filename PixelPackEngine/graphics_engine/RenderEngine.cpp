@@ -217,6 +217,7 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 	//load the shaders
 	loadShaders();
 
+	/*
 	//test triangle
 	static const GLfloat buffer_data[] =
 	{
@@ -232,6 +233,7 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
+	*/
 }
 
 void RenderEngine::startEngine()
@@ -281,7 +283,7 @@ void RenderEngine::render()
 
 	glUseProgram(programID);
 
-
+	/*
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -296,15 +298,14 @@ void RenderEngine::render()
 	// Draw the triangle !
 	glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 	glDisableVertexAttribArray(0);
-
-	/*
+	*/
+	
 	// tell GL to use the shader program
-	glUseProgram(programID);
 	for (RenderObject i : objects)
 	{
 		i.draw();
 	}
-	*/
+	
 
 	Logger::getInstance().log("swapping buffer", LogLevel::info);
 
