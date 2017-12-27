@@ -205,7 +205,11 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 		Logger::getInstance().log("GLEW initialization failed: " + std::to_string(err), LogLevel::errors);
 
 	//enable features
-	glEnable(GL_DEPTH_TEST | GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+	//set function to determine depth culling
+	glDepthFunc(GL_LESS);
 
 	//register callback functions
 	glutDisplayFunc(renderCallback);
@@ -216,24 +220,6 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 
 	//load the shaders
 	loadShaders();
-
-	/*
-	//test triangle
-	static const GLfloat buffer_data[] =
-	{
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		0.0f,  1.0f, 0.0f,
-	};
-
-	// This will identify our vertex buffer
-	// Generate 1 buffer, put the resulting identifier in vertexbuffer
-	glGenBuffers(1, &vertexbuffer);
-	// The following commands will talk about our 'vertexbuffer' buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
-	*/
 }
 
 void RenderEngine::startEngine()
@@ -281,26 +267,9 @@ void RenderEngine::render()
 
 	Logger::getInstance().log("drawing objects", LogLevel::info);
 
-	glUseProgram(programID);
-
-	/*
-	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-	// Draw the triangle !
-	glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-	glDisableVertexAttribArray(0);
-	*/
-	
 	// tell GL to use the shader program
+	glUseProgram(programID);
+	
 	for (RenderObject i : objects)
 	{
 		i.draw();

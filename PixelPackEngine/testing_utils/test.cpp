@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	RenderObject testCube = RenderObject();
 
 	testCube.setIsHidden(false);
-	testCube.setDrawMode(GL_QUADS);
+	testCube.setDrawMode(GL_TRIANGLES);
 	float colorArray[] = { 1.0, 0.0, 0.0, 1.0 };
 	Color testColor = Color(colorArray);
 	testCube.setObjColor(testColor);
@@ -47,27 +47,48 @@ int main(int argc, char **argv)
 	testVerts.push_back(TriFloat(point8));
 	*/
 
-	std::vector<glm::vec3> testVerts = std::vector<glm::vec3>();
-	testVerts.push_back(glm::vec3(0.0, 0.0, 0.0));
-	testVerts.push_back(glm::vec3(1.0, 0.0, 0.0));
-	testVerts.push_back(glm::vec3(1.0, 1.0, 0.0));
-	testVerts.push_back(glm::vec3(0.0, 1.0, 0.0));
-	testVerts.push_back(glm::vec3(0.0, 0.0, 1.0));
-	testVerts.push_back(glm::vec3(0.0, 0.0, 1.0));
-	testVerts.push_back(glm::vec3(0.0, 1.0, 1.0));
-	testVerts.push_back(glm::vec3(0.0, 1.0, 1.0));
+	/*
+	       7--------6
+	      /|       /|
+	     / |      / |
+		3--+-----2  |
+		|  4-----+--5
+		| /      | /
+		|/       |/
+		0--------1
+	*/
+
+	GLfloat testArr[] = {
+		0.0, 0.0, 1.0,
+		1.0, 0.0, 1.0,
+		1.0, 1.0, 1.0,
+		0.0, 1.0, 1.0,
+		0.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 1.0, 0.0,
+		0.0, 1.0, 0.0
+	};
+	std::vector<GLfloat> testVerts(testArr, testArr + sizeof testArr / sizeof testArr[0]);
 
 
 	testCube.setVertexVector(testVerts);
 
 	//index
 	std::vector<GLuint> index 
-	{ 1,2,3,4,
-	  1,2,6,5,
-	  1,4,8,5,
-	  2,3,7,6,
-	  3,4,8,7,
-	  5,6,7,8 };
+	{ 
+		0,1,2,
+		0,3,2,
+		0,4,5,
+		0,1,5,
+		0,4,7,
+		0,3,7,
+		1,5,6,
+		1,2,6,
+		3,2,6,
+		3,7,6,
+		4,5,6,
+		4,7,6
+	};
 	testCube.setIndexVector(index);
 
 	testCube.init();

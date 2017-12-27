@@ -25,7 +25,7 @@ class RenderObject
 		QuadFloat orientation;                  //orientation in quaternions
 
 		//vertex and index data for indexed VBO
-		std::vector<glm::vec3> vertexVector;
+		std::vector<GLfloat> vertexVector;
 		std::vector<GLuint> indexVector;
 
 		GLuint vertexbuffer;
@@ -45,13 +45,13 @@ class RenderObject
 		bool getIsHidden();
 		GLenum getDrawMode();
 		Color getObjColor();
-		std::vector<glm::vec3> getVertexVector();
+		std::vector<GLfloat> getVertexVector();
 		std::vector<GLuint> getIndexVector();
 
 		void setIsHidden(bool);
 		void setDrawMode(GLenum);
 		void setObjColor(Color);
-		void setVertexVector(std::vector<glm::vec3>);
+		void setVertexVector(std::vector<GLfloat>);
 		void setIndexVector(std::vector<GLuint>);
 
 		void init();
