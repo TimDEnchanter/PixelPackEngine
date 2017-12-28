@@ -17,6 +17,15 @@ void RenderObject::initBuffers()
 		GL_STATIC_DRAW
 	);
 
+	//setup color buffer
+	glGenBuffers(1, &colorBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		colorVector.size() * sizeof(GLfloat),
+		&colorVector.front(),
+		GL_STATIC_DRAW
+	);
 	
 	//setup element buffer
 	glGenBuffers(1, &elementBufferID);
@@ -63,6 +72,11 @@ std::vector<GLuint> RenderObject::getIndexVector()
 	return indexVector;
 }
 
+std::vector<GLfloat> RenderObject::getColorVector()
+{
+	return colorVector;
+}
+
 void RenderObject::setIsHidden(bool input)
 {
 	isHidden = input;
@@ -88,6 +102,11 @@ void RenderObject::setIndexVector(std::vector<GLuint> input)
 	indexVector = input;
 }
 
+void RenderObject::setColorVector(std::vector<GLfloat> input)
+{
+	colorVector = input;
+}
+
 
 void RenderObject::init()
 {
@@ -96,9 +115,7 @@ void RenderObject::init()
 
 void RenderObject::draw()
 {
-	Logger::getInstance().log("drawing Object", LogLevel::info);
-
-
+	//Logger::getInstance().log("drawing Object", LogLevel::info);
 	
 	//determine sides from drawMode
 	GLint sides = 3; //default to triangles
@@ -120,6 +137,22 @@ void RenderObject::draw()
 		(void*)0
 	);
 
+
+	//enable use of color attribute
+	glEnableVertexAttribArray(RenderVars::colorAttributeID);
+
+	//set focus to this object's color buffer
+	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
+
+	//point to buffer
+	glVertexAttribPointer(
+		RenderVars::colorAttributeID,
+		sides,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+	);
 	
 	//set focus to element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);

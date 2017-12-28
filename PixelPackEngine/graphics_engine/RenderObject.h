@@ -27,8 +27,7 @@ class RenderObject
 		//vertex and index data for indexed VBO
 		std::vector<GLfloat> vertexVector;
 		std::vector<GLuint> indexVector;
-
-		GLuint vertexbuffer;
+		std::vector<GLfloat> colorVector;
 
 		//buffer IDs
 		GLuint vertexBufferID;
@@ -47,12 +46,14 @@ class RenderObject
 		Color getObjColor();
 		std::vector<GLfloat> getVertexVector();
 		std::vector<GLuint> getIndexVector();
+		std::vector<GLfloat> getColorVector();
 
 		void setIsHidden(bool);
 		void setDrawMode(GLenum);
 		void setObjColor(Color);
 		void setVertexVector(std::vector<GLfloat>);
 		void setIndexVector(std::vector<GLuint>);
+		void setColorVector(std::vector<GLfloat>);
 
 		void init();
 		void draw();

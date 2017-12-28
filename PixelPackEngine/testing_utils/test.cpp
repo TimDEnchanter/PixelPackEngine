@@ -58,7 +58,8 @@ int main(int argc, char **argv)
 		0--------1
 	*/
 
-	GLfloat testArr[] = {
+	std::vector<GLfloat> testVerts
+	{
 		0.0, 0.0, 1.0,
 		1.0, 0.0, 1.0,
 		1.0, 1.0, 1.0,
@@ -68,10 +69,20 @@ int main(int argc, char **argv)
 		1.0, 1.0, 0.0,
 		0.0, 1.0, 0.0
 	};
-	std::vector<GLfloat> testVerts(testArr, testArr + sizeof testArr / sizeof testArr[0]);
-
-
 	testCube.setVertexVector(testVerts);
+
+	std::vector<GLfloat> testColors
+	{
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0
+	};
+	testCube.setColorVector(testColors);
 
 	//index
 	std::vector<GLuint> index 
