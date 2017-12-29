@@ -19,34 +19,12 @@ int main(int argc, char **argv)
 
 	testCube.setIsHidden(false);
 	testCube.setDrawMode(GL_TRIANGLES);
-	float colorArray[] = { 1.0, 0.0, 0.0, 1.0 };
-	Color testColor = Color(colorArray);
-	testCube.setObjColor(testColor);
+	//float colorArray[] = { 1.0, 0.0, 0.0, 1.0 };
+	//glm::vec3 testColor(colorArray);
+	//testCube.setObjColor(testColor);
 
 
 	//cube vertexes
-	/*
-	float point1[] = { 0.0, 0.0, 0.0 };
-	float point2[] = { 1.0, 0.0, 0.0 };
-	float point3[] = { 1.0, 1.0, 0.0 };
-	float point4[] = { 0.0, 1.0, 0.0 };
-
-	float point5[] = { 0.0, 0.0, 1.0 };
-	float point6[] = { 1.0, 0.0, 1.0 };
-	float point7[] = { 1.0, 1.0, 1.0 };
-	float point8[] = { 0.0, 1.0, 1.0 };
-
-	std::vector<TriFloat> testVerts = std::vector<TriFloat>();
-	testVerts.push_back(TriFloat(point1));
-	testVerts.push_back(TriFloat(point2));
-	testVerts.push_back(TriFloat(point3));
-	testVerts.push_back(TriFloat(point4));
-	testVerts.push_back(TriFloat(point5));
-	testVerts.push_back(TriFloat(point6));
-	testVerts.push_back(TriFloat(point7));
-	testVerts.push_back(TriFloat(point8));
-	*/
-
 	/*
 	       7--------6
 	      /|       /|
@@ -71,6 +49,7 @@ int main(int argc, char **argv)
 	};
 	testCube.setVertexVector(testVerts);
 
+	//colors
 	std::vector<GLfloat> testColors
 	{
 		0.0, 0.0, 1.0,

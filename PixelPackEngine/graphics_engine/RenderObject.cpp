@@ -57,7 +57,7 @@ GLenum RenderObject::getDrawMode()
 	return drawMode;
 }
 
-Color RenderObject::getObjColor()
+glm::vec3 RenderObject::getObjColor()
 {
 	return objColor;
 }
@@ -77,6 +77,11 @@ std::vector<GLfloat> RenderObject::getColorVector()
 	return colorVector;
 }
 
+glm::mat4 RenderObject::getModelMatrix()
+{
+	return glm::mat4(1.0);
+}
+
 void RenderObject::setIsHidden(bool input)
 {
 	isHidden = input;
@@ -87,7 +92,7 @@ void RenderObject::setDrawMode(GLenum input)
 	drawMode = input;
 }
 
-void RenderObject::setObjColor(Color input)
+void RenderObject::setObjColor(glm::vec3 input)
 {
 	objColor = input;
 }
@@ -107,6 +112,10 @@ void RenderObject::setColorVector(std::vector<GLfloat> input)
 	colorVector = input;
 }
 
+
+void RenderObject::loadOBJ(std::string filePath)
+{
+}
 
 void RenderObject::init()
 {
