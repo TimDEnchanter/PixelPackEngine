@@ -4,7 +4,7 @@
 
 void RenderEngine::renderCallback()
 {
-	Render::renderEngineInstance->render();
+	pxpk::renderEngineInstance->render();
 }
 
 
@@ -73,7 +73,7 @@ void APIENTRY openglCallback(
 
 RenderEngine::RenderEngine()
 {
-	Render::renderEngineInstance = this;
+	pxpk::renderEngineInstance = this;
 }
 
 void RenderEngine::loadShaders()
@@ -193,7 +193,7 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 	//glut setup
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(1280, 720);
+	glutInitWindowSize(pxpk::windowWidth, pxpk::windowHeight);
 
 	//create window
 	glutCreateWindow(windowName.c_str());
@@ -249,7 +249,7 @@ void RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)1280 / (float)720, 0.1f, 100.0f);
+	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)pxpk::windowWidth / (float)pxpk::windowHeight, 0.1f, 100.0f);
 
 	glm::mat4 View = glm::lookAt(
 		glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space

@@ -62,6 +62,16 @@ glm::vec3 RenderObject::getObjColor()
 	return objColor;
 }
 
+glm::vec3 RenderObject::getOrientation()
+{
+	return glm::eulerAngles(orientation);
+}
+
+glm::vec3 RenderObject::getScale()
+{
+	return scale;
+}
+
 std::vector<GLfloat> RenderObject::getVertexVector()
 {
 	return vertexVector;
@@ -95,6 +105,16 @@ void RenderObject::setDrawMode(GLenum input)
 void RenderObject::setObjColor(glm::vec3 input)
 {
 	objColor = input;
+}
+
+void RenderObject::setOrientation(glm::vec3 eulerInput)
+{
+	orientation = glm::quat(eulerInput);
+}
+
+void RenderObject::setScale(glm::vec3 input)
+{
+	scale = input;
 }
 
 void RenderObject::setVertexVector(std::vector<GLfloat> input)
@@ -131,14 +151,14 @@ void RenderObject::draw()
 	//if (drawMode == GL_QUADS) sides = 4;
 
 	//enable use of vertex attribute
-	glEnableVertexAttribArray(RenderVars::vertexAttributeID);
+	glEnableVertexAttribArray(pxpk::vertexAttributeID);
 
 	//set focus to this object's vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
 	//point attribute to buffer
 	glVertexAttribPointer(
-		RenderVars::vertexAttributeID,
+		pxpk::vertexAttributeID,
 		sides,
 		GL_FLOAT,
 		GL_FALSE,
@@ -148,14 +168,14 @@ void RenderObject::draw()
 
 
 	//enable use of color attribute
-	glEnableVertexAttribArray(RenderVars::colorAttributeID);
+	glEnableVertexAttribArray(pxpk::colorAttributeID);
 
 	//set focus to this object's color buffer
 	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
 
 	//point to buffer
 	glVertexAttribPointer(
-		RenderVars::colorAttributeID,
+		pxpk::colorAttributeID,
 		sides,
 		GL_FLOAT,
 		GL_FALSE,
@@ -176,5 +196,5 @@ void RenderObject::draw()
 	
 
 	//disable use of vertex attribute
-	glDisableVertexAttribArray(RenderVars::vertexAttributeID);
+	glDisableVertexAttribArray(pxpk::vertexAttributeID);
 }

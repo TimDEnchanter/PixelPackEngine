@@ -51,7 +51,7 @@ class RenderEngine
 		static void renderCallback();
 };
 
-namespace Render {
+namespace pxpk {
 	namespace {
 		//constant instance pointer
 		RenderEngine *renderEngineInstance = NULL;

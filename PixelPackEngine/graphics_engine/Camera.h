@@ -3,11 +3,12 @@
 
 #include "SharedVariables.h"
 #include "RenderObject.h"
-#include "../common/Inputs.h"
 
 class Camera : public RenderObject
 {
 	private:
+		GLfloat fov;
+
 
 	public:
 		virtual void init();
