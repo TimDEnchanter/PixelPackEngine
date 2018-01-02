@@ -62,6 +62,11 @@ glm::vec3 RenderObject::getObjColor()
 	return objColor;
 }
 
+glm::vec3 RenderObject::getPosition()
+{
+	return position;
+}
+
 glm::vec3 RenderObject::getOrientation()
 {
 	return glm::eulerAngles(orientation);
@@ -89,7 +94,18 @@ std::vector<GLfloat> RenderObject::getColorVector()
 
 glm::mat4 RenderObject::getModelMatrix()
 {
-	return glm::mat4(1.0);
+	// create translation matrix
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0), position);
+
+	//create scale matrix
+	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), scale);
+
+	//create rotation matrix
+	glm::mat4 rotationMatrix = glm::mat4_cast(orientation);
+
+	//multiply together **ORDER IS IMPORTANT**
+	glm::mat4 modelOut =  translationMatrix * rotationMatrix * scaleMatrix;
+	return modelOut;
 }
 
 void RenderObject::setIsHidden(bool input)
@@ -105,6 +121,11 @@ void RenderObject::setDrawMode(GLenum input)
 void RenderObject::setObjColor(glm::vec3 input)
 {
 	objColor = input;
+}
+
+void RenderObject::setPosition(glm::vec3 input)
+{
+	position = input;
 }
 
 void RenderObject::setOrientation(glm::vec3 eulerInput)

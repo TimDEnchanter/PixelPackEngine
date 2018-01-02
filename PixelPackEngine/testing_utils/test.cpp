@@ -17,8 +17,8 @@ int main(int argc, char **argv)
 	
 	RenderObject testCube = RenderObject();
 
-	testCube.setIsHidden(false);
-	testCube.setDrawMode(GL_TRIANGLES);
+	//testCube.setIsHidden(false);
+	//testCube.setDrawMode(GL_TRIANGLES);
 	//float colorArray[] = { 1.0, 0.0, 0.0, 1.0 };
 	//glm::vec3 testColor(colorArray);
 	//testCube.setObjColor(testColor);
@@ -85,11 +85,14 @@ int main(int argc, char **argv)
 	
 
 	renderer.addObject(testCube);
+
+	testCube.setPosition(glm::vec3(0.0, 0.0, -2.0));
+	testCube.setScale(glm::vec3(1.5));
+	testCube.setOrientation(glm::vec3(0.0, 45.0, 0.0));
+
+	renderer.addObject(testCube);
 	
-
 	renderer.startEngine();
-
-	//system("pause");
 
 	return 0;
 }

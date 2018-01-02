@@ -257,13 +257,7 @@ void RenderEngine::render()
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 
-	// Model matrix : an identity matrix (model will be at the origin)
-	glm::mat4 Model = glm::mat4(1.0f);
-	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 mvp = Projection * View * Model; // Remember, matrix multiplication is the other way around
-
 	GLuint mvpID = glGetUniformLocation(programID, "MVP");
-	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
 
 	Logger::getInstance().log("drawing objects", LogLevel::info);
 
@@ -272,6 +266,13 @@ void RenderEngine::render()
 	
 	for (RenderObject i : objects)
 	{
+		// get model matrix from object
+		glm::mat4 Model = i.getModelMatrix();
+
+		// calculate MVP and send to shader
+		glm::mat4 mvp = Projection * View * Model;
+		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+
 		i.draw();
 	}
 	
