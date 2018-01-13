@@ -17,12 +17,6 @@ int main(int argc, char **argv)
 	
 	RenderObject testCube = RenderObject();
 
-	//testCube.setIsHidden(false);
-	//testCube.setDrawMode(GL_TRIANGLES);
-	//float colorArray[] = { 1.0, 0.0, 0.0, 1.0 };
-	//glm::vec3 testColor(colorArray);
-	//testCube.setObjColor(testColor);
-
 
 	//cube vertexes
 	/*
@@ -49,19 +43,19 @@ int main(int argc, char **argv)
 	};
 	testCube.setVertexVector(testVerts);
 
-	//colors
-	std::vector<GLfloat> testColors
-	{
-		0.0, 0.0, 1.0,
-		0.0, 0.0, 1.0,
-		0.0, 0.0, 1.0,
-		0.0, 0.0, 1.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0
-	};
-	testCube.setColorVector(testColors);
+	////colors
+	//std::vector<GLfloat> testColors
+	//{
+	//	0.0, 0.0, 1.0,
+	//	0.0, 0.0, 1.0,
+	//	0.0, 0.0, 1.0,
+	//	0.0, 0.0, 1.0,
+	//	1.0, 0.0, 0.0,
+	//	1.0, 0.0, 0.0,
+	//	1.0, 0.0, 0.0,
+	//	1.0, 0.0, 0.0
+	//};
+	//testCube.setColorVector(testColors);
 
 	//index
 	std::vector<GLuint> index 
@@ -81,16 +75,43 @@ int main(int argc, char **argv)
 	};
 	testCube.setIndexVector(index);
 
-	testCube.init();
-	
+	//second cube
+	RenderObject testCube2 = RenderObject(testCube);
+	testCube2.setPosition(glm::vec3(2.0, 0.0, 0.0));
+	//testCube2.setScale(glm::vec3(1.5));
+	//testCube2.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
+	testCube2.setObjColor(glm::vec3(1.0, 0.0, 0.0));
 
+	//third cube
+	RenderObject testCube3 = RenderObject(testCube);
+	testCube3.setPosition(glm::vec3(0.0, 2.0, 0.0));
+	//testCube3.setScale(glm::vec3(1.5));
+	//testCube3.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
+	testCube3.setObjColor(glm::vec3(0.0, 1.0, 0.0));
+
+	//fourth cube
+	RenderObject testCube4 = RenderObject(testCube);
+	testCube4.setPosition(glm::vec3(0.0, 0.0, 2.0));
+	//testCube4.setScale(glm::vec3(1.5));
+	//testCube4.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
+	testCube4.setObjColor(glm::vec3(0.0, 0.0, 1.0));
+
+
+	//init and add cubes
 	renderer.addObject(testCube);
+	renderer.addObject(testCube2);
+	renderer.addObject(testCube3);
+	renderer.addObject(testCube4);
 
-	testCube.setPosition(glm::vec3(0.0, 0.0, -2.0));
-	testCube.setScale(glm::vec3(1.5));
-	testCube.setOrientation(glm::vec3(0.0, 45.0, 0.0));
-
-	renderer.addObject(testCube);
+	//setup camera
+	Camera cam = Camera();
+	cam.setFov(45.0);
+	cam.setNearDist(0.1);
+	cam.setFarDist(100.0);
+	cam.setPosition(glm::vec3(10.0, 10.0, 10.0));
+	cam.setLookPoint(glm::vec3(0.0, 0.0, 0.0));
+	//cam.setOrientationEuler(glm::vec3(0.0, 90.0, 0.0));
+	renderer.addCamera(cam);
 	
 	renderer.startEngine();
 

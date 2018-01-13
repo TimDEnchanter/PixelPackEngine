@@ -27,12 +27,14 @@
     <ClInclude Include="dependencies\GLEW\include\GL\glew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
+    <ClInclude Include="graphics_engine\Camera.h" />
     <ClInclude Include="graphics_engine\RenderEngine.h" />
     <ClInclude Include="graphics_engine\RenderObject.h" />
     <ClInclude Include="graphics_engine\SharedVariables.h" />
     <ClInclude Include="utility\debugging\Logger.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="graphics_engine\Camera.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\RenderObject.cpp" />
     <ClCompile Include="testing_utils\test.cpp" />

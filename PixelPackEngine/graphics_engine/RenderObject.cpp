@@ -42,6 +42,23 @@ RenderObject::RenderObject()
 {
 }
 
+RenderObject::RenderObject(const RenderObject & input)
+{
+	isHidden = input.isHidden;
+	position = input.position;
+	orientation = input.orientation;
+	scale = input.scale;
+	drawMode = input.drawMode;
+	objColor = input.objColor;
+	vertexVector = input.vertexVector;
+	indexVector = input.indexVector;
+	colorVector = input.colorVector;
+	vertexBufferID = input.vertexBufferID;
+	elementBufferID = input.elementBufferID;
+	normalBufferID = input.normalBufferID;
+	colorBufferID = input.colorBufferID;
+}
+
 
 RenderObject::~RenderObject()
 {
@@ -67,7 +84,12 @@ glm::vec3 RenderObject::getPosition()
 	return position;
 }
 
-glm::vec3 RenderObject::getOrientation()
+glm::quat RenderObject::getOrientaion()
+{
+	return orientation;
+}
+
+glm::vec3 RenderObject::getOrientationEuler()
 {
 	return glm::eulerAngles(orientation);
 }
@@ -128,7 +150,12 @@ void RenderObject::setPosition(glm::vec3 input)
 	position = input;
 }
 
-void RenderObject::setOrientation(glm::vec3 eulerInput)
+void RenderObject::setOrientation(glm::quat input)
+{
+	orientation = input;
+}
+
+void RenderObject::setOrientationEuler(glm::vec3 eulerInput)
 {
 	orientation = glm::quat(eulerInput);
 }
@@ -160,6 +187,10 @@ void RenderObject::loadOBJ(std::string filePath)
 
 void RenderObject::init()
 {
+	if (colorVector.empty()) {
+		int numVerts = vertexVector.size() / 3;
+		for (int i = 0; i < numVerts; i++) colorVector.insert(colorVector.end(), { objColor.x, objColor.y, objColor.z });
+	}
 	initBuffers();
 }
 

@@ -3,6 +3,7 @@
 
 #include "SharedVariables.h"
 #include "RenderObject.h"
+#include "Camera.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
 #include "../dependencies/glm/gtc/matrix_transform.hpp"
@@ -20,10 +21,10 @@ handles main rendernig operation
 class RenderEngine
 {
 	private:
-		//GLuint vertexbuffer;
-
-
 		std::vector<RenderObject> objects;
+		std::vector<Camera> cameras;
+
+		GLuint activeCam = 0;
 
 		GLuint programID;
 		GLuint vertShaderID;
@@ -32,20 +33,19 @@ class RenderEngine
 		void loadShaders();
 
 	public:
-		/*
-		static RenderEngine& getInstance()
-		{
-			static RenderEngine instance;
-			return instance;
-		}
-		*/
 		RenderEngine();
 		~RenderEngine();
 
-		void init(int argc, char **argv, std::string windowName);
-		void startEngine();
+		std::vector<RenderObject> getObjects();
+		std::vector<Camera> getCameras();
+		GLuint getActiveCam();
 
 		void addObject(RenderObject);
+		void addCamera(Camera);
+		void setActiveCam(GLuint);
+
+		void init(int argc, char **argv, std::string windowName);
+		void startEngine();
 
 		void render();
 		static void renderCallback();

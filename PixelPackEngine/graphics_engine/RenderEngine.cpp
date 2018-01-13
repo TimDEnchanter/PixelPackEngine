@@ -231,13 +231,38 @@ void RenderEngine::startEngine()
 void RenderEngine::addObject(RenderObject input)
 {
 	Logger::getInstance().log("adding object", LogLevel::info);
-
+	input.init();
 	objects.push_back(input);
+}
+
+void RenderEngine::addCamera(Camera input)
+{
+	cameras.push_back(input);
+}
+
+void RenderEngine::setActiveCam(GLuint input)
+{
+	activeCam = input;
 }
 
 
 RenderEngine::~RenderEngine()
 {
+}
+
+std::vector<RenderObject> RenderEngine::getObjects()
+{
+	return objects;
+}
+
+std::vector<Camera> RenderEngine::getCameras()
+{
+	return cameras;
+}
+
+GLuint RenderEngine::getActiveCam()
+{
+	return activeCam;
 }
 
 void RenderEngine::render()
@@ -249,13 +274,15 @@ void RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)pxpk::windowWidth / (float)pxpk::windowHeight, 0.1f, 100.0f);
+	//glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)pxpk::windowWidth / (float)pxpk::windowHeight, 0.1f, 100.0f);
+	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 
-	glm::mat4 View = glm::lookAt(
-		glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-		glm::vec3(0, 0, 0), // and looks at the origin
-		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-	);
+	//glm::mat4 View = glm::lookAt(
+	//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+	//	glm::vec3(0, 0, 0), // and looks at the origin
+	//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+	//);
+	glm::mat4 View = cameras[activeCam].getViewMatrix();
 
 	GLuint mvpID = glGetUniformLocation(programID, "MVP");
 

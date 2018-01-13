@@ -20,14 +20,14 @@ Usually part of another object
 class RenderObject
 {
 	protected:
-		bool isHidden = false;                          //determines if object is rendered
-		glm::vec3 position = glm::vec3();                        //location of origin point
-		glm::quat orientation = glm::quat(0.0, 0.0, 0.0, 1.0);                  //orientation in quaternions
+		bool isHidden = false;                                 //determines if object is rendered
+		glm::vec3 position = glm::vec3();                      //location of origin point
+		glm::quat orientation = glm::quat(0.0, 0.0, 0.0, 1.0); //orientation in quaternions
 		glm::vec3 scale = glm::vec3(1.0);
 
 	private:
 		GLenum drawMode = GL_TRIANGLES;                        //draw mode of vertices
-		glm::vec3 objColor = glm::vec3(0.5);                         //base color of the object if no texture
+		glm::vec3 objColor = glm::vec3(0.5);                   //base color of the object if no texture
 
 		//vertex and index data for indexed VBO
 		std::vector<GLfloat> vertexVector;
@@ -44,13 +44,15 @@ class RenderObject
 
 	public:
 		RenderObject();
+		RenderObject(const RenderObject&);
 		~RenderObject();
 
 		bool getIsHidden();
 		GLenum getDrawMode();
 		glm::vec3 getObjColor();
 		glm::vec3 getPosition();
-		glm::vec3 getOrientation();
+		glm::quat getOrientaion();
+		glm::vec3 getOrientationEuler();
 		glm::vec3 getScale();
 		std::vector<GLfloat> getVertexVector();
 		std::vector<GLuint> getIndexVector();
@@ -62,7 +64,8 @@ class RenderObject
 		void setDrawMode(GLenum);
 		void setObjColor(glm::vec3);
 		void setPosition(glm::vec3);
-		void setOrientation(glm::vec3);
+		void setOrientation(glm::quat);
+		void setOrientationEuler(glm::vec3);
 		void setScale(glm::vec3);
 		void setVertexVector(std::vector<GLfloat>);
 		void setIndexVector(std::vector<GLuint>);
