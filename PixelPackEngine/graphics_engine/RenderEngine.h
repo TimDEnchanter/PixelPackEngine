@@ -17,41 +17,42 @@ RenderEngine
 
 handles main rendernig operation
 */
-
-class RenderEngine
-{
-	private:
-		std::vector<RenderObject> objects;
-		std::vector<Camera> cameras;
-
-		GLuint activeCam = 0;
-
-		GLuint programID;
-		GLuint vertShaderID;
-		GLuint fragShaderID;
-
-		void loadShaders();
-
-	public:
-		RenderEngine();
-		~RenderEngine();
-
-		std::vector<RenderObject> getObjects();
-		std::vector<Camera> getCameras();
-		GLuint getActiveCam();
-
-		void addObject(RenderObject);
-		void addCamera(Camera);
-		void setActiveCam(GLuint);
-
-		void init(int argc, char **argv, std::string windowName);
-		void startEngine();
-
-		void render();
-		static void renderCallback();
-};
-
 namespace pxpk {
+
+	class RenderEngine
+	{
+		private:
+			std::vector<pxpk::RenderObject> objects;
+			std::vector<pxpk::Camera> cameras;
+
+			GLuint activeCam = 0;
+
+			GLuint programID;
+			GLuint vertShaderID;
+			GLuint fragShaderID;
+
+			void loadShaders();
+
+		public:
+			RenderEngine();
+			~RenderEngine();
+
+			std::vector<pxpk::RenderObject> getObjects();
+			std::vector<pxpk::Camera> getCameras();
+			GLuint getActiveCam();
+
+			void addObject(pxpk::RenderObject);
+			void addCamera(pxpk::Camera);
+			void setActiveCam(GLuint);
+
+			void init(int argc, char **argv, std::string windowName);
+			void startEngine();
+
+			void render();
+			static void renderCallback();
+	};
+
+
 	namespace {
 		//constant instance pointer
 		RenderEngine *renderEngineInstance = NULL;

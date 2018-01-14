@@ -2,10 +2,10 @@
 
 
 
-void RenderObject::initBuffers()
+void pxpk::RenderObject::initBuffers()
 {
 	
-	Logger::getInstance().log("loading buffers", LogLevel::info);
+	pxpk::Logger::getInstance().log("loading buffers", pxpk::INFO_LOG);
 	
 	//setup vertex buffer
 	glGenBuffers(1, &vertexBufferID);
@@ -38,7 +38,7 @@ void RenderObject::initBuffers()
 	);
 }
 
-glm::quat RenderObject::quatToVector(glm::vec3 start, glm::vec3 dest)
+glm::quat pxpk::RenderObject::quatToVector(glm::vec3 start, glm::vec3 dest)
 {
 	start = glm::normalize(start);
 	dest = glm::normalize(dest);
@@ -68,11 +68,11 @@ glm::quat RenderObject::quatToVector(glm::vec3 start, glm::vec3 dest)
 	);
 }
 
-RenderObject::RenderObject()
+pxpk::RenderObject::RenderObject()
 {
 }
 
-RenderObject::RenderObject(const RenderObject & input)
+pxpk::RenderObject::RenderObject(const RenderObject & input)
 {
 	isHidden = input.isHidden;
 	position = input.position;
@@ -90,61 +90,61 @@ RenderObject::RenderObject(const RenderObject & input)
 }
 
 
-RenderObject::~RenderObject()
+pxpk::RenderObject::~RenderObject()
 {
 }
 
-bool RenderObject::getIsHidden()
+bool pxpk::RenderObject::getIsHidden()
 {
 	return isHidden;
 }
 
-GLenum RenderObject::getDrawMode()
+GLenum pxpk::RenderObject::getDrawMode()
 {
 	return drawMode;
 }
 
-glm::vec3 RenderObject::getObjColor()
+glm::vec3 pxpk::RenderObject::getObjColor()
 {
 	return objColor;
 }
 
-glm::vec3 RenderObject::getPosition()
+glm::vec3 pxpk::RenderObject::getPosition()
 {
 	return position;
 }
 
-glm::quat RenderObject::getOrientaion()
+glm::quat pxpk::RenderObject::getOrientaion()
 {
 	return orientation;
 }
 
-glm::vec3 RenderObject::getOrientationEuler()
+glm::vec3 pxpk::RenderObject::getOrientationEuler()
 {
 	return glm::eulerAngles(orientation);
 }
 
-glm::vec3 RenderObject::getScale()
+glm::vec3 pxpk::RenderObject::getScale()
 {
 	return scale;
 }
 
-std::vector<GLfloat> RenderObject::getVertexVector()
+std::vector<GLfloat> pxpk::RenderObject::getVertexVector()
 {
 	return vertexVector;
 }
 
-std::vector<GLuint> RenderObject::getIndexVector()
+std::vector<GLuint> pxpk::RenderObject::getIndexVector()
 {
 	return indexVector;
 }
 
-std::vector<GLfloat> RenderObject::getColorVector()
+std::vector<GLfloat> pxpk::RenderObject::getColorVector()
 {
 	return colorVector;
 }
 
-glm::mat4 RenderObject::getModelMatrix()
+glm::mat4 pxpk::RenderObject::getModelMatrix()
 {
 	// create translation matrix
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0), position);
@@ -160,74 +160,74 @@ glm::mat4 RenderObject::getModelMatrix()
 	return modelOut;
 }
 
-void RenderObject::setIsHidden(bool input)
+void pxpk::RenderObject::setIsHidden(bool input)
 {
 	isHidden = input;
 }
 
-void RenderObject::setDrawMode(GLenum input)
+void pxpk::RenderObject::setDrawMode(GLenum input)
 {
 	drawMode = input;
 }
 
-void RenderObject::setObjColor(glm::vec3 input)
+void pxpk::RenderObject::setObjColor(glm::vec3 input)
 {
 	objColor = input;
 }
 
-void RenderObject::setPosition(glm::vec3 input)
+void pxpk::RenderObject::setPosition(glm::vec3 input)
 {
 	position = input;
 }
 
-void RenderObject::setOrientation(glm::quat input)
+void pxpk::RenderObject::setOrientation(glm::quat input)
 {
 	orientation = input;
 }
 
-void RenderObject::setOrientationEuler(glm::vec3 eulerInput)
+void pxpk::RenderObject::setOrientationEuler(glm::vec3 eulerInput)
 {
 	orientation = glm::quat(eulerInput);
 }
 
-void RenderObject::setScale(glm::vec3 input)
+void pxpk::RenderObject::setScale(glm::vec3 input)
 {
 	scale = input;
 }
 
-void RenderObject::setVertexVector(std::vector<GLfloat> input)
+void pxpk::RenderObject::setVertexVector(std::vector<GLfloat> input)
 {
 	vertexVector = input;
 }
 
-void RenderObject::setIndexVector(std::vector<GLuint> input)
+void pxpk::RenderObject::setIndexVector(std::vector<GLuint> input)
 {
 	indexVector = input;
 }
 
-void RenderObject::setColorVector(std::vector<GLfloat> input)
+void pxpk::RenderObject::setColorVector(std::vector<GLfloat> input)
 {
 	colorVector = input;
 }
 
 
-void RenderObject::translate(glm::vec3 input)
+void pxpk::RenderObject::translate(glm::vec3 input)
 {
 	position += input;
 }
 
-void RenderObject::rotateEuler(glm::vec3 input)
+void pxpk::RenderObject::rotateEuler(glm::vec3 input)
 {
 	glm::quat inQuat = glm::quat(input);
 	orientation = inQuat * orientation;
 }
 
-void RenderObject::rotate(glm::quat input)
+void pxpk::RenderObject::rotate(glm::quat input)
 {
 	orientation = input * orientation;
 }
 
-void RenderObject::lookAt(glm::vec3 target)
+void pxpk::RenderObject::lookAt(glm::vec3 target)
 {
 	glm::vec3 targetVector = target - position;
 	glm::quat rotation = quatToVector(glm::vec3(0.0f,0.0f,1.0f), targetVector);
@@ -241,14 +241,13 @@ void RenderObject::lookAt(glm::vec3 target)
 
 	//ORDER IMPORTANT
 	orientation = upRotation * rotation;
-	//Logger::getInstance().log("targetOrientation: " + std::to_string(orientation.x) + "    " + std::to_string(orientation.y) + "    " + std::to_string(orientation.z) + "    " + std::to_string(orientation.w));
 }
 
-void RenderObject::loadOBJ(std::string filePath)
+void pxpk::RenderObject::loadOBJ(std::string filePath)
 {
 }
 
-void RenderObject::init()
+void pxpk::RenderObject::init()
 {
 	if (colorVector.empty()) {
 		int numVerts = vertexVector.size() / 3;
@@ -257,10 +256,8 @@ void RenderObject::init()
 	initBuffers();
 }
 
-void RenderObject::draw()
-{
-	//Logger::getInstance().log("drawing Object", LogLevel::info);
-	
+void pxpk::RenderObject::draw()
+{	
 	//determine sides from drawMode
 	GLint sides = 3; //default to triangles
 	//if (drawMode == GL_QUADS) sides = 4;

@@ -4,8 +4,19 @@
 #include "SharedVariables.h"
 #include "RenderObject.h"
 
-class Camera : public RenderObject
+/*
+Camera
+
+RenderObject from which the world is viewed
+by producing projection and view matrices based off of 
+its location and orientation
+*/
+
+namespace pxpk
 {
+
+	class Camera : public pxpk::RenderObject
+	{
 	private:
 		GLfloat fov;
 		GLfloat nearDist;
@@ -27,6 +38,7 @@ class Camera : public RenderObject
 
 		glm::mat4 getProjectionMatrix();
 		glm::mat4 getViewMatrix();
-};
+	};
+}
 
 #endif  //  !CAMERA_H

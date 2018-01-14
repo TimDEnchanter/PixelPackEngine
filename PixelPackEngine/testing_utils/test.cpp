@@ -9,13 +9,13 @@ main function used to test scenarios in the engine
 
 int main(int argc, char **argv)
 {
-	RenderEngine renderer;
-	Logger::getInstance().setCurrentLogLevel(LogLevel::info);
+	pxpk::RenderEngine renderer;
+	pxpk::Logger::getInstance().setCurrentLogLevel(pxpk::INFO_LOG);
 
 	renderer.init(argc, argv, "Test_Window");
 
 	
-	RenderObject testCube = RenderObject();
+	pxpk::RenderObject testCube = pxpk::RenderObject();
 
 
 	//cube vertexes
@@ -76,21 +76,21 @@ int main(int argc, char **argv)
 	testCube.setIndexVector(index);
 
 	//second cube
-	RenderObject testCube2 = RenderObject(testCube);
+	pxpk::RenderObject testCube2 = pxpk::RenderObject(testCube);
 	testCube2.setPosition(glm::vec3(2.0, 0.0, 0.0));
 	//testCube2.setScale(glm::vec3(1.5));
 	//testCube2.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
 	testCube2.setObjColor(glm::vec3(1.0, 0.0, 0.0));
 
 	//third cube
-	RenderObject testCube3 = RenderObject(testCube);
+	pxpk::RenderObject testCube3 = pxpk::RenderObject(testCube);
 	testCube3.setPosition(glm::vec3(0.0, 2.0, 0.0));
 	//testCube3.setScale(glm::vec3(1.5));
 	//testCube3.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
 	testCube3.setObjColor(glm::vec3(0.0, 1.0, 0.0));
 
 	//fourth cube
-	RenderObject testCube4 = RenderObject(testCube);
+	pxpk::RenderObject testCube4 = pxpk::RenderObject(testCube);
 	testCube4.setPosition(glm::vec3(0.0, 0.0, 2.0));
 	//testCube4.setScale(glm::vec3(1.5));
 	//testCube4.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	renderer.addObject(testCube4);
 
 	//setup camera
-	Camera cam = Camera();
+	pxpk::Camera cam = pxpk::Camera();
 	cam.setFov(45.0);
 	cam.setNearDist(0.1);
 	cam.setFarDist(100.0);

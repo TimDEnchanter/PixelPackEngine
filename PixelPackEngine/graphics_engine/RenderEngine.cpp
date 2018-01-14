@@ -2,7 +2,7 @@
 
 // callback function to redirect the render callback
 
-void RenderEngine::renderCallback()
+void pxpk::RenderEngine::renderCallback()
 {
 	pxpk::renderEngineInstance->render();
 }
@@ -62,21 +62,21 @@ void APIENTRY openglCallback(
 	}
 
 	//print logs
-	Logger::getInstance().log("------------------------------GL ERROR------------------------------", LogLevel::errors);
-	Logger::getInstance().log("message: " + messageStr, LogLevel::errors);
-	Logger::getInstance().log("type: " + typeStr, LogLevel::errors);
-	Logger::getInstance().log("id: " + idStr, LogLevel::errors);
-	Logger::getInstance().log("severity: " + severityStr, LogLevel::errors);
-	Logger::getInstance().log("------------------------------GL ERROR------------------------------", LogLevel::errors);
+	pxpk::Logger::getInstance().log("------------------------------GL ERROR------------------------------", pxpk::ERROR_LOG);
+	pxpk::Logger::getInstance().log("message: " + messageStr, pxpk::ERROR_LOG);
+	pxpk::Logger::getInstance().log("type: " + typeStr, pxpk::ERROR_LOG);
+	pxpk::Logger::getInstance().log("id: " + idStr, pxpk::ERROR_LOG);
+	pxpk::Logger::getInstance().log("severity: " + severityStr, pxpk::ERROR_LOG);
+	pxpk::Logger::getInstance().log("------------------------------GL ERROR------------------------------", pxpk::ERROR_LOG);
 }
 
 
-RenderEngine::RenderEngine()
+pxpk::RenderEngine::RenderEngine()
 {
 	pxpk::renderEngineInstance = this;
 }
 
-void RenderEngine::loadShaders()
+void pxpk::RenderEngine::loadShaders()
 {
 	//create shaders
 	vertShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -86,7 +86,7 @@ void RenderEngine::loadShaders()
 	char buf[1000];
 	GetModuleFileName(NULL, buf, 1000);
 	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
-	Logger::getInstance().log("working directory: " + dir, LogLevel::info);
+	pxpk::Logger::getInstance().log("shader directory: " + dir, pxpk::ERROR_LOG);
 
 	// read vertex shader from file
 	std::string vertCode;
@@ -94,13 +94,12 @@ void RenderEngine::loadShaders()
 	if (vertStream.is_open())
 	{
 		vertCode = std::string(std::istreambuf_iterator<char>(vertStream), std::istreambuf_iterator<char>());
-		//vertStream >> vertCode;
 		vertStream.close();
-		Logger::getInstance().log(vertCode, LogLevel::full);
+		//pxpk::Logger::getInstance().log(vertCode, pxpk::ERROR_LOG);
 	}
 	else
 	{
-		Logger::getInstance().log("unable to open the vertex shader file", LogLevel::errors);
+		pxpk::Logger::getInstance().log("unable to open the vertex shader file", pxpk::ERROR_LOG);
 	}
 
 	// read fragment shader from file
@@ -109,13 +108,12 @@ void RenderEngine::loadShaders()
 	if (fragStream.is_open())
 	{
 		fragCode = std::string(std::istreambuf_iterator<char>(fragStream), std::istreambuf_iterator<char>());
-		//fragStream >> fragCode;
 		fragStream.close();
-		Logger::getInstance().log(fragCode, LogLevel::full);
+		//pxpk::Logger::getInstance().log(fragCode, pxpk::ERROR_LOG);
 	}
 	else
 	{
-		Logger::getInstance().log("unable to open the fragment shader file", LogLevel::errors);
+		pxpk::Logger::getInstance().log("unable to open the fragment shader file", pxpk::ERROR_LOG);
 	}
 
 	// compile vertex shader
@@ -134,7 +132,7 @@ void RenderEngine::loadShaders()
 
 		std::string logStr = strInfoLog;
 
-		Logger::getInstance().log("Compile failure in vertex shader: " + logStr,LogLevel::errors);
+		pxpk::Logger::getInstance().log("Compile failure in vertex shader: " + logStr, pxpk::ERROR_LOG);
 		delete[] strInfoLog;
 	}
 
@@ -154,7 +152,7 @@ void RenderEngine::loadShaders()
 
 		std::string logStr = strInfoLog;
 
-		Logger::getInstance().log("Compile failure in fragment shader: " + logStr, LogLevel::errors);
+		pxpk::Logger::getInstance().log("Compile failure in fragment shader: " + logStr, pxpk::ERROR_LOG);
 		delete[] strInfoLog;
 	}
 
@@ -175,7 +173,7 @@ void RenderEngine::loadShaders()
 		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
 		glGetProgramInfoLog(programID, infoLogLength, NULL, strInfoLog);
 		std::string logStr = strInfoLog;
-		Logger::getInstance().log("Linker error: " + logStr, LogLevel::errors);
+		pxpk::Logger::getInstance().log("Linker error: " + logStr, pxpk::ERROR_LOG);
 		delete[] strInfoLog;
 	}
 
@@ -185,10 +183,10 @@ void RenderEngine::loadShaders()
 	glDeleteShader(vertShaderID);
 	glDeleteShader(fragShaderID);
 
-	Logger::getInstance().log("Shaders Loaded", LogLevel::info);
+	pxpk::Logger::getInstance().log("Shaders Loaded", pxpk::INFO_LOG);
 }
 
-void RenderEngine::init(int argc, char **argv, std::string windowName)
+void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 {
 	//glut setup
 	glutInit(&argc, argv);
@@ -197,12 +195,12 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 
 	//create window
 	glutCreateWindow(windowName.c_str());
-	Logger::getInstance().log("Window created", LogLevel::info);
+	pxpk::Logger::getInstance().log("Window created", pxpk::INFO_LOG);
 
 	//glew setup
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
-		Logger::getInstance().log("GLEW initialization failed: " + std::to_string(err), LogLevel::errors);
+		pxpk::Logger::getInstance().log("GLEW initialization failed: " + std::to_string(err), pxpk::ERROR_LOG);
 
 	//enable features
 	glEnable(GL_DEPTH_TEST);
@@ -216,58 +214,58 @@ void RenderEngine::init(int argc, char **argv, std::string windowName)
 	glDebugMessageCallback(openglCallback, nullptr);
 	GLuint unusedIDs = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIDs, true);
-	Logger::getInstance().log("callbacks registered", LogLevel::info);
+	pxpk::Logger::getInstance().log("callbacks registered", pxpk::INFO_LOG);
 
 	//load the shaders
 	loadShaders();
 }
 
-void RenderEngine::startEngine()
+void pxpk::RenderEngine::startEngine()
 {
 	//start main loop
 	glutMainLoop();
 }
 
-void RenderEngine::addObject(RenderObject input)
+void pxpk::RenderEngine::addObject(pxpk::RenderObject input)
 {
-	Logger::getInstance().log("adding object", LogLevel::info);
+	pxpk::Logger::getInstance().log("adding object", pxpk::INFO_LOG);
 	input.init();
 	objects.push_back(input);
 }
 
-void RenderEngine::addCamera(Camera input)
+void pxpk::RenderEngine::addCamera(Camera input)
 {
 	cameras.push_back(input);
 }
 
-void RenderEngine::setActiveCam(GLuint input)
+void pxpk::RenderEngine::setActiveCam(GLuint input)
 {
 	activeCam = input;
 }
 
 
-RenderEngine::~RenderEngine()
+pxpk::RenderEngine::~RenderEngine()
 {
 }
 
-std::vector<RenderObject> RenderEngine::getObjects()
+std::vector<pxpk::RenderObject> pxpk::RenderEngine::getObjects()
 {
 	return objects;
 }
 
-std::vector<Camera> RenderEngine::getCameras()
+std::vector<pxpk::Camera> pxpk::RenderEngine::getCameras()
 {
 	return cameras;
 }
 
-GLuint RenderEngine::getActiveCam()
+GLuint pxpk::RenderEngine::getActiveCam()
 {
 	return activeCam;
 }
 
-void RenderEngine::render()
+void pxpk::RenderEngine::render()
 {
-	Logger::getInstance().log("clearing buffer", LogLevel::info);
+	//pxpk::Logger::getInstance().log("clearing buffer", pxpk::INFO_LOG);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
 	//clear the current buffer
@@ -286,12 +284,12 @@ void RenderEngine::render()
 
 	GLuint mvpID = glGetUniformLocation(programID, "MVP");
 
-	Logger::getInstance().log("drawing objects", LogLevel::info);
+	//pxpk::Logger::getInstance().log("drawing objects", pxpk::INFO_LOG);
 
 	// tell GL to use the shader program
 	glUseProgram(programID);
 	
-	for (RenderObject i : objects)
+	for (pxpk::RenderObject i : objects)
 	{
 		// get model matrix from object
 		glm::mat4 Model = i.getModelMatrix();
@@ -304,7 +302,7 @@ void RenderEngine::render()
 	}
 	
 
-	Logger::getInstance().log("swapping buffer", LogLevel::info);
+	//pxpk::Logger::getInstance().log("swapping buffer", pxpk::INFO_LOG);
 
 	//swap buffers
 	glutSwapBuffers();
