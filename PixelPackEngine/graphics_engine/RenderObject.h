@@ -41,6 +41,7 @@ class RenderObject
 		GLuint colorBufferID;
 
 		void initBuffers();
+		glm::quat quatToVector(glm::vec3, glm::vec3);
 
 	public:
 		RenderObject();
@@ -70,6 +71,11 @@ class RenderObject
 		void setVertexVector(std::vector<GLfloat>);
 		void setIndexVector(std::vector<GLuint>);
 		void setColorVector(std::vector<GLfloat>);
+
+		void translate(glm::vec3);
+		void rotateEuler(glm::vec3);
+		void rotate(glm::quat);
+		virtual void lookAt(glm::vec3);
 
 		void loadOBJ(std::string);
 		virtual void init();

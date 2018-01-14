@@ -109,8 +109,8 @@ int main(int argc, char **argv)
 	cam.setNearDist(0.1);
 	cam.setFarDist(100.0);
 	cam.setPosition(glm::vec3(10.0, 10.0, 10.0));
-	cam.setLookPoint(glm::vec3(0.0, 0.0, 0.0));
-	//cam.setOrientationEuler(glm::vec3(0.0, 90.0, 0.0));
+	cam.lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0,1.0,0.0));
+	//cam.setOrientationEuler(glm::vec3(glm::radians(-35.0), glm::radians(45.0), glm::radians(-0.0)));
 	renderer.addCamera(cam);
 	
 	renderer.startEngine();
