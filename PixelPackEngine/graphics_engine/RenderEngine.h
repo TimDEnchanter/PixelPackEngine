@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <mutex>
 
 /*
 RenderEngine
@@ -18,6 +19,8 @@ RenderEngine
 handles main rendernig operation
 */
 namespace pxpk {
+	extern std::mutex objectsMutex;
+	extern std::mutex camerasMutex;
 
 	class RenderEngine
 	{
@@ -37,12 +40,18 @@ namespace pxpk {
 			RenderEngine();
 			~RenderEngine();
 
-			std::vector<pxpk::RenderObject> getObjects();
-			std::vector<pxpk::Camera> getCameras();
 			GLuint getActiveCam();
 
-			void addObject(pxpk::RenderObject);
-			void addCamera(pxpk::Camera);
+			int addObject(pxpk::RenderObject);
+			int addCamera(pxpk::Camera);
+			void removeObject(int);
+			void removeCamera(int);
+			void clearObjects();
+			void clearCameras();
+			
+			pxpk::RenderObject & getObject(int);
+			pxpk::Camera & getCamera(int);
+
 			void setActiveCam(GLuint);
 
 			void init(int argc, char **argv, std::string windowName);

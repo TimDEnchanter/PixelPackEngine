@@ -1,7 +1,10 @@
 #include "RenderEngine.h"
 
-// callback function to redirect the render callback
+std::mutex pxpk::objectsMutex;
+std::mutex pxpk::camerasMutex;
 
+
+// callback function to redirect the render callback
 void pxpk::RenderEngine::renderCallback()
 {
 	pxpk::renderEngineInstance->render();
@@ -226,16 +229,55 @@ void pxpk::RenderEngine::startEngine()
 	glutMainLoop();
 }
 
-void pxpk::RenderEngine::addObject(pxpk::RenderObject input)
+int pxpk::RenderEngine::addObject(pxpk::RenderObject input)
 {
 	pxpk::Logger::getInstance().log("adding object", pxpk::INFO_LOG);
 	input.init();
+
+	std::lock_guard<std::mutex> lock(objectsMutex);
 	objects.push_back(input);
+	return (int) objects.size() - 1; //return new object's index
 }
 
-void pxpk::RenderEngine::addCamera(Camera input)
+int pxpk::RenderEngine::addCamera(Camera input)
 {
+	std::lock_guard<std::mutex> lock(camerasMutex);
 	cameras.push_back(input);
+	return (int) cameras.size() - 1; //return new camera's index
+}
+
+void pxpk::RenderEngine::removeObject(int index)
+{
+	std::lock_guard<std::mutex> lock(objectsMutex);
+	objects.erase(objects.begin() + index);
+}
+
+void pxpk::RenderEngine::removeCamera(int index)
+{
+	std::lock_guard<std::mutex> lock(camerasMutex);
+	cameras.erase(cameras.begin() + index);
+}
+
+void pxpk::RenderEngine::clearObjects()
+{
+	std::lock_guard<std::mutex> lock(objectsMutex);
+	objects.clear();
+}
+
+void pxpk::RenderEngine::clearCameras()
+{
+	std::lock_guard<std::mutex> lock(camerasMutex);
+	cameras.clear();
+}
+
+pxpk::RenderObject & pxpk::RenderEngine::getObject(int index)
+{
+	return objects[index];
+}
+
+pxpk::Camera & pxpk::RenderEngine::getCamera(int index)
+{
+	return cameras[index];
 }
 
 void pxpk::RenderEngine::setActiveCam(GLuint input)
@@ -246,16 +288,6 @@ void pxpk::RenderEngine::setActiveCam(GLuint input)
 
 pxpk::RenderEngine::~RenderEngine()
 {
-}
-
-std::vector<pxpk::RenderObject> pxpk::RenderEngine::getObjects()
-{
-	return objects;
-}
-
-std::vector<pxpk::Camera> pxpk::RenderEngine::getCameras()
-{
-	return cameras;
 }
 
 GLuint pxpk::RenderEngine::getActiveCam()
@@ -271,16 +303,11 @@ void pxpk::RenderEngine::render()
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	std::unique_lock<std::mutex> camLock(camerasMutex);
+		glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 
-	//glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)pxpk::windowWidth / (float)pxpk::windowHeight, 0.1f, 100.0f);
-	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
-
-	//glm::mat4 View = glm::lookAt(
-	//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-	//	glm::vec3(0, 0, 0), // and looks at the origin
-	//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-	//);
-	glm::mat4 View = cameras[activeCam].getViewMatrix();
+		glm::mat4 View = cameras[activeCam].getViewMatrix();
+	camLock.unlock();
 
 	GLuint mvpID = glGetUniformLocation(programID, "MVP");
 
@@ -291,6 +318,8 @@ void pxpk::RenderEngine::render()
 	
 	for (pxpk::RenderObject i : objects)
 	{
+		std::lock_guard<std::mutex> objLock(objectsMutex);
+
 		// get model matrix from object
 		glm::mat4 Model = i.getModelMatrix();
 

@@ -105,11 +105,11 @@ int main(int argc, char **argv)
 
 	//setup camera
 	pxpk::Camera cam = pxpk::Camera();
-	cam.setFov(45.0);
-	cam.setNearDist(0.1);
-	cam.setFarDist(100.0);
-	cam.setPosition(glm::vec3(10.0, 10.0, 10.0));
-	cam.lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0,1.0,0.0));
+	cam.setFov(45.0f);
+	cam.setNearDist(0.1f);
+	cam.setFarDist(100.0f);
+	cam.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+	cam.lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0));
 	//cam.setOrientationEuler(glm::vec3(glm::radians(-35.0), glm::radians(45.0), glm::radians(-0.0)));
 	renderer.addCamera(cam);
 	
