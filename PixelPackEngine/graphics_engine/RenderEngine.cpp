@@ -1,9 +1,5 @@
 #include "RenderEngine.h"
 
-std::mutex pxpk::objectsMutex;
-std::mutex pxpk::camerasMutex;
-
-
 // callback function to redirect the render callback
 void pxpk::RenderEngine::renderCallback()
 {
@@ -233,40 +229,33 @@ int pxpk::RenderEngine::addObject(pxpk::RenderObject input)
 {
 	pxpk::Logger::getInstance().log("adding object", pxpk::INFO_LOG);
 	input.init();
-
-	std::lock_guard<std::mutex> lock(objectsMutex);
 	objects.push_back(input);
 	return (int) objects.size() - 1; //return new object's index
 }
 
 int pxpk::RenderEngine::addCamera(Camera input)
 {
-	std::lock_guard<std::mutex> lock(camerasMutex);
 	cameras.push_back(input);
 	return (int) cameras.size() - 1; //return new camera's index
 }
 
 void pxpk::RenderEngine::removeObject(int index)
 {
-	std::lock_guard<std::mutex> lock(objectsMutex);
 	objects.erase(objects.begin() + index);
 }
 
 void pxpk::RenderEngine::removeCamera(int index)
 {
-	std::lock_guard<std::mutex> lock(camerasMutex);
 	cameras.erase(cameras.begin() + index);
 }
 
 void pxpk::RenderEngine::clearObjects()
 {
-	std::lock_guard<std::mutex> lock(objectsMutex);
 	objects.clear();
 }
 
 void pxpk::RenderEngine::clearCameras()
 {
-	std::lock_guard<std::mutex> lock(camerasMutex);
 	cameras.clear();
 }
 
@@ -303,11 +292,9 @@ void pxpk::RenderEngine::render()
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	std::unique_lock<std::mutex> camLock(camerasMutex);
-		glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
+	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 
-		glm::mat4 View = cameras[activeCam].getViewMatrix();
-	camLock.unlock();
+	glm::mat4 View = cameras[activeCam].getViewMatrix();
 
 	GLuint mvpID = glGetUniformLocation(programID, "MVP");
 
@@ -318,8 +305,6 @@ void pxpk::RenderEngine::render()
 	
 	for (pxpk::RenderObject i : objects)
 	{
-		std::lock_guard<std::mutex> objLock(objectsMutex);
-
 		// get model matrix from object
 		glm::mat4 Model = i.getModelMatrix();
 

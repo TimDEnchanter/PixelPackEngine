@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <mutex>
 
 /*
 RenderEngine
@@ -19,8 +18,6 @@ RenderEngine
 handles main rendernig operation
 */
 namespace pxpk {
-	extern std::mutex objectsMutex;
-	extern std::mutex camerasMutex;
 
 	class RenderEngine
 	{
