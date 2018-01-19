@@ -75,6 +75,8 @@ int main(int argc, char **argv)
 	};
 	testCube.setIndexVector(index);
 
+	testCube.setObjColor(glm::vec3(0.5, 0.5, 0.5));
+
 	//second cube
 	pxpk::RenderObject testCube2 = pxpk::RenderObject(testCube);
 	testCube2.setPosition(glm::vec3(2.0, 0.0, 0.0));
@@ -91,10 +93,11 @@ int main(int argc, char **argv)
 
 	//fourth cube
 	pxpk::RenderObject testCube4 = pxpk::RenderObject(testCube);
-	testCube4.setPosition(glm::vec3(0.0, 0.0, 2.0));
+	int tc4Index = renderer.addObject(testCube4);
+	renderer.getObject(tc4Index).setPosition(glm::vec3(0.0, 0.0, 2.0));
 	//testCube4.setScale(glm::vec3(1.5));
 	//testCube4.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
-	testCube4.setObjColor(glm::vec3(0.0, 0.0, 1.0));
+	renderer.getObject(tc4Index).setObjColor(glm::vec3(0.0, 0.0, 1.0));
 
 
 	//init and add cubes

@@ -1,13 +1,7 @@
 #include "RenderObject.h"
 
-
-
-void pxpk::RenderObject::initBuffers()
+void pxpk::RenderObject::initVertexBuffer()
 {
-	
-	pxpk::Logger::getInstance().log("loading buffers", pxpk::INFO_LOG);
-	
-	//setup vertex buffer
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glBufferData(
@@ -16,24 +10,28 @@ void pxpk::RenderObject::initBuffers()
 		&vertexVector.front(),
 		GL_STATIC_DRAW
 	);
+}
 
-	//setup color buffer
-	glGenBuffers(1, &colorBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		colorVector.size() * sizeof(GLfloat),
-		&colorVector.front(),
-		GL_STATIC_DRAW
-	);
-	
-	//setup element buffer
+void pxpk::RenderObject::initElementuffer()
+{
 	glGenBuffers(1, &elementBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
 	glBufferData(
 		GL_ELEMENT_ARRAY_BUFFER,
 		indexVector.size() * sizeof(GLuint),
 		&indexVector.front(),
+		GL_STATIC_DRAW
+	);
+}
+
+void pxpk::RenderObject::initColorBuffer()
+{
+	glGenBuffers(1, &colorBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		colorVector.size() * sizeof(GLfloat),
+		&colorVector.front(),
 		GL_STATIC_DRAW
 	);
 }
@@ -85,7 +83,6 @@ pxpk::RenderObject::RenderObject(const RenderObject & input)
 	colorVector = input.colorVector;
 	vertexBufferID = input.vertexBufferID;
 	elementBufferID = input.elementBufferID;
-	normalBufferID = input.normalBufferID;
 	colorBufferID = input.colorBufferID;
 }
 
@@ -173,6 +170,11 @@ void pxpk::RenderObject::setDrawMode(GLenum input)
 void pxpk::RenderObject::setObjColor(glm::vec3 input)
 {
 	objColor = input;
+
+	int numVerts = vertexVector.size() / 3;
+	colorVector.clear();
+	for (int i = 0; i < numVerts; i++) colorVector.insert(colorVector.end(), { objColor.x, objColor.y, objColor.z });
+	initColorBuffer();
 }
 
 void pxpk::RenderObject::setPosition(glm::vec3 input)
@@ -198,18 +200,42 @@ void pxpk::RenderObject::setScale(glm::vec3 input)
 void pxpk::RenderObject::setVertexVector(std::vector<GLfloat> input)
 {
 	vertexVector = input;
+
+	initVertexBuffer();
 }
 
 void pxpk::RenderObject::setIndexVector(std::vector<GLuint> input)
 {
 	indexVector = input;
+
+	initElementuffer();
 }
 
 void pxpk::RenderObject::setColorVector(std::vector<GLfloat> input)
 {
 	colorVector = input;
+
+	initColorBuffer();
 }
 
+
+void pxpk::RenderObject::freeVertexVector()
+{
+	glDeleteBuffers(1, &vertexBufferID);
+	vertexVector.clear();
+}
+
+void pxpk::RenderObject::freeIndexVector()
+{
+	glDeleteBuffers(1, &elementBufferID);
+	indexVector.clear();
+}
+
+void pxpk::RenderObject::freeColorVector()
+{
+	glDeleteBuffers(1, &colorBufferID);
+	colorVector.clear();
+}
 
 void pxpk::RenderObject::translate(glm::vec3 input)
 {
@@ -241,19 +267,6 @@ void pxpk::RenderObject::lookAt(glm::vec3 target)
 
 	//ORDER IMPORTANT
 	orientation = upRotation * rotation;
-}
-
-void pxpk::RenderObject::loadOBJ(std::string filePath)
-{
-}
-
-void pxpk::RenderObject::init()
-{
-	if (colorVector.empty()) {
-		int numVerts = vertexVector.size() / 3;
-		for (int i = 0; i < numVerts; i++) colorVector.insert(colorVector.end(), { objColor.x, objColor.y, objColor.z });
-	}
-	initBuffers();
 }
 
 void pxpk::RenderObject::draw()

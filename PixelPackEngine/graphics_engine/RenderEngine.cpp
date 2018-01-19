@@ -228,7 +228,6 @@ void pxpk::RenderEngine::startEngine()
 int pxpk::RenderEngine::addObject(pxpk::RenderObject input)
 {
 	pxpk::Logger::getInstance().log("adding object", pxpk::INFO_LOG);
-	input.init();
 	objects.push_back(input);
 	return (int) objects.size() - 1; //return new object's index
 }

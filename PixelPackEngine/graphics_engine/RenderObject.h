@@ -15,6 +15,11 @@ RenderObject
 
 the 3D object rendered in OpeGL.
 Usually part of another object
+
+NOTE:
+ALL BUFFERS ARE NECESSARY
+ALWAYS CREATE VERTEX BUFFER FIRST
+ALWAYS FREE BUFFERS BEFORE DELETE
 */
 
 namespace pxpk {
@@ -39,10 +44,11 @@ namespace pxpk {
 			//buffer IDs
 			GLuint vertexBufferID;
 			GLuint elementBufferID;
-			GLuint normalBufferID;
 			GLuint colorBufferID;
 
-			void initBuffers();
+			void initVertexBuffer();
+			void initElementuffer();
+			void initColorBuffer();
 			glm::quat quatToVector(glm::vec3, glm::vec3);
 
 		public:
@@ -74,13 +80,15 @@ namespace pxpk {
 			void setIndexVector(std::vector<GLuint>);
 			void setColorVector(std::vector<GLfloat>);
 
+			void freeVertexVector();
+			void freeIndexVector();
+			void freeColorVector();
+
 			void translate(glm::vec3);
 			void rotateEuler(glm::vec3);
 			void rotate(glm::quat);
 			virtual void lookAt(glm::vec3);
 
-			void loadOBJ(std::string);
-			virtual void init();
 			virtual void draw();
 	};
 }
