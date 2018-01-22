@@ -27,7 +27,6 @@ namespace pxpk {
 	class RenderObject
 	{
 		protected:
-			bool isHidden = false;                                 //determines if object is rendered
 			glm::vec3 position = glm::vec3();                      //location of origin point
 			glm::quat orientation = glm::quat(0.0, 0.0, 0.0, 1.0); //orientation in quaternions
 			glm::vec3 scale = glm::vec3(1.0);
@@ -56,7 +55,6 @@ namespace pxpk {
 			RenderObject(const RenderObject&);
 			~RenderObject();
 
-			bool getIsHidden();
 			GLenum getDrawMode();
 			glm::vec3 getObjColor();
 			glm::vec3 getPosition();
@@ -69,7 +67,6 @@ namespace pxpk {
 
 			glm::mat4 getModelMatrix();
 
-			void setIsHidden(bool);
 			void setDrawMode(GLenum);
 			void setObjColor(glm::vec3);
 			void setPosition(glm::vec3);

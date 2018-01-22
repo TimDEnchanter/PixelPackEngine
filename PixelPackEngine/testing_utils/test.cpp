@@ -15,7 +15,6 @@ int main(int argc, char **argv)
 	renderer.init(argc, argv, "Test_Window");
 
 	
-	pxpk::RenderObject testCube = pxpk::RenderObject();
 
 
 	//cube vertexes
@@ -41,7 +40,6 @@ int main(int argc, char **argv)
 		1.0, 1.0, 0.0,
 		0.0, 1.0, 0.0
 	};
-	testCube.setVertexVector(testVerts);
 
 	////colors
 	//std::vector<GLfloat> testColors
@@ -55,7 +53,6 @@ int main(int argc, char **argv)
 	//	1.0, 0.0, 0.0,
 	//	1.0, 0.0, 0.0
 	//};
-	//testCube.setColorVector(testColors);
 
 	//index
 	std::vector<GLuint> index 
@@ -73,48 +70,43 @@ int main(int argc, char **argv)
 		4,5,6,
 		4,7,6
 	};
-	testCube.setIndexVector(index);
 
-	testCube.setObjColor(glm::vec3(0.5, 0.5, 0.5));
+	//first cube
+	int tc1Index = renderer.addObject();
+	renderer.setObjVertexBuffer(tc1Index, testVerts);
+	renderer.setObjElementBuffer(tc1Index, index);
+	renderer.setObjPosition(tc1Index, glm::vec3(0.0, 0.0, 0.0));
+	renderer.setObjColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
 
 	//second cube
-	pxpk::RenderObject testCube2 = pxpk::RenderObject(testCube);
-	testCube2.setPosition(glm::vec3(2.0, 0.0, 0.0));
-	//testCube2.setScale(glm::vec3(1.5));
-	//testCube2.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
-	testCube2.setObjColor(glm::vec3(1.0, 0.0, 0.0));
+	int tc2Index = renderer.addObject();
+	renderer.setObjVertexBuffer(tc2Index, testVerts);
+	renderer.setObjElementBuffer(tc2Index, index);
+	renderer.setObjPosition(tc2Index, glm::vec3(2.0, 0.0, 0.0));
+	renderer.setObjColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
 
 	//third cube
-	pxpk::RenderObject testCube3 = pxpk::RenderObject(testCube);
-	testCube3.setPosition(glm::vec3(0.0, 2.0, 0.0));
-	//testCube3.setScale(glm::vec3(1.5));
-	//testCube3.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
-	testCube3.setObjColor(glm::vec3(0.0, 1.0, 0.0));
+	int tc3Index = renderer.addObject();
+	renderer.setObjVertexBuffer(tc3Index, testVerts);
+	renderer.setObjElementBuffer(tc3Index, index);
+	renderer.setObjPosition(tc3Index, glm::vec3(0.0, 2.0, 0.0));
+	renderer.setObjColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
 
 	//fourth cube
-	pxpk::RenderObject testCube4 = pxpk::RenderObject(testCube);
-	int tc4Index = renderer.addObject(testCube4);
-	renderer.getObject(tc4Index).setPosition(glm::vec3(0.0, 0.0, 2.0));
-	//testCube4.setScale(glm::vec3(1.5));
-	//testCube4.setOrientationEuler(glm::vec3(0.0, 45.0, 0.0));
-	renderer.getObject(tc4Index).setObjColor(glm::vec3(0.0, 0.0, 1.0));
-
-
-	//init and add cubes
-	renderer.addObject(testCube);
-	renderer.addObject(testCube2);
-	renderer.addObject(testCube3);
-	renderer.addObject(testCube4);
+	int tc4Index = renderer.addObject();
+	renderer.setObjVertexBuffer(tc4Index, testVerts);
+	renderer.setObjElementBuffer(tc4Index, index);
+	renderer.setObjPosition(tc4Index, glm::vec3(0.0, 0.0, 2.0));
+	renderer.setObjColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
 
 	//setup camera
-	pxpk::Camera cam = pxpk::Camera();
-	cam.setFov(45.0f);
-	cam.setNearDist(0.1f);
-	cam.setFarDist(100.0f);
-	cam.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
-	cam.lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0));
-	//cam.setOrientationEuler(glm::vec3(glm::radians(-35.0), glm::radians(45.0), glm::radians(-0.0)));
-	renderer.addCamera(cam);
+	int camIndex = renderer.addCamera();
+	renderer.setCamFov(camIndex, 45.0f);
+	renderer.setCamNearDist(camIndex, 0.1f);
+	renderer.setCamFarDist(camIndex, 100.0f);
+	renderer.setCamPosition(camIndex, glm::vec3(10.0f, 10.0f, 10.0f));
+	renderer.lookAtCam(camIndex, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0));
+	//renderer.setCamOrientationEuler(camIndex, glm::vec3(glm::radians(-35.0), glm::radians(45.0), glm::radians(-0.0)));
 	
 	renderer.startEngine();
 

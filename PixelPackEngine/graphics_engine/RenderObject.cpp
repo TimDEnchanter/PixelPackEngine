@@ -72,7 +72,6 @@ pxpk::RenderObject::RenderObject()
 
 pxpk::RenderObject::RenderObject(const RenderObject & input)
 {
-	isHidden = input.isHidden;
 	position = input.position;
 	orientation = input.orientation;
 	scale = input.scale;
@@ -89,11 +88,6 @@ pxpk::RenderObject::RenderObject(const RenderObject & input)
 
 pxpk::RenderObject::~RenderObject()
 {
-}
-
-bool pxpk::RenderObject::getIsHidden()
-{
-	return isHidden;
 }
 
 GLenum pxpk::RenderObject::getDrawMode()
@@ -155,11 +149,6 @@ glm::mat4 pxpk::RenderObject::getModelMatrix()
 	//multiply together **ORDER IS IMPORTANT**
 	glm::mat4 modelOut =  translationMatrix * rotationMatrix * scaleMatrix;
 	return modelOut;
-}
-
-void pxpk::RenderObject::setIsHidden(bool input)
-{
-	isHidden = input;
 }
 
 void pxpk::RenderObject::setDrawMode(GLenum input)
