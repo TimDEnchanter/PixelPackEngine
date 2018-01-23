@@ -14,9 +14,6 @@ int main(int argc, char **argv)
 
 	renderer.init(argc, argv, "Test_Window");
 
-	
-
-
 	//cube vertexes
 	/*
 	       7--------6
