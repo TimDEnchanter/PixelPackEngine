@@ -225,39 +225,24 @@ void pxpk::RenderEngine::startEngine()
 	glutMainLoop();
 }
 
-int pxpk::RenderEngine::addObject()
+void pxpk::RenderEngine::addObject(unsigned short id)
 {
-	objects.push_back(pxpk::RenderObject());
-	return (int)objects.size() - 1; //return new object's index
+	objects.insert({id, pxpk::RenderObject()});
 }
 
-int pxpk::RenderEngine::addCamera()
+void pxpk::RenderEngine::addCamera(unsigned short id)
 {
-	cameras.push_back(pxpk::Camera());
-	return (int)cameras.size() - 1; //return new camera's index
+	cameras.insert({ id, pxpk::Camera() });
 }
 
-int pxpk::RenderEngine::addObject(pxpk::RenderObject input)
+void pxpk::RenderEngine::removeObject(unsigned short id)
 {
-	pxpk::Logger::getInstance().log("adding object", pxpk::INFO_LOG);
-	objects.push_back(input);
-	return (int) objects.size() - 1; //return new object's index
+	objects.erase(id);
 }
 
-int pxpk::RenderEngine::addCamera(Camera input)
+void pxpk::RenderEngine::removeCamera(unsigned short id)
 {
-	cameras.push_back(input);
-	return (int) cameras.size() - 1; //return new camera's index
-}
-
-void pxpk::RenderEngine::removeObject(int index)
-{
-	objects.erase(objects.begin() + index);
-}
-
-void pxpk::RenderEngine::removeCamera(int index)
-{
-	cameras.erase(cameras.begin() + index);
+	cameras.erase(id);
 }
 
 void pxpk::RenderEngine::clearObjects()
@@ -270,129 +255,129 @@ void pxpk::RenderEngine::clearCameras()
 	cameras.clear();
 }
 
-void pxpk::RenderEngine::setObjVertexBuffer(int index, std::vector<GLfloat> input)
+void pxpk::RenderEngine::setObjVertexBuffer(unsigned short id, std::vector<GLfloat> input)
 {
-	objects[index].setVertexVector(input);
+	objects[id].setVertexVector(input);
 }
 
-void pxpk::RenderEngine::setObjElementBuffer(int index, std::vector<GLuint> input)
+void pxpk::RenderEngine::setObjElementBuffer(unsigned short id, std::vector<GLuint> input)
 {
-	objects[index].setIndexVector(input);
+	objects[id].setIndexVector(input);
 }
 
-void pxpk::RenderEngine::setObjColorBuffer(int index, std::vector<GLfloat> input)
+void pxpk::RenderEngine::setObjColorBuffer(unsigned short id, std::vector<GLfloat> input)
 {
-	objects[index].setColorVector(input);
+	objects[id].setColorVector(input);
 }
 
-void pxpk::RenderEngine::setObjColor(int index, glm::vec3 input)
+void pxpk::RenderEngine::setObjColor(unsigned short id, glm::vec3 input)
 {
-	objects[index].setObjColor(input);
+	objects[id].setObjColor(input);
 }
 
-void pxpk::RenderEngine::setObjPosition(int index, glm::vec3 input)
+void pxpk::RenderEngine::setObjPosition(unsigned short id, glm::vec3 input)
 {
-	objects[index].setPosition(input);
+	objects[id].setPosition(input);
 }
 
-void pxpk::RenderEngine::setObjOrientation(int index, glm::quat input)
+void pxpk::RenderEngine::setObjOrientation(unsigned short id, glm::quat input)
 {
-	objects[index].setOrientation(input);
+	objects[id].setOrientation(input);
 }
 
-void pxpk::RenderEngine::setObjOrientationEuler(int index, glm::vec3 input)
+void pxpk::RenderEngine::setObjOrientationEuler(unsigned short id, glm::vec3 input)
 {
-	objects[index].setOrientationEuler(input);
+	objects[id].setOrientationEuler(input);
 }
 
-void pxpk::RenderEngine::setObjScale(int index, glm::vec3 input)
+void pxpk::RenderEngine::setObjScale(unsigned short id, glm::vec3 input)
 {
-	objects[index].setScale(input);
+	objects[id].setScale(input);
 }
 
-void pxpk::RenderEngine::translateObj(int index, glm::vec3 input)
+void pxpk::RenderEngine::translateObj(unsigned short id, glm::vec3 input)
 {
-	objects[index].translate(input);
+	objects[id].translate(input);
 }
 
-void pxpk::RenderEngine::rotateEulerObj(int index, glm::vec3 input)
+void pxpk::RenderEngine::rotateEulerObj(unsigned short id, glm::vec3 input)
 {
-	objects[index].rotateEuler(input);
+	objects[id].rotateEuler(input);
 }
 
-void pxpk::RenderEngine::rotateObj(int index, glm::quat input)
+void pxpk::RenderEngine::rotateObj(unsigned short id, glm::quat input)
 {
-	objects[index].rotate(input);
+	objects[id].rotate(input);
 }
 
-void pxpk::RenderEngine::lookAtObj(int index, glm::vec3 input)
+void pxpk::RenderEngine::lookAtObj(unsigned short id, glm::vec3 input)
 {
-	objects[index].lookAt(input);
+	objects[id].lookAt(input);
 }
 
-void pxpk::RenderEngine::drawObj(int index)
+void pxpk::RenderEngine::drawObj(unsigned short id)
 {
-	objects[index].draw();
+	objects[id].draw();
 }
 
-void pxpk::RenderEngine::setCamPosition(int index, glm::vec3 input)
+void pxpk::RenderEngine::setCamPosition(unsigned short id, glm::vec3 input)
 {
-	cameras[index].setPosition(input);
+	cameras[id].setPosition(input);
 }
 
-void pxpk::RenderEngine::setCamOrientation(int index, glm::quat input)
+void pxpk::RenderEngine::setCamOrientation(unsigned short id, glm::quat input)
 {
-	cameras[index].setOrientation(input);
+	cameras[id].setOrientation(input);
 }
 
-void pxpk::RenderEngine::setCamOrientationEuler(int index, glm::vec3 input)
+void pxpk::RenderEngine::setCamOrientationEuler(unsigned short id, glm::vec3 input)
 {
-	cameras[index].setOrientationEuler(input);
+	cameras[id].setOrientationEuler(input);
 }
 
-void pxpk::RenderEngine::translateCam(int index, glm::vec3 input)
+void pxpk::RenderEngine::translateCam(unsigned short id, glm::vec3 input)
 {
-	cameras[index].translate(input);
+	cameras[id].translate(input);
 }
 
-void pxpk::RenderEngine::rotateEulerCam(int index, glm::vec3 input)
+void pxpk::RenderEngine::rotateEulerCam(unsigned short id, glm::vec3 input)
 {
-	cameras[index].rotateEuler(input);
+	cameras[id].rotateEuler(input);
 }
 
-void pxpk::RenderEngine::rotateCam(int index, glm::quat input)
+void pxpk::RenderEngine::rotateCam(unsigned short id, glm::quat input)
 {
-	cameras[index].rotate(input);
+	cameras[id].rotate(input);
 }
 
-void pxpk::RenderEngine::lookAtCam(int index, glm::vec3 point, glm::vec3 up)
+void pxpk::RenderEngine::lookAtCam(unsigned short id, glm::vec3 point, glm::vec3 up)
 {
-	cameras[index].lookAt(point, up);
+	cameras[id].lookAt(point, up);
 }
 
-void pxpk::RenderEngine::setCamFov(int index, GLfloat input)
+void pxpk::RenderEngine::setCamFov(unsigned short id, GLfloat input)
 {
-	cameras[index].setFov(input);
+	cameras[id].setFov(input);
 }
 
-void pxpk::RenderEngine::setCamNearDist(int index, GLfloat input)
+void pxpk::RenderEngine::setCamNearDist(unsigned short id, GLfloat input)
 {
-	cameras[index].setNearDist(input);
+	cameras[id].setNearDist(input);
 }
 
-void pxpk::RenderEngine::setCamFarDist(int index, GLfloat input)
+void pxpk::RenderEngine::setCamFarDist(unsigned short id, GLfloat input)
 {
-	cameras[index].setFarDist(input);
+	cameras[id].setFarDist(input);
 }
 
-pxpk::RenderObject & pxpk::RenderEngine::getObject(int index)
+pxpk::RenderObject & pxpk::RenderEngine::getObject(unsigned short id)
 {
-	return objects[index];
+	return objects[id];
 }
 
-pxpk::Camera & pxpk::RenderEngine::getCamera(int index)
+pxpk::Camera & pxpk::RenderEngine::getCamera(unsigned short id)
 {
-	return cameras[index];
+	return cameras[id];
 }
 
 void pxpk::RenderEngine::setActiveCam(GLuint input)
@@ -405,7 +390,7 @@ pxpk::RenderEngine::~RenderEngine()
 {
 }
 
-GLuint pxpk::RenderEngine::getActiveCam()
+unsigned short pxpk::RenderEngine::getActiveCam()
 {
 	return activeCam;
 }
@@ -429,16 +414,16 @@ void pxpk::RenderEngine::render()
 	// tell GL to use the shader program
 	glUseProgram(programID);
 	
-	for (pxpk::RenderObject i : objects)
+	for (std::pair<int, pxpk::RenderObject> i : objects)
 	{
 		// get model matrix from object
-		glm::mat4 Model = i.getModelMatrix();
+		glm::mat4 Model = i.second.getModelMatrix();
 
 		// calculate MVP and send to shader
 		glm::mat4 mvp = Projection * View * Model;
 		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
 
-		i.draw();
+		i.second.draw();
 	}
 	
 

@@ -69,35 +69,40 @@ int main(int argc, char **argv)
 	};
 
 	//first cube
-	int tc1Index = renderer.addObject();
+	unsigned short tc1Index = 1;
+	renderer.addObject(tc1Index);
 	renderer.setObjVertexBuffer(tc1Index, testVerts);
 	renderer.setObjElementBuffer(tc1Index, index);
 	renderer.setObjPosition(tc1Index, glm::vec3(0.0, 0.0, 0.0));
 	renderer.setObjColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
 
 	//second cube
-	int tc2Index = renderer.addObject();
+	unsigned short tc2Index = 2;
+	renderer.addObject(tc1Index);
 	renderer.setObjVertexBuffer(tc2Index, testVerts);
 	renderer.setObjElementBuffer(tc2Index, index);
 	renderer.setObjPosition(tc2Index, glm::vec3(2.0, 0.0, 0.0));
 	renderer.setObjColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
 
 	//third cube
-	int tc3Index = renderer.addObject();
+	unsigned short tc3Index = 3;
+	renderer.addObject(tc3Index);
 	renderer.setObjVertexBuffer(tc3Index, testVerts);
 	renderer.setObjElementBuffer(tc3Index, index);
 	renderer.setObjPosition(tc3Index, glm::vec3(0.0, 2.0, 0.0));
 	renderer.setObjColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
 
 	//fourth cube
-	int tc4Index = renderer.addObject();
+	unsigned short tc4Index = 4;
+	renderer.addObject(tc4Index);
 	renderer.setObjVertexBuffer(tc4Index, testVerts);
 	renderer.setObjElementBuffer(tc4Index, index);
 	renderer.setObjPosition(tc4Index, glm::vec3(0.0, 0.0, 2.0));
 	renderer.setObjColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
 
 	//setup camera
-	int camIndex = renderer.addCamera();
+	int camIndex = 0;
+	renderer.addCamera(camIndex);
 	renderer.setCamFov(camIndex, 45.0f);
 	renderer.setCamNearDist(camIndex, 0.1f);
 	renderer.setCamFarDist(camIndex, 100.0f);

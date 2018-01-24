@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <unordered_map>
 
 /*
 RenderEngine
@@ -22,10 +23,10 @@ namespace pxpk {
 	class RenderEngine
 	{
 		private:
-			std::vector<pxpk::RenderObject> objects;
-			std::vector<pxpk::Camera> cameras;
+			std::unordered_map<unsigned short, pxpk::RenderObject> objects;
+			std::unordered_map<unsigned short, pxpk::Camera> cameras;
 
-			GLuint activeCam = 0;
+			unsigned short activeCam = 0;
 
 			GLuint programID;
 			GLuint vertShaderID;
@@ -37,45 +38,43 @@ namespace pxpk {
 			RenderEngine();
 			~RenderEngine();
 
-			GLuint getActiveCam();
+			unsigned short getActiveCam();
 
-			int addObject();
-			int addCamera();
-			int addObject(pxpk::RenderObject);
-			int addCamera(pxpk::Camera);
-			void removeObject(int);
-			void removeCamera(int);
+			void addObject(unsigned short);
+			void addCamera(unsigned short);
+			void removeObject(unsigned short);
+			void removeCamera(unsigned short);
 			void clearObjects();
 			void clearCameras();
 
-			void setObjVertexBuffer(int, std::vector<GLfloat>);
-			void setObjElementBuffer(int, std::vector<GLuint>);
-			void setObjColorBuffer(int, std::vector<GLfloat>);
-			void setObjColor(int, glm::vec3);
-			void setObjPosition(int, glm::vec3);
-			void setObjOrientation(int, glm::quat);
-			void setObjOrientationEuler(int, glm::vec3);
-			void setObjScale(int, glm::vec3);
-			void translateObj(int, glm::vec3);
-			void rotateEulerObj(int, glm::vec3);
-			void rotateObj(int, glm::quat);
-			void lookAtObj(int, glm::vec3);
-			void drawObj(int);
+			void setObjVertexBuffer(unsigned short, std::vector<GLfloat>);
+			void setObjElementBuffer(unsigned short, std::vector<GLuint>);
+			void setObjColorBuffer(unsigned short, std::vector<GLfloat>);
+			void setObjColor(unsigned short, glm::vec3);
+			void setObjPosition(unsigned short, glm::vec3);
+			void setObjOrientation(unsigned short, glm::quat);
+			void setObjOrientationEuler(unsigned short, glm::vec3);
+			void setObjScale(unsigned short, glm::vec3);
+			void translateObj(unsigned short, glm::vec3);
+			void rotateEulerObj(unsigned short, glm::vec3);
+			void rotateObj(unsigned short, glm::quat);
+			void lookAtObj(unsigned short, glm::vec3);
+			void drawObj(unsigned short);
 
-			void setCamPosition(int, glm::vec3);
-			void setCamOrientation(int, glm::quat);
-			void setCamOrientationEuler(int, glm::vec3);
-			void translateCam(int, glm::vec3);
-			void rotateEulerCam(int, glm::vec3);
-			void rotateCam(int, glm::quat);
-			void lookAtCam(int, glm::vec3, glm::vec3);
-			void setCamFov(int, GLfloat);
-			void setCamNearDist(int, GLfloat);
-			void setCamFarDist(int, GLfloat);
+			void setCamPosition(unsigned short, glm::vec3);
+			void setCamOrientation(unsigned short, glm::quat);
+			void setCamOrientationEuler(unsigned short, glm::vec3);
+			void translateCam(unsigned short, glm::vec3);
+			void rotateEulerCam(unsigned short, glm::vec3);
+			void rotateCam(unsigned short, glm::quat);
+			void lookAtCam(unsigned short, glm::vec3, glm::vec3);
+			void setCamFov(unsigned short, GLfloat);
+			void setCamNearDist(unsigned short, GLfloat);
+			void setCamFarDist(unsigned short, GLfloat);
 
 			
-			pxpk::RenderObject & getObject(int);
-			pxpk::Camera & getCamera(int);
+			pxpk::RenderObject & getObject(unsigned short);
+			pxpk::Camera & getCamera(unsigned short);
 
 			void setActiveCam(GLuint);
 
