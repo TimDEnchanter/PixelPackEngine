@@ -16,8 +16,10 @@ namespace pxpk
 
 			std::mutex queue_mutex;
 
-		public:
+		protected:
 			void write(pxpk::QueueEvent);
+
+		public:
 			pxpk::QueueEvent read();
 			void swap();
 	};

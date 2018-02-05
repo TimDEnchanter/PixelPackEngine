@@ -2,6 +2,9 @@
 #define RENDER_QUEUE_H
 
 #include "DoubleBufferQueue.h"
+#include "../dependencies/freeGLUT/include/GL/freeglut.h"
+#include "../dependencies/glm/vec3.hpp"
+#include "../dependencies/glm/gtc/quaternion.hpp"
 
 namespace pxpk
 {
@@ -40,7 +43,46 @@ namespace pxpk
 
 	class RenderQueue : public pxpk::DoubleBuffferQueue
 	{
+		private:
+			RenderQueue();
+
 		public:
+			static RenderQueue& getInstance()
+			{
+				static RenderQueue instance;
+				return instance;
+			};
+
+			~RenderQueue();
+
+			void objAdd(unsigned short);
+			void objRemove(unsigned short);
+			void objClear();
+			void objLoadVert(unsigned short, std::vector<GLfloat>);
+			void objLoadIndx(unsigned short, std::vector<GLfloat>);
+			void objLoadColor(unsigned short, std::vector<GLfloat>);
+			void objSetColor(unsigned short, glm::vec3);
+			void objSetPos(unsigned short, glm::vec3);
+			void objSetOrient(unsigned short, glm::quat);
+			void objSetOrientEuler(unsigned short, glm::vec3);
+			void objSetScale(unsigned short, GLfloat);
+			void objTrans(unsigned short, glm::vec3);
+			void objRot(unsigned short, glm::quat);
+			void objRotEuler(unsigned short, glm::vec3);
+			void objLookat(unsigned short, glm::vec3);
+			void objDraw(unsigned short);
+
+			void camAdd(unsigned short);
+			void camRemove(unsigned short);
+			void camClear();
+			void camSetPos(unsigned short, glm::vec3);
+			void camSetOrient(unsigned short, glm::quat);
+			void camSetOrientEuler(unsigned short, glm::vec3);
+			void camSetScale(unsigned short, GLfloat);
+			void camTrans(unsigned short, glm::vec3);
+			void camRot(unsigned short, glm::quat);
+			void camRotEuler(unsigned short, glm::vec3);
+			void camLookat(unsigned short, glm::vec3);
 	};
 }
 
