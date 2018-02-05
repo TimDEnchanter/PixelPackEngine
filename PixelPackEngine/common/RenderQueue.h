@@ -38,7 +38,8 @@ namespace pxpk
 		RENDER_CAM_LOOKAT,
 		RENDER_CAM_SET_FOV,
 		RENDER_CAM_SET_NEAR,
-		RENDER_CAM_SET_FAR
+		RENDER_CAM_SET_FAR,
+		RENDER_CAM_SET_ACTIVE
 	};
 
 	class RenderQueue : public pxpk::DoubleBuffferQueue
@@ -78,11 +79,14 @@ namespace pxpk
 			void camSetPos(unsigned short, glm::vec3);
 			void camSetOrient(unsigned short, glm::quat);
 			void camSetOrientEuler(unsigned short, glm::vec3);
-			void camSetScale(unsigned short, GLfloat);
 			void camTrans(unsigned short, glm::vec3);
 			void camRot(unsigned short, glm::quat);
 			void camRotEuler(unsigned short, glm::vec3);
 			void camLookat(unsigned short, glm::vec3);
+			void camSetFov(unsigned short, GLfloat);
+			void camSetNear(unsigned short, GLfloat);
+			void camSetFar(unsigned short, GLfloat);
+			void camSetActive(unsigned short);
 	};
 }
 
