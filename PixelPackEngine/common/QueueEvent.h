@@ -10,18 +10,19 @@ namespace pxpk
 	class QueueEvent
 	{
 		private:
-			std::vector<std::uint8_t> payload;
 			std::uint8_t type;
 			std::uint16_t ID;
+			std::vector<std::uint8_t> payload;
 
 		public:
 			QueueEvent(std::uint8_t inType, std::uint16_t inID) : type(inType), ID(inID) {};
 
-			template <typename T> void writePayload(T& data)
+			template <typename T> void writePayload(std::vector<T> &data)
 			{
-				std::uint8_t * bytes = reinterpret_cast<std::uint8_t>(data);
-				payload.insert(payload.begin(), bytes, bytes + sizeof(T));
+				std::vector<std::uint8_t> bytes = *reinterpret_cast<std::vector<std::uint8_t>*>(&data);
+				payload.insert(payload.begin(), bytes.begin(), bytes.end());
 			};
+
 			template <typename T> void readPayload(T& dest)
 			{
 				std::copy(payload.begin(), payload.end(), &dest);

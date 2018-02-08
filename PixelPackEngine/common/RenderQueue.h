@@ -8,6 +8,8 @@
 
 namespace pxpk
 {
+	extern std::condition_variable renderCV;
+
 	enum RenderType : std::uint8_t
 	{
 		RENDER_OBJ_ADD,
@@ -25,7 +27,6 @@ namespace pxpk
 		RENDER_OBJ_ROTATE,
 		RENDER_OBJ_ROTATE_EULER,
 		RENDER_OBJ_LOOKAT,
-		RENDER_OBJ_DRAW,
 		RENDER_CAM_ADD,
 		RENDER_CAM_REMOVE,
 		RENDER_CAM_CLEAR,
@@ -71,7 +72,6 @@ namespace pxpk
 			void objRot(unsigned short, glm::quat);
 			void objRotEuler(unsigned short, glm::vec3);
 			void objLookat(unsigned short, glm::vec3);
-			void objDraw(unsigned short);
 
 			void camAdd(unsigned short);
 			void camRemove(unsigned short);

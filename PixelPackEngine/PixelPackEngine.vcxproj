@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\DoubleBufferQueue.h" />
+    <ClInclude Include="common\DrawQueue.h" />
     <ClInclude Include="common\Inputs.h" />
     <ClInclude Include="common\QueueEvent.h" />
     <ClInclude Include="common\RenderQueue.h" />

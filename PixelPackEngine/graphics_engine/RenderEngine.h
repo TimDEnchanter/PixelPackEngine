@@ -12,6 +12,7 @@
 #include <vector>
 #include <fstream>
 #include <unordered_map>
+#include <condition_variable>
 
 /*
 RenderEngine
@@ -19,7 +20,6 @@ RenderEngine
 handles main rendernig operation
 */
 namespace pxpk {
-
 	class RenderEngine
 	{
 		private:
