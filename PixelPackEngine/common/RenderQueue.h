@@ -2,9 +2,6 @@
 #define RENDER_QUEUE_H
 
 #include "DoubleBufferQueue.h"
-#include "../dependencies/freeGLUT/include/GL/freeglut.h"
-#include "../dependencies/glm/vec3.hpp"
-#include "../dependencies/glm/gtc/quaternion.hpp"
 
 namespace pxpk
 {
@@ -55,13 +52,16 @@ namespace pxpk
 				return instance;
 			};
 
+			RenderQueue(RenderQueue const&) = delete;
+			void operator=(RenderQueue const&) = delete;
+
 			~RenderQueue();
 
 			void objAdd(unsigned short);
 			void objRemove(unsigned short);
 			void objClear();
 			void objLoadVert(unsigned short, std::vector<GLfloat>);
-			void objLoadIndx(unsigned short, std::vector<GLfloat>);
+			void objLoadIndx(unsigned short, std::vector<GLuint>);
 			void objLoadColor(unsigned short, std::vector<GLfloat>);
 			void objSetColor(unsigned short, glm::vec3);
 			void objSetPos(unsigned short, glm::vec3);

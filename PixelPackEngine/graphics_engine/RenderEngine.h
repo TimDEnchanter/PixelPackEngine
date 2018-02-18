@@ -7,12 +7,15 @@
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
 #include "../dependencies/glm/gtc/matrix_transform.hpp"
+#include "../common/RenderQueue.h"
+#include "../common/DrawQueue.h"
 
 #include <string>
 #include <vector>
 #include <fstream>
 #include <unordered_map>
 #include <condition_variable>
+#include <iterator>
 
 /*
 RenderEngine
@@ -33,6 +36,7 @@ namespace pxpk {
 			GLuint fragShaderID;
 
 			void loadShaders();
+			void processEvent(pxpk::QueueEvent);
 
 		public:
 			RenderEngine();

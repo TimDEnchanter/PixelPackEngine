@@ -185,6 +185,31 @@ void pxpk::RenderEngine::loadShaders()
 	pxpk::Logger::getInstance().log("Shaders Loaded", pxpk::INFO_LOG);
 }
 
+void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
+{
+	std::uint8_t cmd = event.getType();
+	std::uint16_t ID = event.getID();
+
+	switch (cmd)
+	{
+	case pxpk::RENDER_OBJ_ADD:
+		addObject(ID);
+		break;
+	case pxpk::RENDER_OBJ_REMOVE:
+		removeObject(ID);
+		break;
+	case pxpk::RENDER_OBJ_CLEAR:
+		clearObjects();
+		break;
+	case pxpk::RENDER_OBJ_LOAD_VERT:
+		std::vector<GLfloat> payload;
+		event.readPayload(payload);
+		pxpk::Logger::getInstance().log("Recieved LOAD_VERT with payload: " + std::string(payload.begin(), payload.end()), pxpk::INFO_LOG);
+		setObjVertexBuffer(ID, payload);
+		break;
+	}
+}
+
 void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 {
 	//glut setup
@@ -402,6 +427,13 @@ void pxpk::RenderEngine::render()
 	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//process all commands in the render queue
+	while (!pxpk::RenderQueue::getInstance().isReadEmpty())
+	{
+		QueueEvent event = pxpk::RenderQueue::getInstance().read();
+		processEvent(event);
+	}
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 

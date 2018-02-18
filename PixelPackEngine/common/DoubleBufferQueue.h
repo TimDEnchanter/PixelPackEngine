@@ -20,6 +20,7 @@ namespace pxpk
 			void write(pxpk::QueueEvent);
 
 		public:
+			bool isReadEmpty();
 			pxpk::QueueEvent read();
 			void swap();
 	};

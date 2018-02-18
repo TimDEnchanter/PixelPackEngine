@@ -1,9 +1,16 @@
 #ifndef QUEUE_EVENT_H
 #define QUEUE_EVENT_H
 
+#pragma warning( disable : 4996 )
+
 #include <cstdint>
 #include <vector>
 #include <algorithm>
+#include <memory>
+
+#include "../dependencies/freeGLUT/include/GL/freeglut.h"
+#include "../dependencies/glm/vec3.hpp"
+#include "../dependencies/glm/gtc/quaternion.hpp"
 
 namespace pxpk
 {
@@ -12,21 +19,30 @@ namespace pxpk
 		private:
 			std::uint8_t type;
 			std::uint16_t ID;
-			std::vector<std::uint8_t> payload;
+			size_t payloadSize;
+			std::shared_ptr<uint8_t> payload;
 
 		public:
 			QueueEvent(std::uint8_t inType, std::uint16_t inID) : type(inType), ID(inID) {};
+			QueueEvent(const pxpk::QueueEvent&);
 
-			template <typename T> void writePayload(std::vector<T> &data)
-			{
-				std::vector<std::uint8_t> bytes = *reinterpret_cast<std::vector<std::uint8_t>*>(&data);
-				payload.insert(payload.begin(), bytes.begin(), bytes.end());
-			};
+			~QueueEvent();
 
-			template <typename T> void readPayload(T& dest)
-			{
-				std::copy(payload.begin(), payload.end(), &dest);
-			};
+			std::uint8_t getType();
+			std::uint16_t getID();
+			size_t getPayloadSize();
+
+			void writePayload(std::vector<GLfloat>&);
+			void writePayload(std::vector<GLuint>&);
+			void writePayload(glm::vec3&);
+			void writePayload(glm::quat&);
+			void writePayload(GLfloat&);
+
+			void readPayload(std::vector<GLfloat>&);
+			void readPayload(std::vector<GLuint>&);
+			void readPayload(glm::vec3&);
+			void readPayload(glm::quat&);
+			void readPayload(GLfloat&);
 	};
 }
 

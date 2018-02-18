@@ -1,8 +1,11 @@
 #include "RenderQueue.h"
 
+pxpk::RenderQueue::RenderQueue()
+{
+}
+
 pxpk::RenderQueue::~RenderQueue()
 {
-
 }
 
 void pxpk::RenderQueue::objAdd(unsigned short id)
@@ -30,7 +33,7 @@ void pxpk::RenderQueue::objLoadVert(unsigned short id, std::vector<GLfloat> inpu
 	this->write(writeEvent);
 }
 
-void pxpk::RenderQueue::objLoadIndx(unsigned short id, std::vector<GLfloat> input)
+void pxpk::RenderQueue::objLoadIndx(unsigned short id, std::vector<GLuint> input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_LOAD_INDEX, id);
 	writeEvent.writePayload(input);

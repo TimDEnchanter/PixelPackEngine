@@ -6,6 +6,11 @@ void pxpk::DoubleBuffferQueue::write(pxpk::QueueEvent input)
 	writeQueue.push(input);
 }
 
+bool pxpk::DoubleBuffferQueue::isReadEmpty()
+{
+	return readQueue.empty();
+}
+
 pxpk::QueueEvent pxpk::DoubleBuffferQueue::read()
 {
 	pxpk::QueueEvent out = readQueue.front();

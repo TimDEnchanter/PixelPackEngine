@@ -41,6 +41,7 @@
   <ItemGroup>
     <ClCompile Include="common\DoubleBufferQueue.cpp" />
     <ClCompile Include="common\Inputs.cpp" />
+    <ClCompile Include="common\QueueEvent.cpp" />
     <ClCompile Include="common\RenderQueue.cpp" />
     <ClCompile Include="graphics_engine\Camera.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
@@ -168,11 +169,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\lib;$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib;$(ProjectDir)dependencies\GLEW\$(Platform)\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)dependencies\GLEW\include;$(ProjectDir)dependencies\freeGlut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\lib;$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)dependencies\freeGLUT\x64\lib;$(ProjectDir)dependencies\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)dependencies\GLEW\include;$(ProjectDir)dependencies\freeGlut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -181,6 +182,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -190,13 +194,13 @@
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\freeGLUT\include;$(ProjectDir)dependencies\GLEW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)graphics_engine\shaders\*.*" "$(TargetDir)shaders\" /Y
-xcopy "$(ProjectDir)dependencies\freeGLUT\$(PlatformTarget)\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y
-xcopy "$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y</Command>
+xcopy "$(ProjectDir)dependencies\freeGLUT\x64\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y
+xcopy "$(ProjectDir)dependencies\GLEW\x64\bin\$(Configuration)\*.dll" "$(TargetDir)" /Y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>copies dependencies &amp; shaders to execution environment</Message>
@@ -213,6 +217,7 @@ xcopy "$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\bin\$(Configuration)\*.d
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -227,7 +232,7 @@ xcopy "$(ProjectDir)dependencies\GLEW\$(PlatformTarget)\bin\$(Configuration)\*.d
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\GLEW\x64\lib\$(Configuration);$(ProjectDir)dependencies\freeGLUT\x64\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32d.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

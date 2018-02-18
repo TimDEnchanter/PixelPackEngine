@@ -7,7 +7,7 @@ namespace pxpk
 {
 	extern std::condition_variable drawCV;
 
-	class DrawQueue : public DoubleBufferQueue
+	class DrawQueue : public DoubleBuffferQueue
 	{
 		private:
 			DrawQueue();
