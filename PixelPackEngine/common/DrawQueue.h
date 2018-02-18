@@ -10,7 +10,7 @@ namespace pxpk
 	class DrawQueue : public DoubleBuffferQueue
 	{
 		private:
-			DrawQueue();
+			DrawQueue() {};
 
 		public:
 			static DrawQueue& getInstance()
@@ -18,6 +18,9 @@ namespace pxpk
 				static DrawQueue instance;
 				return instance;
 			};
+
+			DrawQueue(DrawQueue const&) = delete;
+			void operator=(DrawQueue const&) = delete;
 
 			~DrawQueue() {};
 

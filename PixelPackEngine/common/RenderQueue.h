@@ -67,7 +67,7 @@ namespace pxpk
 			void objSetPos(unsigned short, glm::vec3);
 			void objSetOrient(unsigned short, glm::quat);
 			void objSetOrientEuler(unsigned short, glm::vec3);
-			void objSetScale(unsigned short, GLfloat);
+			void objSetScale(unsigned short, glm::vec3);
 			void objTrans(unsigned short, glm::vec3);
 			void objRot(unsigned short, glm::quat);
 			void objRotEuler(unsigned short, glm::vec3);

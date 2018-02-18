@@ -50,72 +50,63 @@ void pxpk::RenderQueue::objLoadColor(unsigned short id, std::vector<GLfloat> inp
 void pxpk::RenderQueue::objSetColor(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_SET_COLOR, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objSetPos(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_SET_POS, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objSetOrient(unsigned short id, glm::quat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_SET_ORIENT, id);
-	std::vector<float> payload = { input.w, input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objSetOrientEuler(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_SET_ORIENT_EULER, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
-void pxpk::RenderQueue::objSetScale(unsigned short id, GLfloat input)
+void pxpk::RenderQueue::objSetScale(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_SET_SCALE, id);
-	std::vector<GLfloat> payload = { input };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objTrans(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_TRANSLATE, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objRot(unsigned short id, glm::quat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_ROTATE, id);
-	std::vector<float> payload = { input.w, input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objRotEuler(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_ROTATE_EULER, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::objLookat(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_LOOKAT, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
@@ -140,80 +131,70 @@ void pxpk::RenderQueue::camClear()
 void pxpk::RenderQueue::camSetPos(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_SET_POS, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camSetOrient(unsigned short id, glm::quat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_SET_ORIENT, id);
-	std::vector<float> payload = { input.w, input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camSetOrientEuler(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_SET_ORIENT_EULER, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camTrans(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_TRANSLATE, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camRot(unsigned short id, glm::quat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_ROTATE, id);
-	std::vector<float> payload = { input.w, input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camRotEuler(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_ROTATE_EULER, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camLookat(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_LOOKAT, id);
-	std::vector<float> payload = { input.x, input.y, input.z };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camSetFov(unsigned short id, GLfloat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_SET_FOV, id);
-	std::vector<GLfloat> payload = { input };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camSetNear(unsigned short id, GLfloat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_SET_NEAR, id);
-	std::vector<GLfloat> payload = { input };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 
 void pxpk::RenderQueue::camSetFar(unsigned short id, GLfloat input)
 {
 	pxpk::QueueEvent writeEvent(RenderType::RENDER_CAM_SET_FAR, id);
-	std::vector<GLfloat> payload = { input };
-	writeEvent.writePayload(payload);
+	writeEvent.writePayload(input);
 	this->write(writeEvent);
 }
 

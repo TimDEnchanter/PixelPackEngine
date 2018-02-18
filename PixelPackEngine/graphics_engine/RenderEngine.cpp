@@ -193,20 +193,195 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	switch (cmd)
 	{
 	case pxpk::RENDER_OBJ_ADD:
+	{
 		addObject(ID);
 		break;
+	}
 	case pxpk::RENDER_OBJ_REMOVE:
+	{
 		removeObject(ID);
 		break;
+	}
 	case pxpk::RENDER_OBJ_CLEAR:
+	{
 		clearObjects();
 		break;
+	}
 	case pxpk::RENDER_OBJ_LOAD_VERT:
+	{
 		std::vector<GLfloat> payload;
 		event.readPayload(payload);
-		pxpk::Logger::getInstance().log("Recieved LOAD_VERT with payload: " + std::string(payload.begin(), payload.end()), pxpk::INFO_LOG);
+		//pxpk::Logger::getInstance().log("Recieved LOAD_VERT with payload: " + std::string(payload.begin(), payload.end()), pxpk::INFO_LOG);
 		setObjVertexBuffer(ID, payload);
 		break;
+	}
+	case pxpk::RENDER_OBJ_LOAD_INDEX:
+	{
+		std::vector<GLuint> payload;
+		event.readPayload(payload);
+		setObjElementBuffer(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_LOAD_COLOR:
+	{
+		std::vector<GLfloat> payload;
+		event.readPayload(payload);
+		setObjColorBuffer(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_COLOR:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		setObjColor(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_POS:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		setObjPosition(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_ORIENT:
+	{
+		glm::quat payload;
+		event.readPayload(payload);
+		setObjOrientation(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_ORIENT_EULER:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		setObjOrientationEuler(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_SCALE:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		setObjScale(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_TRANSLATE:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		translateObj(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_ROTATE:
+	{
+		glm::quat payload;
+		event.readPayload(payload);
+		rotateObj(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_ROTATE_EULER:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		rotateEulerObj(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_LOOKAT:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		lookAtObj(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_ADD:
+	{
+		addCamera(ID);
+		break;
+	}
+	case pxpk::RENDER_CAM_REMOVE:
+	{
+		removeCamera(ID);
+		break;
+	}
+	case pxpk::RENDER_CAM_CLEAR:
+	{
+		clearCameras();
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_POS:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		setCamPosition(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_ORIENT:
+	{
+		glm::quat payload;
+		event.readPayload(payload);
+		setCamOrientation(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_ORIENT_EULER:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		setCamOrientationEuler(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_TRANSLATE:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		translateCam(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_ROTATE:
+	{
+		glm::quat payload;
+		event.readPayload(payload);
+		rotateCam(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_ROTATE_EULER:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		rotateEulerCam(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_LOOKAT:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		lookAtCam(ID, payload, glm::vec3(0.0f, 1.0f, 0.0f)); //figure out what I want to do with this
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_FOV:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		setCamFov(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_NEAR:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		setCamNearDist(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_FAR:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		setCamFarDist(ID, payload);
+		break;
+	}
+	case pxpk::RENDER_CAM_SET_ACTIVE:
+	{
+		setActiveCam(ID);
+		break;
+	}
 	}
 }
 
@@ -446,6 +621,23 @@ void pxpk::RenderEngine::render()
 	// tell GL to use the shader program
 	glUseProgram(programID);
 	
+	while (!pxpk::DrawQueue::getInstance().isReadEmpty())
+	{
+		//fetch ID from queue
+		unsigned short ID = pxpk::DrawQueue::getInstance().read().getID();
+
+		//get Model matrix from object
+		glm::mat4 Model = objects[ID].getModelMatrix();
+
+		//calulate MVP and send to shader
+		glm::mat4 mvp = Projection * View *Model;
+		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+
+		//draw the object
+		objects[ID].draw();
+	}
+
+	/* OLD CODE
 	for (std::pair<int, pxpk::RenderObject> i : objects)
 	{
 		// get model matrix from object
@@ -457,6 +649,7 @@ void pxpk::RenderEngine::render()
 
 		i.second.draw();
 	}
+	*/
 	
 
 	//pxpk::Logger::getInstance().log("swapping buffer", pxpk::INFO_LOG);
