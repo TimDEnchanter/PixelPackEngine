@@ -43,6 +43,7 @@
     <ClCompile Include="common\Inputs.cpp" />
     <ClCompile Include="common\QueueEvent.cpp" />
     <ClCompile Include="common\RenderQueue.cpp" />
+    <ClCompile Include="common\DrawQueue.cpp" />
     <ClCompile Include="graphics_engine\Camera.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\RenderObject.cpp" />

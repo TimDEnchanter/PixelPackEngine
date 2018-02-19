@@ -5,7 +5,9 @@
 
 namespace pxpk
 {
-	extern std::condition_variable renderCV;
+	extern std::mutex RenderQ_Mutex;
+	extern std::condition_variable RenderQ_Write_CV;
+	extern std::condition_variable RenderQ_Read_CV;
 
 	enum RenderType : std::uint8_t
 	{

@@ -603,12 +603,23 @@ void pxpk::RenderEngine::render()
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//wait until writer declares render queue is ready
+	std::unique_lock<std::mutex> renderLock(RenderQ_Mutex);
+	RenderQ_Write_CV.wait(renderLock);
+
+	//swap render buffer
+	pxpk::RenderQueue::getInstance().swap();
+
 	//process all commands in the render queue
 	while (!pxpk::RenderQueue::getInstance().isReadEmpty())
 	{
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
 	}
+
+	//manually unlock render queue and signal writer
+	renderLock.unlock();
+	RenderQ_Read_CV.notify_all();
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 
@@ -621,6 +632,13 @@ void pxpk::RenderEngine::render()
 	// tell GL to use the shader program
 	glUseProgram(programID);
 	
+	//wait unitl writer declares draw queue is ready
+	std::unique_lock<std::mutex> drawLock(DrawQ_Mutex);
+	DrawQ_Write_CV.wait(drawLock);
+
+	//swap draw buffer
+	pxpk::DrawQueue::getInstance().swap();
+
 	while (!pxpk::DrawQueue::getInstance().isReadEmpty())
 	{
 		//fetch ID from queue
@@ -636,6 +654,10 @@ void pxpk::RenderEngine::render()
 		//draw the object
 		objects[ID].draw();
 	}
+
+	//manually unlock draw queue and signal writer
+	drawLock.unlock();
+	DrawQ_Read_CV.notify_all();
 
 	/* OLD CODE
 	for (std::pair<int, pxpk::RenderObject> i : objects)

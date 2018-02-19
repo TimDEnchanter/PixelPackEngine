@@ -5,14 +5,17 @@
 
 namespace pxpk
 {
-	extern std::condition_variable drawCV;
+	extern std::mutex DrawQ_Mutex;
+	extern std::condition_variable DrawQ_Write_CV;
+	extern std::condition_variable DrawQ_Read_CV;
 
 	class DrawQueue : public DoubleBuffferQueue
 	{
 		private:
-			DrawQueue() {};
+			DrawQueue();
 
 		public:
+
 			static DrawQueue& getInstance()
 			{
 				static DrawQueue instance;
@@ -22,13 +25,9 @@ namespace pxpk
 			DrawQueue(DrawQueue const&) = delete;
 			void operator=(DrawQueue const&) = delete;
 
-			~DrawQueue() {};
+			~DrawQueue();
 
-			void draw(unsigned short id)
-			{
-				pxpk::QueueEvent writeEvent(0, id);
-				this->write(writeEvent);
-			};
+			void draw(unsigned short);
 	};
 }
 

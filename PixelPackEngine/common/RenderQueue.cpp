@@ -1,5 +1,12 @@
 #include "RenderQueue.h"
 
+namespace pxpk
+{
+	std::mutex RenderQ_Mutex;
+	std::condition_variable RenderQ_Write_CV;
+	std::condition_variable RenderQ_Read_CV;
+}
+
 pxpk::RenderQueue::RenderQueue()
 {
 }
