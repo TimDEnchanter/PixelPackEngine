@@ -16,8 +16,10 @@ void pxpk::Logger::setFileOut(std::string filename)
 
 void pxpk::Logger::log(std::string msg)
 {
-	std::cout << msg << std::endl;
-	if (fileOut.is_open()) fileOut << msg << std::endl;
+	std::stringstream temp;
+	temp << msg << std::endl;
+	std::cout << temp.str();
+	if (fileOut.is_open()) fileOut << temp.str();
 }
 
 void pxpk::Logger::log(std::string msg, pxpk::LogLevel msgLevel)

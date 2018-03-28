@@ -1,9 +1,20 @@
 #include "RenderEngine.h"
 
+// implement extern vars
+namespace pxpk
+{
+	bool engineStarted = false;
+}
+
 // callback function to redirect the render callback
 void pxpk::RenderEngine::renderCallback()
 {
 	pxpk::renderEngineInstance->render();
+}
+
+void pxpk::RenderEngine::idleCallback()
+{
+	glutPostRedisplay();
 }
 
 
@@ -410,6 +421,7 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 
 	//register callback functions
 	glutDisplayFunc(renderCallback);
+	glutIdleFunc(idleCallback);
 	glDebugMessageCallback(openglCallback, nullptr);
 	GLuint unusedIDs = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIDs, true);
@@ -419,8 +431,11 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 	loadShaders();
 }
 
-void pxpk::RenderEngine::startEngine()
+void pxpk::RenderEngine::startEngine(int argc, char **argv, std::string windowName)
 {
+	pxpk::Logger::getInstance().log("Starting Render Engine", pxpk::INFO_LOG);
+	init(argc, argv, windowName);
+
 	//start main loop
 	glutMainLoop();
 }
@@ -597,6 +612,13 @@ unsigned short pxpk::RenderEngine::getActiveCam()
 
 void pxpk::RenderEngine::render()
 {
+	if (!pxpk::engineStarted)
+	{
+		pxpk::Logger::getInstance().log("Engine Started", pxpk::INFO_LOG);
+		//signal writer that engine has started
+		pxpk::engineStarted = true;
+		pxpk::RenderQ_Read_CV.notify_all();
+	}
 	//pxpk::Logger::getInstance().log("clearing buffer", pxpk::INFO_LOG);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
@@ -604,11 +626,17 @@ void pxpk::RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//wait until writer declares render queue is ready
-	std::unique_lock<std::mutex> renderLock(RenderQ_Mutex);
-	RenderQ_Write_CV.wait(renderLock);
+	pxpk::Logger::getInstance().log("Engine is waiting for Render Queue", pxpk::INFO_LOG);
+	std::unique_lock<std::mutex> renderLock(pxpk::RenderQ_Mutex);
+	pxpk::RenderQ_Write_CV.wait(renderLock, [] {return pxpk::isRenderWriterReady;});
 
 	//swap render buffer
 	pxpk::RenderQueue::getInstance().swap();
+
+	//manually unlock render queue and signal writer
+	pxpk::Logger::getInstance().log("Engine is done with Render Queue", pxpk::INFO_LOG);
+	renderLock.unlock();
+	pxpk::RenderQ_Read_CV.notify_all();
 
 	//process all commands in the render queue
 	while (!pxpk::RenderQueue::getInstance().isReadEmpty())
@@ -616,10 +644,6 @@ void pxpk::RenderEngine::render()
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
 	}
-
-	//manually unlock render queue and signal writer
-	renderLock.unlock();
-	RenderQ_Read_CV.notify_all();
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 
@@ -633,11 +657,17 @@ void pxpk::RenderEngine::render()
 	glUseProgram(programID);
 	
 	//wait unitl writer declares draw queue is ready
-	std::unique_lock<std::mutex> drawLock(DrawQ_Mutex);
-	DrawQ_Write_CV.wait(drawLock);
+	pxpk::Logger::getInstance().log("Engine is waiting for Draw Queue", pxpk::INFO_LOG);
+	std::unique_lock<std::mutex> drawLock(pxpk::DrawQ_Mutex);
+	pxpk::DrawQ_Write_CV.wait(drawLock, [] {return pxpk::isDrawWriterReady; });
 
 	//swap draw buffer
 	pxpk::DrawQueue::getInstance().swap();
+
+	//manually unlock draw queue and signal writer
+	pxpk::Logger::getInstance().log("Engine is done with Draw Queue", pxpk::INFO_LOG);
+	drawLock.unlock();
+	pxpk::DrawQ_Read_CV.notify_all();
 
 	while (!pxpk::DrawQueue::getInstance().isReadEmpty())
 	{
@@ -654,10 +684,6 @@ void pxpk::RenderEngine::render()
 		//draw the object
 		objects[ID].draw();
 	}
-
-	//manually unlock draw queue and signal writer
-	drawLock.unlock();
-	DrawQ_Read_CV.notify_all();
 
 	/* OLD CODE
 	for (std::pair<int, pxpk::RenderObject> i : objects)

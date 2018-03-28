@@ -23,6 +23,9 @@ RenderEngine
 handles main rendernig operation
 */
 namespace pxpk {
+
+	extern bool engineStarted;
+
 	class RenderEngine
 	{
 		private:
@@ -83,10 +86,11 @@ namespace pxpk {
 			void setActiveCam(GLuint);
 
 			void init(int argc, char **argv, std::string windowName);
-			void startEngine();
+			void startEngine(int argc, char **argv, std::string windowName);
 
 			void render();
 			static void renderCallback();
+			static void idleCallback();
 	};
 
 

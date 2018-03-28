@@ -20,11 +20,16 @@ namespace pxpk
 			std::uint8_t type;
 			std::uint16_t ID;
 			size_t payloadSize;
-			std::shared_ptr<uint8_t> payload;
+			std::uint8_t *payload;
 
 		public:
 			QueueEvent(std::uint8_t inType, std::uint16_t inID) : type(inType), ID(inID) {};
+
 			QueueEvent(const pxpk::QueueEvent&);
+			pxpk::QueueEvent& operator=(const pxpk::QueueEvent&);
+
+			QueueEvent(pxpk::QueueEvent&&);
+			pxpk::QueueEvent& operator=(pxpk::QueueEvent&&);
 
 			~QueueEvent();
 

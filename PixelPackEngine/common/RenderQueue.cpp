@@ -5,6 +5,8 @@ namespace pxpk
 	std::mutex RenderQ_Mutex;
 	std::condition_variable RenderQ_Write_CV;
 	std::condition_variable RenderQ_Read_CV;
+	bool isRenderWriterReady = false;
+	//bool isRenderReaderReady = false;
 }
 
 pxpk::RenderQueue::RenderQueue()

@@ -5,6 +5,8 @@ namespace pxpk
 	std::mutex DrawQ_Mutex;
 	std::condition_variable DrawQ_Write_CV;
 	std::condition_variable DrawQ_Read_CV;
+	bool isDrawWriterReady = false;
+	//bool isDrawReaderReady = false;
 }
 
 pxpk::DrawQueue::DrawQueue()
