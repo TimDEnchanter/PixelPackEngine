@@ -647,7 +647,9 @@ void pxpk::RenderEngine::render()
 {
 	if (!pxpk::engineStarted)
 	{
+		// load shaders on first run
 		loadShaders();
+
 		LOG("Engine Started", pxpk::INFO_LOG);
 		//signal writer that engine has started
 		pxpk::engineStarted = true;
@@ -731,21 +733,6 @@ void pxpk::RenderEngine::render()
 		//error check
 		checkGLError(__FILENAME__, __LINE__);
 	}
-
-	/* OLD CODE
-	for (std::pair<int, pxpk::RenderObject> i : objects)
-	{
-		// get model matrix from object
-		glm::mat4 Model = i.second.getModelMatrix();
-
-		// calculate MVP and send to shader
-		glm::mat4 mvp = Projection * View * Model;
-		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
-
-		i.second.draw();
-	}
-	*/
-	
 
 	//LOG("swapping buffer", pxpk::INFO_LOG);
 
