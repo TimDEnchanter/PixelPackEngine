@@ -72,12 +72,12 @@ void APIENTRY openglCallback(
 	}
 
 	//print logs
-	pxpk::Logger::getInstance().log("------------------------------GL ERROR------------------------------", pxpk::ERROR_LOG);
-	pxpk::Logger::getInstance().log("message: " + messageStr, pxpk::ERROR_LOG);
-	pxpk::Logger::getInstance().log("type: " + typeStr, pxpk::ERROR_LOG);
-	pxpk::Logger::getInstance().log("id: " + idStr, pxpk::ERROR_LOG);
-	pxpk::Logger::getInstance().log("severity: " + severityStr, pxpk::ERROR_LOG);
-	pxpk::Logger::getInstance().log("------------------------------GL ERROR------------------------------", pxpk::ERROR_LOG);
+	LOG("------------------------------GL ERROR------------------------------", pxpk::ERROR_LOG);
+	LOG("message: " + messageStr, pxpk::ERROR_LOG);
+	LOG("type: " + typeStr, pxpk::ERROR_LOG);
+	LOG("id: " + idStr, pxpk::ERROR_LOG);
+	LOG("severity: " + severityStr, pxpk::ERROR_LOG);
+	LOG("------------------------------GL ERROR------------------------------", pxpk::ERROR_LOG);
 }
 
 
@@ -96,7 +96,7 @@ void pxpk::RenderEngine::loadShaders()
 	char buf[1000];
 	GetModuleFileName(NULL, buf, 1000);
 	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
-	pxpk::Logger::getInstance().log("shader directory: " + dir, pxpk::ERROR_LOG);
+	LOG("shader directory: " + dir, pxpk::ERROR_LOG);
 
 	// read vertex shader from file
 	std::string vertCode;
@@ -109,7 +109,7 @@ void pxpk::RenderEngine::loadShaders()
 	}
 	else
 	{
-		pxpk::Logger::getInstance().log("unable to open the vertex shader file", pxpk::ERROR_LOG);
+		LOG("unable to open the vertex shader file", pxpk::ERROR_LOG);
 	}
 
 	// read fragment shader from file
@@ -123,7 +123,7 @@ void pxpk::RenderEngine::loadShaders()
 	}
 	else
 	{
-		pxpk::Logger::getInstance().log("unable to open the fragment shader file", pxpk::ERROR_LOG);
+		LOG("unable to open the fragment shader file", pxpk::ERROR_LOG);
 	}
 
 	// compile vertex shader
@@ -142,7 +142,7 @@ void pxpk::RenderEngine::loadShaders()
 
 		std::string logStr = strInfoLog;
 
-		pxpk::Logger::getInstance().log("Compile failure in vertex shader: " + logStr, pxpk::ERROR_LOG);
+		LOG("Compile failure in vertex shader: " + logStr, pxpk::ERROR_LOG);
 		delete[] strInfoLog;
 	}
 
@@ -162,7 +162,7 @@ void pxpk::RenderEngine::loadShaders()
 
 		std::string logStr = strInfoLog;
 
-		pxpk::Logger::getInstance().log("Compile failure in fragment shader: " + logStr, pxpk::ERROR_LOG);
+		LOG("Compile failure in fragment shader: " + logStr, pxpk::ERROR_LOG);
 		delete[] strInfoLog;
 	}
 
@@ -183,7 +183,7 @@ void pxpk::RenderEngine::loadShaders()
 		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
 		glGetProgramInfoLog(programID, infoLogLength, NULL, strInfoLog);
 		std::string logStr = strInfoLog;
-		pxpk::Logger::getInstance().log("Linker error: " + logStr, pxpk::ERROR_LOG);
+		LOG("Linker error: " + logStr, pxpk::ERROR_LOG);
 		delete[] strInfoLog;
 	}
 
@@ -193,7 +193,7 @@ void pxpk::RenderEngine::loadShaders()
 	glDeleteShader(vertShaderID);
 	glDeleteShader(fragShaderID);
 
-	pxpk::Logger::getInstance().log("Shaders Loaded", pxpk::INFO_LOG);
+	LOG("Shaders Loaded", pxpk::INFO_LOG);
 }
 
 void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
@@ -396,21 +396,54 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	}
 }
 
+void pxpk::RenderEngine::checkGLError(const char *file, int line)
+{
+	GLenum err(glGetError());
+
+	while (err != GL_NO_ERROR)
+	{
+		std::string errStr;
+
+		switch (err)
+		{
+		case GL_INVALID_OPERATION: errStr = "OpenGL error - INVALID_OPERATION"; break;
+		case GL_INVALID_ENUM:  errStr = "OpenGL error - INVALID_ENUM"; break;
+		case GL_INVALID_VALUE:  errStr = "OpenGL error - INVALID_VALUE"; break;
+		case GL_OUT_OF_MEMORY:  errStr = "OpenGL error - OUT_OF_MEMORY"; break;
+		case GL_STACK_OVERFLOW:  errStr = "OpenGL error - STACK_OVERFLOW"; break;
+		case GL_STACK_UNDERFLOW:  errStr = "OpenGL error - STACK_UNDERFLOW"; break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION:  errStr = "OpenGL error - INVALID_FRAMEBUFFER_OPERATION"; break;
+		case GL_CONTEXT_LOST:  errStr = "OpenGL error - CONTEXT_LOST"; break;
+		case GL_TABLE_TOO_LARGE:  errStr = "OpenGL error - TABLE_TOO_LARGE"; break;
+		default: errStr = "OpenGL error - Unknown"; break;
+		}
+
+		pxpk::Logger::getInstance()._log(errStr, pxpk::ERROR_LOG, file, line);
+
+		err = glGetError();
+	}
+}
+
 void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 {
 	//glut setup
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowSize(pxpk::windowWidth, pxpk::windowHeight);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE
+#if _DEBUG
+		| GLUT_DEBUG
+#endif
+	);
 
 	//create window
 	glutCreateWindow(windowName.c_str());
-	pxpk::Logger::getInstance().log("Window created", pxpk::INFO_LOG);
+	LOG("Window created", pxpk::INFO_LOG);
 
 	//glew setup
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
-		pxpk::Logger::getInstance().log("GLEW initialization failed: " + std::to_string(err), pxpk::ERROR_LOG);
+		LOG("GLEW initialization failed: " + std::to_string(err), pxpk::ERROR_LOG);
 
 	//enable features
 	glEnable(GL_DEPTH_TEST);
@@ -425,15 +458,15 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 	glDebugMessageCallback(openglCallback, nullptr);
 	GLuint unusedIDs = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIDs, true);
-	pxpk::Logger::getInstance().log("callbacks registered", pxpk::INFO_LOG);
+	LOG("callbacks registered", pxpk::INFO_LOG);
 
 	//load the shaders
-	loadShaders();
+	//loadShaders();
 }
 
 void pxpk::RenderEngine::startEngine(int argc, char **argv, std::string windowName)
 {
-	pxpk::Logger::getInstance().log("Starting Render Engine", pxpk::INFO_LOG);
+	LOG("Starting Render Engine", pxpk::INFO_LOG);
 	init(argc, argv, windowName);
 
 	//start main loop
@@ -614,27 +647,32 @@ void pxpk::RenderEngine::render()
 {
 	if (!pxpk::engineStarted)
 	{
-		pxpk::Logger::getInstance().log("Engine Started", pxpk::INFO_LOG);
+		loadShaders();
+		LOG("Engine Started", pxpk::INFO_LOG);
 		//signal writer that engine has started
 		pxpk::engineStarted = true;
 		pxpk::RenderQ_Read_CV.notify_all();
 	}
-	//pxpk::Logger::getInstance().log("clearing buffer", pxpk::INFO_LOG);
+	//LOG("clearing buffer", pxpk::INFO_LOG);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
 	//clear the current buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//error check
+	checkGLError(__FILENAME__, __LINE__);
+
 	//wait until writer declares render queue is ready
-	pxpk::Logger::getInstance().log("Engine is waiting for Render Queue", pxpk::INFO_LOG);
+	//LOG("Engine is waiting for Render Queue", pxpk::INFO_LOG);
 	std::unique_lock<std::mutex> renderLock(pxpk::RenderQ_Mutex);
 	pxpk::RenderQ_Write_CV.wait(renderLock, [] {return pxpk::isRenderWriterReady;});
 
 	//swap render buffer
 	pxpk::RenderQueue::getInstance().swap();
+	pxpk::isRenderWriterReady = false;
 
 	//manually unlock render queue and signal writer
-	pxpk::Logger::getInstance().log("Engine is done with Render Queue", pxpk::INFO_LOG);
+	//LOG("Engine is done with Render Queue", pxpk::INFO_LOG);
 	renderLock.unlock();
 	pxpk::RenderQ_Read_CV.notify_all();
 
@@ -643,6 +681,8 @@ void pxpk::RenderEngine::render()
 	{
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
+		//error check
+		checkGLError(__FILENAME__, __LINE__);
 	}
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
@@ -656,16 +696,20 @@ void pxpk::RenderEngine::render()
 	// tell GL to use the shader program
 	glUseProgram(programID);
 	
+	//error check
+	checkGLError(__FILENAME__, __LINE__);
+
 	//wait unitl writer declares draw queue is ready
-	pxpk::Logger::getInstance().log("Engine is waiting for Draw Queue", pxpk::INFO_LOG);
+	//LOG("Engine is waiting for Draw Queue", pxpk::INFO_LOG);
 	std::unique_lock<std::mutex> drawLock(pxpk::DrawQ_Mutex);
 	pxpk::DrawQ_Write_CV.wait(drawLock, [] {return pxpk::isDrawWriterReady; });
 
 	//swap draw buffer
 	pxpk::DrawQueue::getInstance().swap();
+	pxpk::isDrawWriterReady = false;
 
 	//manually unlock draw queue and signal writer
-	pxpk::Logger::getInstance().log("Engine is done with Draw Queue", pxpk::INFO_LOG);
+	//LOG("Engine is done with Draw Queue", pxpk::INFO_LOG);
 	drawLock.unlock();
 	pxpk::DrawQ_Read_CV.notify_all();
 
@@ -678,11 +722,14 @@ void pxpk::RenderEngine::render()
 		glm::mat4 Model = objects[ID].getModelMatrix();
 
 		//calulate MVP and send to shader
-		glm::mat4 mvp = Projection * View *Model;
+		glm::mat4 mvp = Projection * View * Model;
 		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
 
 		//draw the object
 		objects[ID].draw();
+
+		//error check
+		checkGLError(__FILENAME__, __LINE__);
 	}
 
 	/* OLD CODE
@@ -700,7 +747,7 @@ void pxpk::RenderEngine::render()
 	*/
 	
 
-	//pxpk::Logger::getInstance().log("swapping buffer", pxpk::INFO_LOG);
+	//LOG("swapping buffer", pxpk::INFO_LOG);
 
 	//swap buffers
 	glutSwapBuffers();

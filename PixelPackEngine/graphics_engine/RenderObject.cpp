@@ -2,6 +2,7 @@
 
 void pxpk::RenderObject::initVertexBuffer()
 {
+	LOG("initializing vertex buffer", pxpk::INFO_LOG);
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glBufferData(

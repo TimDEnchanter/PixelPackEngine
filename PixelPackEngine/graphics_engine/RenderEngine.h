@@ -38,15 +38,6 @@ namespace pxpk {
 			GLuint vertShaderID;
 			GLuint fragShaderID;
 
-			void loadShaders();
-			void processEvent(pxpk::QueueEvent);
-
-		public:
-			RenderEngine();
-			~RenderEngine();
-
-			unsigned short getActiveCam();
-
 			void addObject(unsigned short);
 			void addCamera(unsigned short);
 			void removeObject(unsigned short);
@@ -79,11 +70,21 @@ namespace pxpk {
 			void setCamNearDist(unsigned short, GLfloat);
 			void setCamFarDist(unsigned short, GLfloat);
 
-			
+			void setActiveCam(GLuint);
+
+			void loadShaders();
+			void processEvent(pxpk::QueueEvent);
+
+			void checkGLError(const char *file, int line);
+
+		public:
+			RenderEngine();
+			~RenderEngine();
+
+			unsigned short getActiveCam();
+
 			pxpk::RenderObject & getObject(unsigned short);
 			pxpk::Camera & getCamera(unsigned short);
-
-			void setActiveCam(GLuint);
 
 			void init(int argc, char **argv, std::string windowName);
 			void startEngine(int argc, char **argv, std::string windowName);

@@ -14,15 +14,17 @@ void pxpk::Logger::setFileOut(std::string filename)
 	fileOut.open(filename);
 }
 
-void pxpk::Logger::log(std::string msg)
+void pxpk::Logger::_log(std::string msg, const char *file, int line)
 {
-	std::stringstream temp;
-	temp << msg << std::endl;
-	std::cout << temp.str();
-	if (fileOut.is_open()) fileOut << temp.str();
+	std::stringstream outStream;
+	std::stringstream locationStream;
+	locationStream << "[" << file << ":" << line << "]";
+	outStream << std::left << std::setw(25) << locationStream.str() << msg << std::endl;
+	std::cout << outStream.str();
+	if (fileOut.is_open()) fileOut << outStream.str();
 }
 
-void pxpk::Logger::log(std::string msg, pxpk::LogLevel msgLevel)
+void pxpk::Logger::_log(std::string msg, pxpk::LogLevel msgLevel, const char *file, int line)
 {
-	if (currentLogLevel >= msgLevel) log(msg);
+	if (currentLogLevel >= msgLevel) _log(msg, file, line);
 }

@@ -7,10 +7,10 @@
 /*
 Shared Variables
 
-Set of variables that will be used across the engine.
+Set of variables that will be used across the  graphics engine.
 Also contains OpenGL library includes.
 
-****INCLUDE THIS FOR ALL CLASSES IN GRAPHICS_ENGINE****
+****INCLUDE THIS FOR most CLASSES IN GRAPHICS_ENGINE****
 */
 
 namespace pxpk {

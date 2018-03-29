@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 	//renderer.startEngine();
 
 	//lock render queue
-	pxpk::Logger::getInstance().log("Test is locking Render Queue", pxpk::INFO_LOG);
+	//LOG("Test is locking Render Queue", pxpk::INFO_LOG);
 	std::unique_lock<std::mutex> renderLock(pxpk::RenderQ_Mutex);
 	//wait for engine to finish startup
 	pxpk::RenderQ_Read_CV.wait(renderLock, [] {return pxpk::engineStarted; });
@@ -82,6 +82,7 @@ int main(int argc, char **argv)
 	pxpk::isRenderWriterReady = false;
 	//first cube
 	unsigned short tc1Index = 1;
+	
 	pxpk::RenderQueue::getInstance().objAdd(tc1Index);
 	pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
 	pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
@@ -95,7 +96,7 @@ int main(int argc, char **argv)
 	renderer.setObjColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
 	*/
 
-	pxpk::Logger::getInstance().log("Cube 1 queued", pxpk::INFO_LOG);
+	LOG("Cube 1 queued", pxpk::INFO_LOG);
 
 	//second cube
 	unsigned short tc2Index = 2;
@@ -112,7 +113,7 @@ int main(int argc, char **argv)
 	renderer.setObjColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
 	*/
 
-	pxpk::Logger::getInstance().log("Cube 2 queued", pxpk::INFO_LOG);
+	LOG("Cube 2 queued", pxpk::INFO_LOG);
 
 
 	//third cube
@@ -130,7 +131,7 @@ int main(int argc, char **argv)
 	renderer.setObjColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
 	*/
 
-	pxpk::Logger::getInstance().log("Cube 3 queued", pxpk::INFO_LOG);
+	LOG("Cube 3 queued", pxpk::INFO_LOG);
 
 	//fourth cube
 	unsigned short tc4Index = 4;
@@ -147,7 +148,7 @@ int main(int argc, char **argv)
 	renderer.setObjColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
 	*/
 
-	pxpk::Logger::getInstance().log("Cube 4 queued", pxpk::INFO_LOG);
+	LOG("Cube 4 queued", pxpk::INFO_LOG);
 
 	//setup camera
 	int camIndex = 0;
@@ -170,15 +171,15 @@ int main(int argc, char **argv)
 	//renderer.startEngine();
 
 	//manually unlock render queue and signal reader
-	pxpk::Logger::getInstance().log("Test is done with Render Queue", pxpk::INFO_LOG);
+	//pxpk::Logger::getInstance().log("Test is done with Render Queue", pxpk::INFO_LOG);
 	pxpk::isRenderWriterReady = true;
 	renderLock.unlock();
 	pxpk::RenderQ_Write_CV.notify_all();
 
 	//initial draw
-	pxpk::Logger::getInstance().log("populating draw queue", pxpk::INFO_LOG);
+	LOG("populating draw queue", pxpk::INFO_LOG);
 	//lock draw queue
-	pxpk::Logger::getInstance().log("Test is locking Draw Queue", pxpk::INFO_LOG);
+	//LOG("Test is locking Draw Queue", pxpk::INFO_LOG);
 	std::unique_lock<std::mutex> drawLock(pxpk::DrawQ_Mutex);
 	//pxpk::DrawQ_Read_CV.wait(drawLock);
 
@@ -189,36 +190,34 @@ int main(int argc, char **argv)
 	pxpk::DrawQueue::getInstance().draw(tc4Index);
 
 	//manually unlock draw queue and signal reader
-	pxpk::Logger::getInstance().log("Test is done with Draw Queue", pxpk::INFO_LOG);
+	//pxpk::Logger::getInstance().log("Test is done with Draw Queue", pxpk::INFO_LOG);
 	pxpk::isDrawWriterReady = true;
 	drawLock.unlock();
 	pxpk::DrawQ_Write_CV.notify_all();
 
-	pxpk::Logger::getInstance().log("Main loop", pxpk::INFO_LOG);
+	LOG("Main loop", pxpk::INFO_LOG);
 
 	//main loop
 	while(true)
 	{
 		//wait until reader declares render queue is ready
-		pxpk::Logger::getInstance().log("Test is waiting for Render Queue", pxpk::INFO_LOG);
+		//LOG("Test is waiting for Render Queue", pxpk::INFO_LOG);
 		renderLock.lock();
-		pxpk::RenderQ_Read_CV.wait(renderLock);
-		pxpk::isRenderWriterReady = false;
+		pxpk::RenderQ_Read_CV.wait(renderLock, [] {return !pxpk::isRenderWriterReady; });
 
 		//simulate activity
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 		//manually unlock render queue and signal reader
-		pxpk::Logger::getInstance().log("Test is done with Render Queue", pxpk::INFO_LOG);
+		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);
 		pxpk::isRenderWriterReady = true;
 		renderLock.unlock();
 		pxpk::RenderQ_Write_CV.notify_all();
 
 		//wait until reader declares draw queue is ready
-		pxpk::Logger::getInstance().log("Test is waiting for Draw Queue", pxpk::INFO_LOG);
+		//LOG("Test is waiting for Draw Queue", pxpk::INFO_LOG);
 		drawLock.lock();
-		pxpk::DrawQ_Read_CV.wait(drawLock);
-		pxpk::isDrawWriterReady = false;
+		pxpk::DrawQ_Read_CV.wait(drawLock, [] {return !pxpk::isDrawWriterReady; });
 
 		//determine what is drawn
 		pxpk::DrawQueue::getInstance().draw(tc1Index);
@@ -227,7 +226,7 @@ int main(int argc, char **argv)
 		pxpk::DrawQueue::getInstance().draw(tc4Index);
 
 		//manually unlock draw queue and signal reader
-		pxpk::Logger::getInstance().log("Test is done with Draw Queue", pxpk::INFO_LOG);
+		//LOG("Test is done with Draw Queue", pxpk::INFO_LOG);
 		pxpk::isDrawWriterReady = true;
 		drawLock.unlock();
 		pxpk::DrawQ_Write_CV.notify_all();

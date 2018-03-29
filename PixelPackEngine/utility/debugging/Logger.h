@@ -3,9 +3,11 @@
 
 
 #include <string>
+#include <cstring>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 
 /*
 Logger
@@ -52,9 +54,11 @@ namespace pxpk
 		void setCurrentLogLevel(pxpk::LogLevel newLogLevel) { currentLogLevel = newLogLevel; }
 
 		// message functions
-		void log(std::string msg);
-		void log(std::string msg, pxpk::LogLevel msgLevel);
+		void _log(std::string msg, const char *file, int line);
+		void _log(std::string msg, pxpk::LogLevel msgLevel, const char *file, int line);
 	};
 }
+#define __FILENAME__ (strrchr("\\" __FILE__, '\\') + 1)
+#define LOG(MESSAGE, LEVEL) pxpk::Logger::getInstance()._log(MESSAGE, LEVEL, __FILENAME__, __LINE__)
 
 #endif // !LOGGER_H
