@@ -8,32 +8,29 @@ namespace pxpk
 	class DeltaTimer
 	{
 	private:
-		DeltaTimer() :
-			lastTickTime(std::chrono::high_resolution_clock::now()),
-			deltaTime(0.0),
-			frames(0),
-			fps(0.0f),
-			firstRun(true)
-			{};
-
 		std::chrono::time_point<std::chrono::high_resolution_clock> lastTickTime;
-		long deltaTime;
-		int frames;
-		float fps;
+		std::chrono::time_point<std::chrono::high_resolution_clock> lastUpdateTime;
+		std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> frameTime;
+		std::chrono::milliseconds timeStep;
+
 		bool firstRun;
 
 	public:
-		static DeltaTimer& getInstance();
+		DeltaTimer() :
+			lastTickTime(std::chrono::high_resolution_clock::now()),
+			frameTime(std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period>::zero()),
+			timeStep(250),
+			firstRun(true)
+		{};
 
 		~DeltaTimer();
 
-		DeltaTimer(DeltaTimer const &) = delete;
-		void operator=(DeltaTimer const &) = delete;
+		long getFrameTime();
+		long getTimeStep();
 
-		void tick();
+		void setTimeStep(long);
 
-		long getDeltaTime();
-		float getFPS();
+		bool tickCheckUpdate();
 	};
 }
 
