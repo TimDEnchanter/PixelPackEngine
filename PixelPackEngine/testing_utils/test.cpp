@@ -88,13 +88,6 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
-	/*
-	renderer.addObject(tc1Index);
-	renderer.setObjVertexBuffer(tc1Index, testVerts);
-	renderer.setObjElementBuffer(tc1Index, index);
-	renderer.setObjPosition(tc1Index, glm::vec3(0.0, 0.0, 0.0));
-	renderer.setObjColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
-	*/
 
 	LOG("Cube 1 queued", pxpk::INFO_LOG);
 
@@ -105,13 +98,6 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objLoadIndx(tc2Index, index);
 	pxpk::RenderQueue::getInstance().objSetPos(tc2Index, glm::vec3(2.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
-	/*
-	renderer.addObject(tc1Index);
-	renderer.setObjVertexBuffer(tc2Index, testVerts);
-	renderer.setObjElementBuffer(tc2Index, index);
-	renderer.setObjPosition(tc2Index, glm::vec3(2.0, 0.0, 0.0));
-	renderer.setObjColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
-	*/
 
 	LOG("Cube 2 queued", pxpk::INFO_LOG);
 
@@ -123,13 +109,6 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objLoadIndx(tc3Index, index);
 	pxpk::RenderQueue::getInstance().objSetPos(tc3Index, glm::vec3(0.0, 2.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
-	/*
-	renderer.addObject(tc3Index);
-	renderer.setObjVertexBuffer(tc3Index, testVerts);
-	renderer.setObjElementBuffer(tc3Index, index);
-	renderer.setObjPosition(tc3Index, glm::vec3(0.0, 2.0, 0.0));
-	renderer.setObjColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
-	*/
 
 	LOG("Cube 3 queued", pxpk::INFO_LOG);
 
@@ -140,13 +119,6 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objLoadIndx(tc4Index, index);
 	pxpk::RenderQueue::getInstance().objSetPos(tc4Index, glm::vec3(0.0, 0.0, 2.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
-	/*
-	renderer.addObject(tc4Index);
-	renderer.setObjVertexBuffer(tc4Index, testVerts);
-	renderer.setObjElementBuffer(tc4Index, index);
-	renderer.setObjPosition(tc4Index, glm::vec3(0.0, 0.0, 2.0));
-	renderer.setObjColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
-	*/
 
 	LOG("Cube 4 queued", pxpk::INFO_LOG);
 
@@ -158,15 +130,6 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().camSetFar(camIndex, 100.0f);
 	pxpk::RenderQueue::getInstance().camSetPos(camIndex, glm::vec3(10.0, 10.0, 10.0));
 	pxpk::RenderQueue::getInstance().camLookat(camIndex, glm::vec3(0.0, 0.0, 0.0));
-	/*
-	renderer.addCamera(camIndex);
-	renderer.setCamFov(camIndex, 45.0f);
-	renderer.setCamNearDist(camIndex, 0.1f);
-	renderer.setCamFarDist(camIndex, 100.0f);
-	renderer.setCamPosition(camIndex, glm::vec3(10.0f, 10.0f, 10.0f));
-	renderer.lookAtCam(camIndex, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0));
-	//renderer.setCamOrientationEuler(camIndex, glm::vec3(glm::radians(-35.0), glm::radians(45.0), glm::radians(-0.0)));
-	*/
 
 	//renderer.startEngine();
 

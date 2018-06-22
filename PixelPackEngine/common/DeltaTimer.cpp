@@ -31,7 +31,7 @@ bool pxpk::DeltaTimer::tickCheckUpdate()
 		lastTickTime = currentTime;
 		lastUpdateTime = currentTime;
 		firstRun = false;
-		return;
+		return false;
 	}
 
 	// calculate frameTime

@@ -645,6 +645,20 @@ unsigned short pxpk::RenderEngine::getActiveCam()
 
 void pxpk::RenderEngine::render()
 {
+	//tick for FPS
+	if (frameTimer.tickCheckUpdate())
+	{
+		float timestep = frameTimer.getTimeStep() / 1000.0;
+		int fps = frames / timestep;
+		//system("cls");
+		LOG("FPS - " + std::to_string(fps), pxpk::INFO_LOG);
+		frames = 0;
+	}
+	else
+	{
+		frames++;
+	}
+
 	if (!pxpk::engineStarted)
 	{
 		// load shaders on first run

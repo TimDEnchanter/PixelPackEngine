@@ -9,6 +9,7 @@
 #include "../dependencies/glm/gtc/matrix_transform.hpp"
 #include "../common/RenderQueue.h"
 #include "../common/DrawQueue.h"
+#include "../common/DeltaTimer.h"
 
 #include <string>
 #include <vector>
@@ -37,6 +38,9 @@ namespace pxpk {
 			GLuint programID;
 			GLuint vertShaderID;
 			GLuint fragShaderID;
+
+			pxpk::DeltaTimer frameTimer;
+			int frames;
 
 			void addObject(unsigned short);
 			void addCamera(unsigned short);
