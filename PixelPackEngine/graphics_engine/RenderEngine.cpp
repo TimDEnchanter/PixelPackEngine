@@ -648,15 +648,10 @@ void pxpk::RenderEngine::render()
 	//tick for FPS
 	if (frameTimer.tickCheckUpdate())
 	{
-		float timestep = frameTimer.getTimeStep() / 1000.0;
-		int fps = frames / timestep;
-		//system("cls");
-		LOG("FPS - " + std::to_string(fps), pxpk::INFO_LOG);
-		frames = 0;
-	}
-	else
-	{
-		frames++;
+		float frameTime = frameTimer.getFrameTime()/1000.0;
+		system("cls");
+		LOG("Frametime - " + std::to_string(frameTime), pxpk::INFO_LOG);
+		LOG("FPS - " + std::to_string(1.0/frameTime), pxpk::INFO_LOG);
 	}
 
 	if (!pxpk::engineStarted)
@@ -699,6 +694,8 @@ void pxpk::RenderEngine::render()
 		processEvent(event);
 		//error check
 		checkGLError(__FILENAME__, __LINE__);
+
+		pxpk::RenderQueue::getInstance().pop();
 	}
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
@@ -746,6 +743,8 @@ void pxpk::RenderEngine::render()
 
 		//error check
 		checkGLError(__FILENAME__, __LINE__);
+
+		pxpk::DrawQueue::getInstance().pop();
 	}
 
 	//LOG("swapping buffer", pxpk::INFO_LOG);

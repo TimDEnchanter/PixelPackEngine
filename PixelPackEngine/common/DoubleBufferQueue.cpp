@@ -1,9 +1,18 @@
 #include "DoubleBufferQueue.h"
 
-void pxpk::DoubleBuffferQueue::write(pxpk::QueueEvent input)
+pxpk::QueueEvent * pxpk::DoubleBuffferQueue::write(pxpk::QueueEvent input)
 {
 	std::lock_guard<std::mutex> lock(queue_mutex);
-	writeQueue.push(input);
+	writeQueue.emplace(input);
+	return & writeQueue.back();
+}
+
+pxpk::DoubleBuffferQueue::DoubleBuffferQueue()
+{
+}
+
+pxpk::DoubleBuffferQueue::~DoubleBuffferQueue()
+{
 }
 
 bool pxpk::DoubleBuffferQueue::isReadEmpty()
@@ -13,9 +22,16 @@ bool pxpk::DoubleBuffferQueue::isReadEmpty()
 
 pxpk::QueueEvent pxpk::DoubleBuffferQueue::read()
 {
-	pxpk::QueueEvent out = readQueue.front();
+	//pxpk::QueueEvent out = readQueue.front();
+	//readQueue.pop();
+	//return out;
+
+	return readQueue.front();
+}
+
+void pxpk::DoubleBuffferQueue::pop()
+{
 	readQueue.pop();
-	return out;
 }
 
 void pxpk::DoubleBuffferQueue::swap()

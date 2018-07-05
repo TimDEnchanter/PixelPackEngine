@@ -17,11 +17,15 @@ namespace pxpk
 			std::mutex queue_mutex;
 
 		protected:
-			void write(pxpk::QueueEvent);
+			pxpk::QueueEvent * write(pxpk::QueueEvent);
+
+			DoubleBuffferQueue();
+			~DoubleBuffferQueue();
 
 		public:
 			bool isReadEmpty();
 			pxpk::QueueEvent read();
+			void pop();
 			void swap();
 	};
 }

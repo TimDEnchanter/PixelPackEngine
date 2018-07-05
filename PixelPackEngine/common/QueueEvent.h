@@ -23,7 +23,12 @@ namespace pxpk
 			std::uint8_t *payload;
 
 		public:
-			QueueEvent(std::uint8_t inType, std::uint16_t inID) : type(inType), ID(inID) {};
+			QueueEvent(std::uint8_t inType, std::uint16_t inID) :
+				type(inType),
+				ID(inID),
+				payloadSize(0),
+				payload(nullptr)
+			{};
 
 			QueueEvent(const pxpk::QueueEvent&);
 			pxpk::QueueEvent& operator=(const pxpk::QueueEvent&);

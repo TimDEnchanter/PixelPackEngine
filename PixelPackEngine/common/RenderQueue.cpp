@@ -37,9 +37,11 @@ void pxpk::RenderQueue::objClear()
 
 void pxpk::RenderQueue::objLoadVert(unsigned short id, std::vector<GLfloat> input)
 {
-	pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_LOAD_VERT, id);
-	writeEvent.writePayload(input);
-	this->write(writeEvent);
+	//pxpk::QueueEvent writeEvent(RenderType::RENDER_OBJ_LOAD_VERT, id);
+	//writeEvent.writePayload(input);
+	//this->write(writeEvent);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_LOAD_VERT, id));
+	writeEvent->writePayload(input);
 }
 
 void pxpk::RenderQueue::objLoadIndx(unsigned short id, std::vector<GLuint> input)

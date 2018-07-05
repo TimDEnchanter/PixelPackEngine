@@ -19,6 +19,5 @@ pxpk::DrawQueue::~DrawQueue()
 
 void pxpk::DrawQueue::draw(unsigned short id)
 {
-	pxpk::QueueEvent writeEvent(0, id);
-	this->write(writeEvent);
+	this->write(pxpk::QueueEvent(0, id));
 };

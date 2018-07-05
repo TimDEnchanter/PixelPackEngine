@@ -5,9 +5,17 @@ pxpk::QueueEvent::QueueEvent(const pxpk::QueueEvent &input)
 {
 	type = input.type;
 	ID = input.ID;
-	payloadSize = input.payloadSize;
-	payload = new std::uint8_t[input.payloadSize];
-	std::copy(input.payload, input.payload + input.payloadSize, payload);
+	if (input.payload == nullptr)
+	{
+		payloadSize = 0;
+		payload = nullptr;
+	}
+	else
+	{
+		payloadSize = input.payloadSize;
+		payload = new std::uint8_t[input.payloadSize];
+		std::copy(input.payload, input.payload + input.payloadSize, payload);
+	}
 }
 
 //COPY ASSIGNMENT
@@ -15,9 +23,17 @@ pxpk::QueueEvent & pxpk::QueueEvent::operator=(const pxpk::QueueEvent &input)
 {
 	type = input.type;
 	ID = input.ID;
-	payloadSize = input.payloadSize;
-	payload = new std::uint8_t[input.payloadSize];
-	std::copy(input.payload, input.payload + input.payloadSize, payload);
+	if (input.payload == nullptr)
+	{
+		payloadSize = 0;
+		payload = nullptr;
+	}
+	else
+	{
+		payloadSize = input.payloadSize;
+		payload = new std::uint8_t[input.payloadSize];
+		std::copy(input.payload, input.payload + input.payloadSize, payload);
+	}
 
 	return *this;
 }
@@ -27,8 +43,16 @@ pxpk::QueueEvent::QueueEvent(pxpk::QueueEvent && input)
 {
 	type = std::move(input.type);
 	ID = std::move(input.ID);
-	payloadSize = std::move(input.payloadSize);
-	payload = std::move(input.payload);
+	if (input.payload == nullptr)
+	{
+		payloadSize = 0;
+		payload = nullptr;
+	}
+	else
+	{
+		payloadSize = std::move(input.payloadSize);
+		payload = std::move(input.payload);
+	}
 }
 
 //MOVE ASSIGNMENT
@@ -36,8 +60,16 @@ pxpk::QueueEvent & pxpk::QueueEvent::operator=(pxpk::QueueEvent && input)
 {
 	type = std::move(input.type);
 	ID = std::move(input.ID);
-	payloadSize = std::move(input.payloadSize);
-	payload = std::move(input.payload);
+	if (input.payload == nullptr)
+	{
+		payloadSize = 0;
+		payload = nullptr;
+	}
+	else
+	{
+		payloadSize = std::move(input.payloadSize);
+		payload = std::move(input.payload);
+	}
 
 	return *this;
 }
@@ -45,7 +77,7 @@ pxpk::QueueEvent & pxpk::QueueEvent::operator=(pxpk::QueueEvent && input)
 //DESTRUCTOR
 pxpk::QueueEvent::~QueueEvent()
 {
-	delete [] payload;
+	if (payload != nullptr) delete [] payload;
 }
 
 std::uint8_t pxpk::QueueEvent::getType()
@@ -71,6 +103,8 @@ void pxpk::QueueEvent::writePayload(std::vector<GLfloat>& data)
 	std::copy(reinterpret_cast<uint8_t*>(data.data()), 
 		reinterpret_cast<uint8_t*>(data.data()) + payloadSize, 
 		payload);
+
+	//payload = reinterpret_cast<uint8_t *>(&data[0]);
 }
 
 void pxpk::QueueEvent::writePayload(std::vector<GLuint>& data)
