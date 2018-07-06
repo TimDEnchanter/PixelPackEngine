@@ -10,6 +10,7 @@
 #include "../common/RenderQueue.h"
 #include "../common/DrawQueue.h"
 #include "../common/DeltaTimer.h"
+#include "../common/Inputs.h"
 
 #include <string>
 #include <vector>

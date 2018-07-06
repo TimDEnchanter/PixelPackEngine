@@ -1,5 +1,6 @@
 #include "../graphics_engine/RenderEngine.h"
 #include "../dependencies/glm/vec3.hpp"
+#include "../common/Inputs.h"
 
 /*
 test
@@ -68,6 +69,22 @@ int main(int argc, char **argv)
 		4,7,6
 	};
 
+	//plane verts
+	std::vector<GLfloat> planeVerts
+	{
+		-100.0, 0.0, 100.0,
+		-100.0, 0.0, -100.0,
+		100.0, 0.0, -100.0,
+		100.0, 0.0, 100.0,
+	};
+
+	//plane index
+	std::vector<GLuint> planeIndex
+	{
+		0,1,2,
+		2,3,0
+	};
+
 	//start render engine
 	std::thread renderThread = std::thread(&pxpk::RenderEngine::startEngine, renderer, argc, argv, "Test_Window");
 	//renderer.startEngine();
@@ -80,6 +97,16 @@ int main(int argc, char **argv)
 	//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 	pxpk::isRenderWriterReady = false;
+
+	//floor
+	unsigned short floorIndex = 0;
+
+	pxpk::RenderQueue::getInstance().objAdd(floorIndex);
+	pxpk::RenderQueue::getInstance().objLoadVert(floorIndex, planeVerts);
+	pxpk::RenderQueue::getInstance().objLoadIndx(floorIndex, planeIndex);
+	pxpk::RenderQueue::getInstance().objSetPos(floorIndex, glm::vec3(0.0, -2.0, 0.0));
+	pxpk::RenderQueue::getInstance().objSetColor(floorIndex, glm::vec3(0.2, 0.2, 0.2));
+
 	//first cube
 	unsigned short tc1Index = 1;
 	
@@ -147,6 +174,7 @@ int main(int argc, char **argv)
 	//pxpk::DrawQ_Read_CV.wait(drawLock);
 
 	pxpk::isDrawWriterReady = false;
+	pxpk::DrawQueue::getInstance().draw(floorIndex);
 	pxpk::DrawQueue::getInstance().draw(tc1Index);
 	pxpk::DrawQueue::getInstance().draw(tc2Index);
 	pxpk::DrawQueue::getInstance().draw(tc3Index);
@@ -160,9 +188,19 @@ int main(int argc, char **argv)
 
 	LOG("Main loop", pxpk::INFO_LOG);
 
+	pxpk::DeltaTimer deltaTimer = pxpk::DeltaTimer();
+
+	float mouseAngleX = 0.0;
+	float mouseAngleY = 0.0;
+	glm::vec3 camPos = glm::vec3(10.0, 10.0, 10.0);
+
 	//main loop
 	while(true)
 	{
+		//delta timer
+		deltaTimer.tickCheckUpdate();
+		float dt = deltaTimer.getFrameTime()/1000.0;
+
 		//wait until reader declares render queue is ready
 		//LOG("Test is waiting for Render Queue", pxpk::INFO_LOG);
 		renderLock.lock();
@@ -170,9 +208,24 @@ int main(int argc, char **argv)
 
 		//simulate activity
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		pxpk::RenderQueue::getInstance().objRotEuler(2, glm::vec3(0.005, 0.0, 0.0));
-		pxpk::RenderQueue::getInstance().objRotEuler(3, glm::vec3(0.0, 0.005, 0.0));
-		pxpk::RenderQueue::getInstance().objRotEuler(4, glm::vec3(0.0, 0.0, 0.005));
+		float rotSpeed = dt * 1.0;
+		pxpk::RenderQueue::getInstance().objRotEuler(2, glm::vec3(rotSpeed, 0.0, 0.0));
+		pxpk::RenderQueue::getInstance().objRotEuler(3, glm::vec3(0.0, rotSpeed, 0.0));
+		pxpk::RenderQueue::getInstance().objRotEuler(4, glm::vec3(0.0, 0.0, rotSpeed));
+
+		//mouse look
+		int winWidth = glutGet(GLUT_WINDOW_WIDTH);
+		int winHeight = glutGet(GLUT_WINDOW_HEIGHT);
+		float lookSpeed = 0.8;
+		mouseAngleX += lookSpeed * dt * float(winWidth / 2 - inputs_PC::mouseX);
+		mouseAngleY += lookSpeed * dt * float(winHeight / 2 - inputs_PC::mouseY);
+		glm::vec3 lookDir = glm::vec3(
+			cos(mouseAngleY) * sin(mouseAngleX),
+			sin(mouseAngleY),
+			cos(mouseAngleY) * cos(mouseAngleX)
+		);
+		glutWarpPointer(winWidth / 2, winHeight / 2);  //reset mouse to center
+		pxpk::RenderQueue::getInstance().camLookat(camIndex, camPos+lookDir);
 
 		//manually unlock render queue and signal reader
 		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);
@@ -186,6 +239,7 @@ int main(int argc, char **argv)
 		pxpk::DrawQ_Read_CV.wait(drawLock, [] {return !pxpk::isDrawWriterReady; });
 
 		//determine what is drawn
+		pxpk::DrawQueue::getInstance().draw(floorIndex);
 		pxpk::DrawQueue::getInstance().draw(tc1Index);
 		pxpk::DrawQueue::getInstance().draw(tc2Index);
 		pxpk::DrawQueue::getInstance().draw(tc3Index);

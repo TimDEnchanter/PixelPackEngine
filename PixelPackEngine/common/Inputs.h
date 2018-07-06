@@ -5,8 +5,8 @@
 
 namespace inputs_PC
 {
-	int mouseX;
-	int mouseY;
+	extern int mouseX;
+	extern int mouseY;
 
 	void initInput();
 

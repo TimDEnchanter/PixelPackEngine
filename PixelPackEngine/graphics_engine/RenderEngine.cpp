@@ -462,6 +462,12 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 
 	//load the shaders
 	//loadShaders();
+
+	//start input sampling
+	inputs_PC::initInput();
+
+	//remove mouse cursor display
+	glutSetCursor(GLUT_CURSOR_NONE);
 }
 
 void pxpk::RenderEngine::startEngine(int argc, char **argv, std::string windowName)
