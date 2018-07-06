@@ -28,14 +28,14 @@ int main(int argc, char **argv)
 
 	std::vector<GLfloat> testVerts
 	{
-		0.0, 0.0, 1.0,
-		1.0, 0.0, 1.0,
-		1.0, 1.0, 1.0,
-		0.0, 1.0, 1.0,
-		0.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 1.0, 0.0,
-		0.0, 1.0, 0.0
+		-0.5, -0.5, 0.5,
+		0.5, -0.5, 0.5,
+		0.5, 0.5, 0.5,
+		-0.5, 0.5, 0.5,
+		-0.5, -0.5, -0.5,
+		0.5, -0.5, -0.5,
+		0.5, 0.5, -0.5,
+		-0.5, 0.5, -0.5
 	};
 
 	////colors
@@ -169,7 +169,10 @@ int main(int argc, char **argv)
 		pxpk::RenderQ_Read_CV.wait(renderLock, [] {return !pxpk::isRenderWriterReady; });
 
 		//simulate activity
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		//std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		pxpk::RenderQueue::getInstance().objRotEuler(2, glm::vec3(0.005, 0.0, 0.0));
+		pxpk::RenderQueue::getInstance().objRotEuler(3, glm::vec3(0.0, 0.005, 0.0));
+		pxpk::RenderQueue::getInstance().objRotEuler(4, glm::vec3(0.0, 0.0, 0.005));
 
 		//manually unlock render queue and signal reader
 		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);
