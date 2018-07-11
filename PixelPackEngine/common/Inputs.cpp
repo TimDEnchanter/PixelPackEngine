@@ -1,18 +1,66 @@
 #include "Inputs.h"
 
-namespace inputs_PC
+pxpk::InputsPC::InputsPC()
 {
-	int mouseX = 0;
-	int mouseY = 0;
+	pxpk::inputsPCInstance = this;
 }
 
-void inputs_PC::initInput()
+void pxpk::InputsPC::initInput()
 {
-	glutPassiveMotionFunc(inputs_PC::mouseCallback);
+	mouseX = 0;
+	mouseY = 0;
+
+	glutPassiveMotionFunc(mouseCallback);
+	
+	glutIgnoreKeyRepeat(1);
+	glutKeyboardFunc(keyboardCallback);
+	glutKeyboardUpFunc(keyboardUpCallback);
 }
 
-void inputs_PC::mouseCallback(int inX, int inY)
+int pxpk::InputsPC::getmouseX()
 {
-	inputs_PC::mouseX = inX;
-	inputs_PC::mouseY = inY;
+	return mouseX;
+}
+
+int pxpk::InputsPC::getmouseY()
+{
+	return mouseY;
+}
+
+bool pxpk::InputsPC::isKeyPressed(unsigned char input)
+{
+	return keys[input];
+}
+
+void pxpk::InputsPC::mouseFunc(int inX, int inY)
+{
+	mouseX = inX;
+	mouseY = inY;
+}
+
+void pxpk::InputsPC::keyFunc(unsigned char input)
+{
+	keys[input] = true;
+}
+
+void pxpk::InputsPC::keyUpFunc(unsigned char input)
+{
+	keys[input] = false;
+}
+
+void pxpk::mouseCallback(int inX, int inY)
+{
+	pxpk::inputsPCInstance->mouseFunc(inX, inY);
+}
+
+void pxpk::keyboardCallback(unsigned char inChar, int inX, int inY)
+{
+	pxpk::inputsPCInstance->keyFunc(inChar);
+	pxpk::inputsPCInstance->mouseFunc(inX, inY);
+}
+
+void pxpk::keyboardUpCallback(unsigned char inChar, int inX, int inY)
+{
+	pxpk::inputsPCInstance->keyUpFunc(inChar);
+	pxpk::inputsPCInstance->mouseFunc(inX, inY);
 }

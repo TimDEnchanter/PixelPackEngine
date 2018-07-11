@@ -201,6 +201,10 @@ int main(int argc, char **argv)
 		deltaTimer.tickCheckUpdate();
 		float dt = deltaTimer.getFrameTime()/1000.0;
 
+		//check if time to quit
+		if (pxpk::InputsPC::getInstance().isKeyPressed(27))
+			exit(0);
+
 		//wait until reader declares render queue is ready
 		//LOG("Test is waiting for Render Queue", pxpk::INFO_LOG);
 		renderLock.lock();
@@ -217,15 +221,34 @@ int main(int argc, char **argv)
 		int winWidth = glutGet(GLUT_WINDOW_WIDTH);
 		int winHeight = glutGet(GLUT_WINDOW_HEIGHT);
 		float lookSpeed = 0.8;
-		mouseAngleX += lookSpeed * dt * float(winWidth / 2 - inputs_PC::mouseX);
-		mouseAngleY += lookSpeed * dt * float(winHeight / 2 - inputs_PC::mouseY);
+		mouseAngleX += lookSpeed * dt * float(winWidth / 2 - pxpk::InputsPC::getInstance().getmouseX());
+		mouseAngleY += lookSpeed * dt * float(winHeight / 2 - pxpk::InputsPC::getInstance().getmouseY());
 		glm::vec3 lookDir = glm::vec3(
 			cos(mouseAngleY) * sin(mouseAngleX),
 			sin(mouseAngleY),
 			cos(mouseAngleY) * cos(mouseAngleX)
 		);
+		glm::vec3 rightDir = glm::vec3(
+			sin(mouseAngleX - 3.14f/2.0f),
+			0,
+			cos(mouseAngleX - 3.14f/2.0f)
+		);
+
+		//keyboard movement
+		float moveSpeed = 5.0;
+		if (pxpk::InputsPC::getInstance().isKeyPressed('w'))
+			camPos += lookDir * dt * moveSpeed;
+		if (pxpk::InputsPC::getInstance().isKeyPressed('s'))
+			camPos -= lookDir * dt * moveSpeed;
+		if (pxpk::InputsPC::getInstance().isKeyPressed('d'))
+			camPos += rightDir * dt * moveSpeed;
+		if (pxpk::InputsPC::getInstance().isKeyPressed('a'))
+			camPos -= rightDir * dt * moveSpeed;
+
+		//set look & movement results
 		glutWarpPointer(winWidth / 2, winHeight / 2);  //reset mouse to center
 		pxpk::RenderQueue::getInstance().camLookat(camIndex, camPos+lookDir);
+		pxpk::RenderQueue::getInstance().camSetPos(camIndex, camPos);
 
 		//manually unlock render queue and signal reader
 		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);

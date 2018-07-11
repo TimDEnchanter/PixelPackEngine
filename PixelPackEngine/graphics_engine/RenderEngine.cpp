@@ -464,7 +464,7 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 	//loadShaders();
 
 	//start input sampling
-	inputs_PC::initInput();
+	pxpk::InputsPC::getInstance().initInput();
 
 	//remove mouse cursor display
 	glutSetCursor(GLUT_CURSOR_NONE);
