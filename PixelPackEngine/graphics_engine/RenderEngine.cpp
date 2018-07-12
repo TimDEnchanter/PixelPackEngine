@@ -448,6 +448,7 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 	//enable features
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_CULL_FACE);
 
 	//set function to determine depth culling
 	glDepthFunc(GL_LESS);
@@ -654,7 +655,7 @@ void pxpk::RenderEngine::render()
 	//tick for FPS
 	if (frameTimer.tickCheckUpdate())
 	{
-		float frameTime = frameTimer.getFrameTime()/1000.0;
+		float frameTime = frameTimer.getFrameTime()/1000.0f;
 		system("cls");
 		LOG("Frametime - " + std::to_string(frameTime), pxpk::INFO_LOG);
 		LOG("FPS - " + std::to_string(1.0/frameTime), pxpk::INFO_LOG);
@@ -677,7 +678,7 @@ void pxpk::RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//error check
-	checkGLError(__FILENAME__, __LINE__);
+	//checkGLError(__FILENAME__, __LINE__);
 
 	//wait until writer declares render queue is ready
 	//LOG("Engine is waiting for Render Queue", pxpk::INFO_LOG);
@@ -699,7 +700,7 @@ void pxpk::RenderEngine::render()
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
 		//error check
-		checkGLError(__FILENAME__, __LINE__);
+		//checkGLError(__FILENAME__, __LINE__);
 
 		pxpk::RenderQueue::getInstance().pop();
 	}
@@ -716,7 +717,7 @@ void pxpk::RenderEngine::render()
 	glUseProgram(programID);
 	
 	//error check
-	checkGLError(__FILENAME__, __LINE__);
+	//checkGLError(__FILENAME__, __LINE__);
 
 	//wait unitl writer declares draw queue is ready
 	//LOG("Engine is waiting for Draw Queue", pxpk::INFO_LOG);
@@ -748,7 +749,7 @@ void pxpk::RenderEngine::render()
 		objects[ID].draw();
 
 		//error check
-		checkGLError(__FILENAME__, __LINE__);
+		//checkGLError(__FILENAME__, __LINE__);
 
 		pxpk::DrawQueue::getInstance().pop();
 	}

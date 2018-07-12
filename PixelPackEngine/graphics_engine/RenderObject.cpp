@@ -161,7 +161,7 @@ void pxpk::RenderObject::setObjColor(glm::vec3 input)
 {
 	objColor = input;
 
-	int numVerts = vertexVector.size() / 3;
+	size_t numVerts = vertexVector.size() / 3;
 	colorVector.clear();
 	for (int i = 0; i < numVerts; i++) colorVector.insert(colorVector.end(), { objColor.x, objColor.y, objColor.z });
 	initColorBuffer();

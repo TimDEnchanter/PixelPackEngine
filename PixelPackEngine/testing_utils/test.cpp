@@ -56,16 +56,16 @@ int main(int argc, char **argv)
 	std::vector<GLuint> index 
 	{ 
 		0,1,2,
-		0,3,2,
+		0,2,3,
 		0,4,5,
-		0,1,5,
-		0,4,7,
+		0,5,1,
+		0,7,4,
 		0,3,7,
 		1,5,6,
-		1,2,6,
+		1,6,2,
 		3,2,6,
-		3,7,6,
-		4,5,6,
+		3,6,7,
+		4,6,5,
 		4,7,6
 	};
 
@@ -193,13 +193,14 @@ int main(int argc, char **argv)
 	float mouseAngleX = 0.0;
 	float mouseAngleY = 0.0;
 	glm::vec3 camPos = glm::vec3(10.0, 10.0, 10.0);
+	bool lockMouse = true;
 
 	//main loop
 	while(true)
 	{
 		//delta timer
 		deltaTimer.tickCheckUpdate();
-		float dt = deltaTimer.getFrameTime()/1000.0;
+		float dt = deltaTimer.getFrameTime()/1000.0f;
 
 		//check if time to quit
 		if (pxpk::InputsPC::getInstance().isKeyPressed(27))
@@ -212,7 +213,7 @@ int main(int argc, char **argv)
 
 		//simulate activity
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		float rotSpeed = dt * 1.0;
+		float rotSpeed = dt * 1.0f;
 		pxpk::RenderQueue::getInstance().objRotEuler(2, glm::vec3(rotSpeed, 0.0, 0.0));
 		pxpk::RenderQueue::getInstance().objRotEuler(3, glm::vec3(0.0, rotSpeed, 0.0));
 		pxpk::RenderQueue::getInstance().objRotEuler(4, glm::vec3(0.0, 0.0, rotSpeed));
@@ -220,7 +221,7 @@ int main(int argc, char **argv)
 		//mouse look
 		int winWidth = glutGet(GLUT_WINDOW_WIDTH);
 		int winHeight = glutGet(GLUT_WINDOW_HEIGHT);
-		float lookSpeed = 0.8;
+		float lookSpeed = 0.8f;
 		mouseAngleX += lookSpeed * dt * float(winWidth / 2 - pxpk::InputsPC::getInstance().getmouseX());
 		mouseAngleY += lookSpeed * dt * float(winHeight / 2 - pxpk::InputsPC::getInstance().getmouseY());
 		glm::vec3 lookDir = glm::vec3(
@@ -245,10 +246,14 @@ int main(int argc, char **argv)
 		if (pxpk::InputsPC::getInstance().isKeyPressed('a'))
 			camPos -= rightDir * dt * moveSpeed;
 
-		//set look & movement results
-		glutWarpPointer(winWidth / 2, winHeight / 2);  //reset mouse to center
-		pxpk::RenderQueue::getInstance().camLookat(camIndex, camPos+lookDir);
+		//set movement & look results ORDER IMPORTANT
 		pxpk::RenderQueue::getInstance().camSetPos(camIndex, camPos);
+		pxpk::RenderQueue::getInstance().camLookat(camIndex, camPos + lookDir);
+
+		if (pxpk::InputsPC::getInstance().isKeyPressed('q'))
+			lockMouse = !lockMouse;
+		if (lockMouse)
+			glutWarpPointer(winWidth / 2, winHeight / 2);  //reset mouse to center
 
 		//manually unlock render queue and signal reader
 		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);
