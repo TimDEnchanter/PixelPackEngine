@@ -194,6 +194,8 @@ int main(int argc, char **argv)
 	float mouseAngleY = 0.0;
 	glm::vec3 camPos = glm::vec3(10.0, 10.0, 10.0);
 	bool lockMouse = true;
+	glm::vec3 lookDir = glm::vec3(1.0, 0.0, 0.0);
+	glm::vec3 rightDir = glm::vec3(0.0, 0.0, 1.0);
 
 	//main loop
 	while(true)
@@ -221,19 +223,28 @@ int main(int argc, char **argv)
 		//mouse look
 		int winWidth = glutGet(GLUT_WINDOW_WIDTH);
 		int winHeight = glutGet(GLUT_WINDOW_HEIGHT);
-		float lookSpeed = 0.8f;
-		mouseAngleX += lookSpeed * dt * float(winWidth / 2 - pxpk::InputsPC::getInstance().getmouseX());
-		mouseAngleY += lookSpeed * dt * float(winHeight / 2 - pxpk::InputsPC::getInstance().getmouseY());
-		glm::vec3 lookDir = glm::vec3(
-			cos(mouseAngleY) * sin(mouseAngleX),
-			sin(mouseAngleY),
-			cos(mouseAngleY) * cos(mouseAngleX)
-		);
-		glm::vec3 rightDir = glm::vec3(
-			sin(mouseAngleX - 3.14f/2.0f),
-			0,
-			cos(mouseAngleX - 3.14f/2.0f)
-		);
+
+		if (pxpk::InputsPC::getInstance().isKeyPressed('q'))
+			lockMouse = false;
+		else
+			lockMouse = true;
+		if (lockMouse)
+		{
+			float lookSpeed = 0.8f;
+			mouseAngleX += lookSpeed * dt * float(winWidth / 2 - pxpk::InputsPC::getInstance().getmouseX());
+			mouseAngleY += lookSpeed * dt * float(winHeight / 2 - pxpk::InputsPC::getInstance().getmouseY());
+			lookDir = glm::vec3(
+				cos(mouseAngleY) * sin(mouseAngleX),
+				sin(mouseAngleY),
+				cos(mouseAngleY) * cos(mouseAngleX)
+			);
+			rightDir = glm::vec3(
+				sin(mouseAngleX - 3.14f / 2.0f),
+				0,
+				cos(mouseAngleX - 3.14f / 2.0f)
+			);
+			glutWarpPointer(winWidth / 2, winHeight / 2);  //reset mouse to center
+		}
 
 		//keyboard movement
 		float moveSpeed = 5.0;
@@ -249,11 +260,6 @@ int main(int argc, char **argv)
 		//set movement & look results ORDER IMPORTANT
 		pxpk::RenderQueue::getInstance().camSetPos(camIndex, camPos);
 		pxpk::RenderQueue::getInstance().camLookat(camIndex, camPos + lookDir);
-
-		if (pxpk::InputsPC::getInstance().isKeyPressed('q'))
-			lockMouse = !lockMouse;
-		if (lockMouse)
-			glutWarpPointer(winWidth / 2, winHeight / 2);  //reset mouse to center
 
 		//manually unlock render queue and signal reader
 		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);

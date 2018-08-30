@@ -205,192 +205,191 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	{
 	case pxpk::RENDER_OBJ_ADD:
 	{
-		addObject(ID);
+		objects.insert({ ID, pxpk::RenderObject() });
 		break;
 	}
 	case pxpk::RENDER_OBJ_REMOVE:
 	{
-		removeObject(ID);
+		objects.erase(ID);
 		break;
 	}
 	case pxpk::RENDER_OBJ_CLEAR:
 	{
-		clearObjects();
+		objects.clear();
 		break;
 	}
 	case pxpk::RENDER_OBJ_LOAD_VERT:
 	{
 		std::vector<GLfloat> payload;
 		event.readPayload(payload);
-		//pxpk::Logger::getInstance().log("Recieved LOAD_VERT with payload: " + std::string(payload.begin(), payload.end()), pxpk::INFO_LOG);
-		setObjVertexBuffer(ID, payload);
+		objects[ID].setVertexVector(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_LOAD_INDEX:
 	{
 		std::vector<GLuint> payload;
 		event.readPayload(payload);
-		setObjElementBuffer(ID, payload);
+		objects[ID].setIndexVector(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_LOAD_COLOR:
 	{
 		std::vector<GLfloat> payload;
 		event.readPayload(payload);
-		setObjColorBuffer(ID, payload);
+		objects[ID].setColorVector(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_COLOR:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		setObjColor(ID, payload);
+		objects[ID].setObjColor(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_POS:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		setObjPosition(ID, payload);
+		objects[ID].setPosition(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_ORIENT:
 	{
 		glm::quat payload;
 		event.readPayload(payload);
-		setObjOrientation(ID, payload);
+		objects[ID].setOrientation(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_ORIENT_EULER:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		setObjOrientationEuler(ID, payload);
+		objects[ID].setOrientationEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_SCALE:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		setObjScale(ID, payload);
+		objects[ID].setScale(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_TRANSLATE:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		translateObj(ID, payload);
+		objects[ID].translate(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_ROTATE:
 	{
 		glm::quat payload;
 		event.readPayload(payload);
-		rotateObj(ID, payload);
+		objects[ID].rotate(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_ROTATE_EULER:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		rotateEulerObj(ID, payload);
+		objects[ID].rotateEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_LOOKAT:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		lookAtObj(ID, payload);
+		objects[ID].lookAt(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_ADD:
 	{
-		addCamera(ID);
+		cameras.insert({ ID, pxpk::Camera() });
 		break;
 	}
 	case pxpk::RENDER_CAM_REMOVE:
 	{
-		removeCamera(ID);
+		cameras.erase(ID);
 		break;
 	}
 	case pxpk::RENDER_CAM_CLEAR:
 	{
-		clearCameras();
+		cameras.clear();
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_POS:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		setCamPosition(ID, payload);
+		cameras[ID].setPosition(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_ORIENT:
 	{
 		glm::quat payload;
 		event.readPayload(payload);
-		setCamOrientation(ID, payload);
+		cameras[ID].setOrientation(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_ORIENT_EULER:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		setCamOrientationEuler(ID, payload);
+		cameras[ID].setOrientationEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_TRANSLATE:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		translateCam(ID, payload);
+		cameras[ID].translate(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_ROTATE:
 	{
 		glm::quat payload;
 		event.readPayload(payload);
-		rotateCam(ID, payload);
+		cameras[ID].rotate(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_ROTATE_EULER:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		rotateEulerCam(ID, payload);
+		cameras[ID].rotateEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_LOOKAT:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		lookAtCam(ID, payload, glm::vec3(0.0f, 1.0f, 0.0f)); //figure out what I want to do with this
+		cameras[ID].lookAt(payload, glm::vec3(0.0f, 1.0f, 0.0f)); //figure out what I want to do with this
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_FOV:
 	{
 		GLfloat payload;
 		event.readPayload(payload);
-		setCamFov(ID, payload);
+		cameras[ID].setFov(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_NEAR:
 	{
 		GLfloat payload;
 		event.readPayload(payload);
-		setCamNearDist(ID, payload);
+		cameras[ID].setNearDist(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_FAR:
 	{
 		GLfloat payload;
 		event.readPayload(payload);
-		setCamFarDist(ID, payload);
+		cameras[ID].setFarDist(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_SET_ACTIVE:
 	{
-		setActiveCam(ID);
+		activeCam = ID;
 		break;
 	}
 	}
@@ -480,149 +479,9 @@ void pxpk::RenderEngine::startEngine(int argc, char **argv, std::string windowNa
 	glutMainLoop();
 }
 
-void pxpk::RenderEngine::addObject(unsigned short id)
-{
-	objects.insert({id, pxpk::RenderObject()});
-}
-
-void pxpk::RenderEngine::addCamera(unsigned short id)
-{
-	cameras.insert({ id, pxpk::Camera() });
-}
-
-void pxpk::RenderEngine::removeObject(unsigned short id)
-{
-	objects.erase(id);
-}
-
-void pxpk::RenderEngine::removeCamera(unsigned short id)
-{
-	cameras.erase(id);
-}
-
-void pxpk::RenderEngine::clearObjects()
-{
-	objects.clear();
-}
-
-void pxpk::RenderEngine::clearCameras()
-{
-	cameras.clear();
-}
-
-void pxpk::RenderEngine::setObjVertexBuffer(unsigned short id, std::vector<GLfloat> input)
-{
-	objects[id].setVertexVector(input);
-}
-
-void pxpk::RenderEngine::setObjElementBuffer(unsigned short id, std::vector<GLuint> input)
-{
-	objects[id].setIndexVector(input);
-}
-
-void pxpk::RenderEngine::setObjColorBuffer(unsigned short id, std::vector<GLfloat> input)
-{
-	objects[id].setColorVector(input);
-}
-
-void pxpk::RenderEngine::setObjColor(unsigned short id, glm::vec3 input)
-{
-	objects[id].setObjColor(input);
-}
-
-void pxpk::RenderEngine::setObjPosition(unsigned short id, glm::vec3 input)
-{
-	objects[id].setPosition(input);
-}
-
-void pxpk::RenderEngine::setObjOrientation(unsigned short id, glm::quat input)
-{
-	objects[id].setOrientation(input);
-}
-
-void pxpk::RenderEngine::setObjOrientationEuler(unsigned short id, glm::vec3 input)
-{
-	objects[id].setOrientationEuler(input);
-}
-
-void pxpk::RenderEngine::setObjScale(unsigned short id, glm::vec3 input)
-{
-	objects[id].setScale(input);
-}
-
-void pxpk::RenderEngine::translateObj(unsigned short id, glm::vec3 input)
-{
-	objects[id].translate(input);
-}
-
-void pxpk::RenderEngine::rotateEulerObj(unsigned short id, glm::vec3 input)
-{
-	objects[id].rotateEuler(input);
-}
-
-void pxpk::RenderEngine::rotateObj(unsigned short id, glm::quat input)
-{
-	objects[id].rotate(input);
-}
-
-void pxpk::RenderEngine::lookAtObj(unsigned short id, glm::vec3 input)
-{
-	objects[id].lookAt(input);
-}
-
 void pxpk::RenderEngine::drawObj(unsigned short id)
 {
 	objects[id].draw();
-}
-
-void pxpk::RenderEngine::setCamPosition(unsigned short id, glm::vec3 input)
-{
-	cameras[id].setPosition(input);
-}
-
-void pxpk::RenderEngine::setCamOrientation(unsigned short id, glm::quat input)
-{
-	cameras[id].setOrientation(input);
-}
-
-void pxpk::RenderEngine::setCamOrientationEuler(unsigned short id, glm::vec3 input)
-{
-	cameras[id].setOrientationEuler(input);
-}
-
-void pxpk::RenderEngine::translateCam(unsigned short id, glm::vec3 input)
-{
-	cameras[id].translate(input);
-}
-
-void pxpk::RenderEngine::rotateEulerCam(unsigned short id, glm::vec3 input)
-{
-	cameras[id].rotateEuler(input);
-}
-
-void pxpk::RenderEngine::rotateCam(unsigned short id, glm::quat input)
-{
-	cameras[id].rotate(input);
-}
-
-void pxpk::RenderEngine::lookAtCam(unsigned short id, glm::vec3 point, glm::vec3 up)
-{
-	cameras[id].lookAt(point, up);
-}
-
-void pxpk::RenderEngine::setCamFov(unsigned short id, GLfloat input)
-{
-	cameras[id].setFov(input);
-}
-
-void pxpk::RenderEngine::setCamNearDist(unsigned short id, GLfloat input)
-{
-	cameras[id].setNearDist(input);
-}
-
-void pxpk::RenderEngine::setCamFarDist(unsigned short id, GLfloat input)
-{
-	cameras[id].setFarDist(input);
 }
 
 pxpk::RenderObject & pxpk::RenderEngine::getObject(unsigned short id)
@@ -634,12 +493,6 @@ pxpk::Camera & pxpk::RenderEngine::getCamera(unsigned short id)
 {
 	return cameras[id];
 }
-
-void pxpk::RenderEngine::setActiveCam(GLuint input)
-{
-	activeCam = input;
-}
-
 
 pxpk::RenderEngine::~RenderEngine()
 {
