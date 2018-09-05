@@ -13,7 +13,7 @@ void pxpk::RenderObject::initVertexBuffer()
 	);
 }
 
-void pxpk::RenderObject::initElementuffer()
+void pxpk::RenderObject::initElementBuffer()
 {
 	glGenBuffers(1, &elementBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
@@ -198,7 +198,7 @@ void pxpk::RenderObject::setIndexVector(std::vector<GLuint> input)
 {
 	indexVector = input;
 
-	initElementuffer();
+	initElementBuffer();
 }
 
 void pxpk::RenderObject::setColorVector(std::vector<GLfloat> input)

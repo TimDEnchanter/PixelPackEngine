@@ -46,7 +46,7 @@ namespace pxpk {
 			GLuint colorBufferID;
 
 			void initVertexBuffer();
-			void initElementuffer();
+			void initElementBuffer();
 			void initColorBuffer();
 			glm::quat quatToVector(glm::vec3, glm::vec3);
 
