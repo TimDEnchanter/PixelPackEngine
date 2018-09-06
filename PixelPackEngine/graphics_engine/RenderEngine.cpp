@@ -509,9 +509,9 @@ void pxpk::RenderEngine::render()
 	if (frameTimer.tickCheckUpdate())
 	{
 		float frameTime = frameTimer.getFrameTime()/1000.0f;
-		system("cls");
-		LOG("Frametime - " + std::to_string(frameTime), pxpk::INFO_LOG);
-		LOG("FPS - " + std::to_string(1.0/frameTime), pxpk::INFO_LOG);
+		//system("cls");
+		//LOG("Frametime - " + std::to_string(frameTime), pxpk::INFO_LOG);
+		//LOG("FPS - " + std::to_string(1.0/frameTime), pxpk::INFO_LOG);
 	}
 
 	if (!pxpk::engineStarted)

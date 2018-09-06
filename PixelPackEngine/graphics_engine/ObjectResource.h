@@ -5,22 +5,23 @@
 #include "../utility/debugging/Logger.h"
 
 #include <string>
+#include <vector>
 
 namespace pxpk
 {
 	class ObjectResource
 	{
-	private:
+	protected:
 		GLuint GLId;
 		std::string sourceFilename;
 
-	protected:
-		virtual void createResource();
+	public:
+		template <typename T> virtual void createResource(std::vector<T>);
+		virtual void bindResource();
 		virtual void deleteResource();
 
-	public:
-		ObjectResource(std::string filename);
-		~ObjectResource();
+		ObjectResource(std::string);
+		virtual ~ObjectResource();
 
 		GLint getGLId();
 	};
