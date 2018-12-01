@@ -13,11 +13,10 @@ namespace pxpk
 	{
 	protected:
 		GLuint GLId;
-		std::string sourceFilename;
 
 	public:
-		template <typename T> virtual void createResource(std::vector<T>);
 		virtual void bindResource();
+		virtual void freeResource();
 		virtual void deleteResource();
 
 		ObjectResource(std::string);

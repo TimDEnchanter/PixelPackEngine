@@ -17,7 +17,8 @@ namespace pxpk {
 	//shader attribute indices
 	const GLuint vertexAttributeID = 0;
 	const GLuint colorAttributeID = 1;
-	const GLuint UVAttributeID = 2;
+	const GLuint normalAttributeID = 2;
+	const GLuint UVAttributeID = 3;
 
 	//window size
 	const int windowWidth = 1280;

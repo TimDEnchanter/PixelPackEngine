@@ -1,16 +1,13 @@
 #include "ObjectResource.h"
 
-template <typename T> void pxpk::ObjectResource::createResource( std::vector<T>)
-{
-	LOG("Using default class for resource creation. please use an inherited class.", pxpk::INFO_LOG);
-}
-
-template void pxpk::ObjectResource::createResource<GLfloat>(std::vector<GLfloat>);
-template void pxpk::ObjectResource::createResource<GLuint>(std::vector<GLuint>);
-
 void pxpk::ObjectResource::bindResource()
 {
 	LOG("Using default class for resource bind. please use an inherited class.", pxpk::INFO_LOG);
+}
+
+void pxpk::ObjectResource::freeResource()
+{
+	LOG("Using default class for resource freeing. please use an inherited class.", pxpk::INFO_LOG);
 }
 
 void pxpk::ObjectResource::deleteResource()
@@ -18,11 +15,12 @@ void pxpk::ObjectResource::deleteResource()
 	LOG("Using default class for resource deletion. please use an inherited class.", pxpk::INFO_LOG);
 }
 
-pxpk::ObjectResource::ObjectResource(std::string filename)
+pxpk::ObjectResource::ObjectResource(std::string filepath)
 {
-	this->sourceFilename = filename;
-	//TODO: read file
-	//createResource(data);
+	//TEMPLATE:
+	// - read file
+	// - create the resource in OpenGL
+	GLId = -1;
 }
 
 pxpk::ObjectResource::~ObjectResource()

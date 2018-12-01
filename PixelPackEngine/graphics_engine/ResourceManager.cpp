@@ -8,9 +8,9 @@ pxpk::ResourceManager::~ResourceManager()
 {
 }
 
-std::shared_ptr<pxpk::ObjectResource> pxpk::ResourceManager::operator[](std::string filename)
+std::shared_ptr<pxpk::ObjectResource> pxpk::ResourceManager::operator[](std::string filepath)
 {
-	auto it = observers.find(filename);
+	auto it = observers.find(filepath);
 	if (it != observers.end())
 	{
 		std::shared_ptr<ObjectResource> found = (*it).second.lock();
@@ -18,8 +18,8 @@ std::shared_ptr<pxpk::ObjectResource> pxpk::ResourceManager::operator[](std::str
 			return found;
 	}
 
-	std::shared_ptr<ObjectResource> newResource = std::make_shared<ObjectResource>(filename);
-	observers[filename] = newResource;
+	std::shared_ptr<ObjectResource> newResource = std::make_shared<ObjectResource>(filepath);
+	observers[filepath] = newResource;
 	return newResource;
 }
 
