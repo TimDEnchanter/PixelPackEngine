@@ -1,7 +1,10 @@
 #ifndef MESH_OBJECT_H
 #define MESH_OBJECT_H
 
+#include <algorithm>
 #include "ObjectResource.h"
+#include "..\dependencies\glm\vec3.hpp"
+#include "..\dependencies\glm\vec2.hpp"
 
 namespace pxpk
 {
