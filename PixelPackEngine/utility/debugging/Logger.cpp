@@ -1,12 +1,8 @@
 #include "Logger.h"
 
-
-
-
 pxpk::Logger::~Logger()
 {
 }
-
 
 void pxpk::Logger::setFileOut(std::string filename)
 {

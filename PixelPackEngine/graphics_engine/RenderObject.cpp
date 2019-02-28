@@ -1,42 +1,5 @@
 #include "RenderObject.h"
 
-void pxpk::RenderObject::initVertexBuffer()
-{
-	LOG("initializing vertex buffer", pxpk::INFO_LOG);
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		vertexVector.size() * sizeof(GLfloat),
-		&vertexVector.front(),
-		GL_STATIC_DRAW
-	);
-}
-
-void pxpk::RenderObject::initElementBuffer()
-{
-	glGenBuffers(1, &elementBufferID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
-	glBufferData(
-		GL_ELEMENT_ARRAY_BUFFER,
-		indexVector.size() * sizeof(GLuint),
-		&indexVector.front(),
-		GL_STATIC_DRAW
-	);
-}
-
-void pxpk::RenderObject::initColorBuffer()
-{
-	glGenBuffers(1, &colorBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		colorVector.size() * sizeof(GLfloat),
-		&colorVector.front(),
-		GL_STATIC_DRAW
-	);
-}
-
 glm::quat pxpk::RenderObject::quatToVector(glm::vec3 start, glm::vec3 dest)
 {
 	start = glm::normalize(start);
@@ -77,13 +40,7 @@ pxpk::RenderObject::RenderObject(const RenderObject & input)
 	orientation = input.orientation;
 	scale = input.scale;
 	drawMode = input.drawMode;
-	objColor = input.objColor;
-	vertexVector = input.vertexVector;
-	indexVector = input.indexVector;
-	colorVector = input.colorVector;
-	vertexBufferID = input.vertexBufferID;
-	elementBufferID = input.elementBufferID;
-	colorBufferID = input.colorBufferID;
+	meshPtr = input.meshPtr;
 }
 
 
@@ -94,11 +51,6 @@ pxpk::RenderObject::~RenderObject()
 GLenum pxpk::RenderObject::getDrawMode()
 {
 	return drawMode;
-}
-
-glm::vec3 pxpk::RenderObject::getObjColor()
-{
-	return objColor;
 }
 
 glm::vec3 pxpk::RenderObject::getPosition()
@@ -121,19 +73,19 @@ glm::vec3 pxpk::RenderObject::getScale()
 	return scale;
 }
 
-std::vector<GLfloat> pxpk::RenderObject::getVertexVector()
+std::shared_ptr<pxpk::MeshObject> pxpk::RenderObject::getMeshPtr()
 {
-	return vertexVector;
+	return meshPtr;
 }
 
-std::vector<GLuint> pxpk::RenderObject::getIndexVector()
+std::shared_ptr<pxpk::TextureObject> pxpk::RenderObject::getTexturePtr()
 {
-	return indexVector;
+	return texPtr;
 }
 
-std::vector<GLfloat> pxpk::RenderObject::getColorVector()
+GLuint pxpk::RenderObject::getProgramID()
 {
-	return colorVector;
+	return programID;
 }
 
 glm::mat4 pxpk::RenderObject::getModelMatrix()
@@ -159,12 +111,8 @@ void pxpk::RenderObject::setDrawMode(GLenum input)
 
 void pxpk::RenderObject::setObjColor(glm::vec3 input)
 {
-	objColor = input;
-
-	size_t numVerts = vertexVector.size() / 3;
-	colorVector.clear();
-	for (int i = 0; i < numVerts; i++) colorVector.insert(colorVector.end(), { objColor.x, objColor.y, objColor.z });
-	initColorBuffer();
+	texPtr->setBaseColor(input);
+	texPtr->setProgramID(programID);
 }
 
 void pxpk::RenderObject::setPosition(glm::vec3 input)
@@ -187,44 +135,19 @@ void pxpk::RenderObject::setScale(glm::vec3 input)
 	scale = input;
 }
 
-void pxpk::RenderObject::setVertexVector(std::vector<GLfloat> input)
+void pxpk::RenderObject::setMeshPtr(std::shared_ptr<MeshObject> input)
 {
-	vertexVector = input;
-
-	initVertexBuffer();
+	meshPtr = input;
 }
 
-void pxpk::RenderObject::setIndexVector(std::vector<GLuint> input)
+void pxpk::RenderObject::setTexturePtr(std::shared_ptr<pxpk::TextureObject> input)
 {
-	indexVector = input;
-
-	initElementBuffer();
+	texPtr = input;
 }
 
-void pxpk::RenderObject::setColorVector(std::vector<GLfloat> input)
+void pxpk::RenderObject::setProgramID(GLuint input)
 {
-	colorVector = input;
-
-	initColorBuffer();
-}
-
-
-void pxpk::RenderObject::freeVertexVector()
-{
-	glDeleteBuffers(1, &vertexBufferID);
-	vertexVector.clear();
-}
-
-void pxpk::RenderObject::freeIndexVector()
-{
-	glDeleteBuffers(1, &elementBufferID);
-	indexVector.clear();
-}
-
-void pxpk::RenderObject::freeColorVector()
-{
-	glDeleteBuffers(1, &colorBufferID);
-	colorVector.clear();
+	programID = input;
 }
 
 void pxpk::RenderObject::translate(glm::vec3 input)
@@ -261,55 +184,23 @@ void pxpk::RenderObject::lookAt(glm::vec3 target)
 
 void pxpk::RenderObject::draw()
 {	
-	//determine sides from drawMode
-	GLint sides = 3; //default to triangles
-	//if (drawMode == GL_QUADS) sides = 4;
+	//bind mesh data
+	meshPtr->bindResource();
 
-	//enable use of vertex attribute
-	glEnableVertexAttribArray(pxpk::vertexAttributeID);
-
-	//set focus to this object's vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-
-	//point attribute to buffer
-	glVertexAttribPointer(
-		pxpk::vertexAttributeID,
-		sides,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-
-
-	//enable use of color attribute
-	glEnableVertexAttribArray(pxpk::colorAttributeID);
-
-	//set focus to this object's color buffer
-	glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
-
-	//point to buffer
-	glVertexAttribPointer(
-		pxpk::colorAttributeID,
-		sides,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
+	//bind texture data
+	texPtr->bindResource();
 	
 	//set focus to element buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshPtr->getIndexID());
 
 	//draw the object
 	glDrawElements(
 		drawMode,
-		indexVector.size(),
+		meshPtr->getIndexSize(),
 		GL_UNSIGNED_INT,
 		(void*)0
 	);
-	
 
-	//disable use of vertex attribute
-	glDisableVertexAttribArray(pxpk::vertexAttributeID);
+	//done with object, release
+	meshPtr->freeResource();
 }

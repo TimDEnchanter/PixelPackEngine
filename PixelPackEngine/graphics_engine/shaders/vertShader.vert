@@ -3,15 +3,15 @@
 #version 330
 
 layout(location = 0) in vec3 vert;
-layout(location = 1) in vec3 vertexColor;
 
-uniform mat4 MVP;
+uniform mat4 Model, View, Projection;
+uniform vec3 objColor;
 
 out vec3 fragColor;
 
 void main()
 {
-	gl_Position = MVP * vec4(vert, 1.0);
+	gl_Position = Projection * View * Model * vec4(vert, 1.0);
 
-	fragColor = vertexColor;
+	fragColor = objColor;
 }

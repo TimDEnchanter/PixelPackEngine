@@ -1,4 +1,4 @@
-#ifndef OBJECT_REsOURCE_H
+#ifndef OBJECT_RESOURCE_H
 #define OBJECT_RESOURCE_H
 
 #include "SharedVariables.h"
@@ -12,7 +12,7 @@ namespace pxpk
 	class ObjectResource
 	{
 	protected:
-		GLuint GLId;
+		std::string filepath;
 
 	public:
 		virtual void bindResource();
@@ -22,7 +22,7 @@ namespace pxpk
 		ObjectResource(std::string);
 		virtual ~ObjectResource();
 
-		GLint getGLId();
+		std::string getFilepath();
 	};
 }
 

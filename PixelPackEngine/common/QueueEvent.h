@@ -47,12 +47,14 @@ namespace pxpk
 			void writePayload(glm::vec3&);
 			void writePayload(glm::quat&);
 			void writePayload(GLfloat&);
+			void writePayload(std::vector<char>&);
 
 			void readPayload(std::vector<GLfloat>&);
 			void readPayload(std::vector<GLuint>&);
 			void readPayload(glm::vec3&);
 			void readPayload(glm::quat&);
 			void readPayload(GLfloat&);
+			void readPayload(std::vector<char>&);
 	};
 }
 

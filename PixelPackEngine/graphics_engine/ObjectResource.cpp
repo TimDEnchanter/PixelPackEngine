@@ -17,10 +17,7 @@ void pxpk::ObjectResource::deleteResource()
 
 pxpk::ObjectResource::ObjectResource(std::string filepath)
 {
-	//TEMPLATE:
-	// - read file
-	// - create the resource in OpenGL
-	GLId = -1;
+	this->filepath = filepath;
 }
 
 pxpk::ObjectResource::~ObjectResource()
@@ -28,7 +25,7 @@ pxpk::ObjectResource::~ObjectResource()
 	deleteResource();
 }
 
-GLint pxpk::ObjectResource::getGLId()
+std::string pxpk::ObjectResource::getFilepath()
 {
-	return GLId;
+	return filepath;
 }

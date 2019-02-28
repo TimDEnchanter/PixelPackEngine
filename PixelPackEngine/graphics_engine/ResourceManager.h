@@ -2,6 +2,8 @@
 #define RESOURCE_MANAGER_H
 
 #include "ObjectResource.h"
+#include "MeshObject.h"
+#include "TextureObject.h"
 
 #include <unordered_map>
 #include <string>
@@ -18,7 +20,10 @@ namespace pxpk
 		ResourceManager();
 		~ResourceManager();
 
-		std::shared_ptr<pxpk::ObjectResource> operator[](std::string);
+		
+		std::shared_ptr<pxpk::MeshObject> addMesh(std::string);
+		std::shared_ptr<pxpk::TextureObject> addTexture(std::string);
+
 		void flushExpired();
 	};
 }

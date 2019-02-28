@@ -10,15 +10,14 @@ Shared Variables
 Set of variables that will be used across the  graphics engine.
 Also contains OpenGL library includes.
 
-****INCLUDE THIS FOR most CLASSES IN GRAPHICS_ENGINE****
+****INCLUDE THIS FOR MOST CLASSES IN GRAPHICS_ENGINE****
 */
 
 namespace pxpk {
 	//shader attribute indices
 	const GLuint vertexAttributeID = 0;
-	const GLuint colorAttributeID = 1;
-	const GLuint normalAttributeID = 2;
-	const GLuint UVAttributeID = 3;
+	const GLuint normalAttributeID = 1;
+	const GLuint UVAttributeID = 2;
 
 	//window size
 	const int windowWidth = 1280;

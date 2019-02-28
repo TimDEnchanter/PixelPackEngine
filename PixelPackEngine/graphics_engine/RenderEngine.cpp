@@ -218,32 +218,28 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		objects.clear();
 		break;
 	}
-	case pxpk::RENDER_OBJ_LOAD_VERT:
-	{
-		std::vector<GLfloat> payload;
-		event.readPayload(payload);
-		objects[ID].setVertexVector(payload);
-		break;
-	}
-	case pxpk::RENDER_OBJ_LOAD_INDEX:
-	{
-		std::vector<GLuint> payload;
-		event.readPayload(payload);
-		objects[ID].setIndexVector(payload);
-		break;
-	}
-	case pxpk::RENDER_OBJ_LOAD_COLOR:
-	{
-		std::vector<GLfloat> payload;
-		event.readPayload(payload);
-		objects[ID].setColorVector(payload);
-		break;
-	}
 	case pxpk::RENDER_OBJ_SET_COLOR:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
 		objects[ID].setObjColor(payload);
+		objects[ID].setProgramID(programID);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_MESH:
+	{
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string file(payload.begin(),payload.end());
+		objects[ID].setMeshPtr(resources.addMesh(file));
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_TEX:
+	{
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string file(payload.begin(), payload.end());
+		objects[ID].setTexturePtr(resources.addTexture(file));
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_POS:
@@ -531,7 +527,13 @@ void pxpk::RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//error check
-	//checkGLError(__FILENAME__, __LINE__);
+	checkGLError(__FILENAME__, __LINE__);
+
+	// tell GL to use the shader program
+	glUseProgram(programID);
+
+	//error check
+	checkGLError(__FILENAME__, __LINE__);
 
 	//wait until writer declares render queue is ready
 	//LOG("Engine is waiting for Render Queue", pxpk::INFO_LOG);
@@ -553,24 +555,20 @@ void pxpk::RenderEngine::render()
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
 		//error check
-		//checkGLError(__FILENAME__, __LINE__);
+		checkGLError(__FILENAME__, __LINE__);
 
 		pxpk::RenderQueue::getInstance().pop();
 	}
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
+	GLuint projectionID = glGetUniformLocation(programID, "Projection");
+	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 
 	glm::mat4 View = cameras[activeCam].getViewMatrix();
-
-	GLuint mvpID = glGetUniformLocation(programID, "MVP");
+	GLuint viewID = glGetUniformLocation(programID, "View");
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 
 	//pxpk::Logger::getInstance().log("drawing objects", pxpk::INFO_LOG);
-
-	// tell GL to use the shader program
-	glUseProgram(programID);
-	
-	//error check
-	//checkGLError(__FILENAME__, __LINE__);
 
 	//wait unitl writer declares draw queue is ready
 	//LOG("Engine is waiting for Draw Queue", pxpk::INFO_LOG);
@@ -593,16 +591,20 @@ void pxpk::RenderEngine::render()
 
 		//get Model matrix from object
 		glm::mat4 Model = objects[ID].getModelMatrix();
+		GLuint modelID = glGetUniformLocation(programID, "Model");
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &Model[0][0]);
 
-		//calulate MVP and send to shader
-		glm::mat4 mvp = Projection * View * Model;
-		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+		GLuint colorID = glGetUniformLocation(programID, "objColor");
+		glUniform3fv(colorID, 1, glm::value_ptr(objects[ID].getTexturePtr()->getBaseColor()));
+
+		//error check
+		checkGLError(__FILENAME__, __LINE__);
 
 		//draw the object
 		objects[ID].draw();
 
 		//error check
-		//checkGLError(__FILENAME__, __LINE__);
+		checkGLError(__FILENAME__, __LINE__);
 
 		pxpk::DrawQueue::getInstance().pop();
 	}

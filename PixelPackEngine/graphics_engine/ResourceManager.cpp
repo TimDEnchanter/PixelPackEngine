@@ -8,17 +8,33 @@ pxpk::ResourceManager::~ResourceManager()
 {
 }
 
-std::shared_ptr<pxpk::ObjectResource> pxpk::ResourceManager::operator[](std::string filepath)
+
+std::shared_ptr<pxpk::MeshObject> pxpk::ResourceManager::addMesh(std::string filepath)
 {
 	auto it = observers.find(filepath);
 	if (it != observers.end())
 	{
-		std::shared_ptr<ObjectResource> found = (*it).second.lock();
+		std::shared_ptr<pxpk::MeshObject> found = std::dynamic_pointer_cast<pxpk::MeshObject> ((*it).second.lock());
 		if (found)
 			return found;
 	}
 
-	std::shared_ptr<ObjectResource> newResource = std::make_shared<ObjectResource>(filepath);
+	std::shared_ptr<pxpk::MeshObject> newResource = std::make_shared<pxpk::MeshObject>(filepath);
+	observers[filepath] = newResource;
+	return newResource;
+}
+
+std::shared_ptr<pxpk::TextureObject> pxpk::ResourceManager::addTexture(std::string filepath)
+{
+	auto it = observers.find(filepath);
+	if (it != observers.end())
+	{
+		std::shared_ptr<pxpk::TextureObject> found = std::dynamic_pointer_cast<pxpk::TextureObject> ((*it).second.lock());
+		if (found)
+			return found;
+	}
+
+	std::shared_ptr<pxpk::TextureObject> newResource = std::make_shared<pxpk::TextureObject>(filepath);
 	observers[filepath] = newResource;
 	return newResource;
 }

@@ -32,28 +32,24 @@ void pxpk::RenderQueue::objClear()
 	this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_CLEAR, 0));
 }
 
-void pxpk::RenderQueue::objLoadVert(unsigned short id, std::vector<GLfloat> input)
-{
-	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_LOAD_VERT, id));
-	writeEvent->writePayload(input);
-}
-
-void pxpk::RenderQueue::objLoadIndx(unsigned short id, std::vector<GLuint> input)
-{
-	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_LOAD_INDEX, id));
-	writeEvent->writePayload(input);
-}
-
-void pxpk::RenderQueue::objLoadColor(unsigned short id, std::vector<GLfloat> input)
-{
-	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_LOAD_COLOR, id));
-	writeEvent->writePayload(input);
-}
-
 void pxpk::RenderQueue::objSetColor(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_COLOR, id));
 	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::objSetMesh(unsigned short id, std::string input)
+{
+	std::vector<char> temp(input.c_str(), input.c_str() + input.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_MESH, id));
+	writeEvent->writePayload(temp);
+}
+
+void pxpk::RenderQueue::objSetTex(unsigned short id, std::string input)
+{
+	std::vector<char> temp(input.c_str(), input.c_str() + input.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_TEX, id));
+	writeEvent->writePayload(temp);
 }
 
 void pxpk::RenderQueue::objSetPos(unsigned short id, glm::vec3 input)

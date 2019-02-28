@@ -4,6 +4,8 @@
 #include "SharedVariables.h"
 #include "RenderObject.h"
 #include "Camera.h"
+#include "MeshObject.h"
+#include "ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
 #include "../dependencies/glm/gtc/matrix_transform.hpp"
@@ -33,6 +35,8 @@ namespace pxpk {
 		private:
 			std::unordered_map<unsigned short, pxpk::RenderObject> objects;
 			std::unordered_map<unsigned short, pxpk::Camera> cameras;
+
+			pxpk::ResourceManager resources;
 
 			unsigned short activeCam = 0;
 

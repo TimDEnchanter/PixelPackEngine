@@ -2,7 +2,6 @@
 
 void pxpk::MeshObject::createResource(
 	std::vector<GLfloat> vertexData, 
-	std::vector<GLfloat> colorData, 
 	std::vector<GLfloat> normalData, 
 	std::vector<GLfloat> uvData, 
 	std::vector<GLuint>  indexData)
@@ -16,16 +15,6 @@ void pxpk::MeshObject::createResource(
 		GL_ARRAY_BUFFER,
 		vertexData.size() * sizeof(GLfloat),
 		&vertexData.front(),
-		GL_STATIC_DRAW
-	);
-
-	//create color buffer
-	glGenBuffers(1, &colorID);
-	glBindBuffer(GL_ARRAY_BUFFER, colorID);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		colorData.size() * sizeof(GLfloat),
-		&colorData.front(),
 		GL_STATIC_DRAW
 	);
 
@@ -58,6 +47,9 @@ void pxpk::MeshObject::createResource(
 		&indexData.front(),
 		GL_STATIC_DRAW
 	);
+
+	//store size of index buffer
+	indexSize = indexData.size();
 }
 
 void pxpk::MeshObject::bindResource()
@@ -69,20 +61,6 @@ void pxpk::MeshObject::bindResource()
 	//point attribute to buffer
 	glVertexAttribPointer(
 		pxpk::vertexAttributeID,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-
-	//enable use of color attribute
-	glEnableVertexAttribArray(pxpk::colorAttributeID);
-	//set focus to this object's color buffer
-	glBindBuffer(GL_ARRAY_BUFFER, colorID);
-	//point attribute to buffer
-	glVertexAttribPointer(
-		pxpk::colorAttributeID,
 		3,
 		GL_FLOAT,
 		GL_FALSE,
@@ -122,21 +100,21 @@ void pxpk::MeshObject::bindResource()
 void pxpk::MeshObject::freeResource()
 {
 	glDisableVertexAttribArray(pxpk::vertexAttributeID);
-	glDisableVertexAttribArray(pxpk::colorAttributeID);
 	glDisableVertexAttribArray(pxpk::normalAttributeID);
 	glDisableVertexAttribArray(pxpk::UVAttributeID);
 }
 
 void pxpk::MeshObject::deleteResource()
 {
-	GLuint buffers[5] = { vertexID, colorID, normalID, uvID, indexID };
-	glDeleteBuffers(5, buffers);
+	GLuint buffers[4] = { vertexID, normalID, uvID, indexID };
+	glDeleteBuffers(4, buffers);
 }
 
 pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 {
+	std::string extension = filepath.substr(filepath.size() - 5, 4);
 	//read file
-	if (filepath.substr(filepath.size() - 4, 4) != ".obj")
+	if (extension != ".obj")
 	{
 		LOG("Cannot load OBJ file: invalid file path " + filepath, pxpk::ERROR_LOG);
 		return;
@@ -158,7 +136,6 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 
 	std::vector<GLuint> indexes;
 	std::vector<GLfloat> vertexes_indexed;
-	std::vector<GLfloat> colors_indexed;
 	std::vector<GLfloat> normals_indexed;
 	std::vector<GLfloat> uvs_indexed;
 
@@ -200,11 +177,11 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 		else if (token == "f")  //face
 		{
 			std::string a, b, c;
-			lineStream >> a_pt;
-			lineStream >> b_pt;
-			lineStream >> c_pt;
+			lineStream >> a;
+			lineStream >> b;
+			lineStream >> c;
 
-			std::string[3] points = { a_pt, b_pt, c_pt };
+			std::string points[3] = { a, b, c };
 
 			int firstDelim, secondDelim;
 			for (const std::string &a : points)
@@ -212,9 +189,12 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 				int a_vert, a_tex, a_norm;
 				firstDelim = a.find_first_of('/');
 				secondDelim = a.find_first_of('/', firstDelim + 1);
-				a_vert = std::stoi(a.substr(0, firstDelim - 1));
-				a_tex = std::stoi(a.substr(firstDelim + 1, (secondDelim - firstDelim) - 1));
-				a_norm = std::stoi(a.substr(secondDelim + 1, a.size()));
+				std::string temp = a.substr(0, firstDelim);
+				a_vert = std::stoi(temp);
+				temp = a.substr(firstDelim + 1, (secondDelim - firstDelim) - 1);
+				a_tex = std::stoi(temp);
+				temp = a.substr(secondDelim + 1, a.size());
+				a_norm = std::stoi(temp);
 
 				//check if already indexed
 				std::vector<glm::vec3>::iterator it = std::find(face_pts.begin(), face_pts.end(), glm::vec3(a_vert, a_tex, a_norm));
@@ -226,18 +206,18 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 				else  //new point
 				{
 					//add vertex
-					vertexes_indexed.push_back(vertexes_unindexed[a_vert].x);
-					vertexes_indexed.push_back(vertexes_unindexed[a_vert].y);
-					vertexes_indexed.push_back(vertexes_unindexed[a_vert].z);
+					vertexes_indexed.push_back(vertexes_unindexed[a_vert-1].x);
+					vertexes_indexed.push_back(vertexes_unindexed[a_vert-1].y);
+					vertexes_indexed.push_back(vertexes_unindexed[a_vert-1].z);
 
 					//add UV
-					uvs_indexed.push_back(uvs_unindexed[a_tex].x);
-					uvs_indexed.push_back(uvs_unindexed[a_tex].y);
+					uvs_indexed.push_back(uvs_unindexed[a_tex-1].x);
+					uvs_indexed.push_back(uvs_unindexed[a_tex-1].y);
 
 					//add normal
-					normals_indexed.push_back(normals_unindexed[a_norm].x);
-					normals_indexed.push_back(normals_unindexed[a_norm].y);
-					normals_indexed.push_back(normals_unindexed[a_norm].z);
+					normals_indexed.push_back(normals_unindexed[a_norm-1].x);
+					normals_indexed.push_back(normals_unindexed[a_norm-1].y);
+					normals_indexed.push_back(normals_unindexed[a_norm-1].z);
 
 					//add index
 					indexes.push_back(indexCount++);
@@ -252,13 +232,35 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 
 	inFile.close();
 
-	//set default color
-	for (int i = 0; i < indexCount; i++) colors_indexed.insert(colors_indexed.end(), { 1.0, 0.0, 0.5 });
-
 	//pass data to OpenGL
-	this->createResource(vertexes_indexed, colors_indexed, normals_indexed, uvs_indexed, indexes);
+	this->createResource(vertexes_indexed, normals_indexed, uvs_indexed, indexes);
 }
 
 pxpk::MeshObject::~MeshObject()
 {
+}
+
+GLuint pxpk::MeshObject::getVertexID()
+{
+	return vertexID;
+}
+
+GLuint pxpk::MeshObject::getNormalID()
+{
+	return normalID;
+}
+
+GLuint pxpk::MeshObject::getUVID()
+{
+	return uvID;
+}
+
+GLuint pxpk::MeshObject::getIndexID()
+{
+	return indexID;
+}
+
+GLsizei pxpk::MeshObject::getIndexSize()
+{
+	return indexSize;
 }

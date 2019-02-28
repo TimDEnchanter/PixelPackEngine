@@ -143,6 +143,15 @@ void pxpk::QueueEvent::writePayload(GLfloat& data)
 		payload);
 }
 
+void pxpk::QueueEvent::writePayload(std::vector<char>& data)
+{
+	payloadSize = sizeof(char)*data.size();
+	payload = new std::uint8_t[payloadSize];
+	std::copy(reinterpret_cast<uint8_t*>(data.data()),
+		reinterpret_cast<uint8_t*>(data.data()) + payloadSize,
+		payload);
+}
+
 void pxpk::QueueEvent::readPayload(std::vector<GLfloat>& dest)
 {
 	dest.resize(payloadSize / sizeof(GLfloat));
@@ -168,4 +177,10 @@ void pxpk::QueueEvent::readPayload(glm::quat& dest)
 void pxpk::QueueEvent::readPayload(GLfloat& dest)
 {
 	std::copy(payload, payload + payloadSize, reinterpret_cast<uint8_t*>(&dest));
+}
+
+void pxpk::QueueEvent::readPayload(std::vector<char>& dest)
+{
+	dest.resize(payloadSize / sizeof(char));
+	std::copy(payload, payload + payloadSize, reinterpret_cast<uint8_t*>(dest.data()));
 }

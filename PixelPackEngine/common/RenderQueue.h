@@ -16,10 +16,9 @@ namespace pxpk
 		RENDER_OBJ_ADD,
 		RENDER_OBJ_REMOVE,
 		RENDER_OBJ_CLEAR,
-		RENDER_OBJ_LOAD_VERT,
-		RENDER_OBJ_LOAD_INDEX,
-		RENDER_OBJ_LOAD_COLOR,
 		RENDER_OBJ_SET_COLOR,
+		RENDER_OBJ_SET_MESH,
+		RENDER_OBJ_SET_TEX,
 		RENDER_OBJ_SET_POS,
 		RENDER_OBJ_SET_ORIENT,
 		RENDER_OBJ_SET_ORIENT_EULER,
@@ -64,10 +63,9 @@ namespace pxpk
 			void objAdd(unsigned short);
 			void objRemove(unsigned short);
 			void objClear();
-			void objLoadVert(unsigned short, std::vector<GLfloat>);
-			void objLoadIndx(unsigned short, std::vector<GLuint>);
-			void objLoadColor(unsigned short, std::vector<GLfloat>);
 			void objSetColor(unsigned short, glm::vec3);
+			void objSetMesh(unsigned short, std::string);
+			void objSetTex(unsigned short, std::string);
 			void objSetPos(unsigned short, glm::vec3);
 			void objSetOrient(unsigned short, glm::quat);
 			void objSetOrientEuler(unsigned short, glm::vec3);

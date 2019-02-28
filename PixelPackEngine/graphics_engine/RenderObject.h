@@ -2,6 +2,7 @@
 #define RENDER_OBJECT_H
 
 #include "SharedVariables.h"
+#include "ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/vec3.hpp"
 #include "../dependencies/glm/mat4x4.hpp"
@@ -9,6 +10,7 @@
 #include "../dependencies/glm/gtc/matrix_transform.hpp"
 
 #include <vector>
+#include <memory>
 
 /*
 RenderObject
@@ -33,21 +35,13 @@ namespace pxpk {
 
 		private:
 			GLenum drawMode = GL_TRIANGLES;                        //draw mode of vertices
-			glm::vec3 objColor = glm::vec3(0.5);                   //base color of the object if no texture
 
-			//vertex and index data for indexed VBO
-			std::vector<GLfloat> vertexVector;
-			std::vector<GLuint> indexVector;
-			std::vector<GLfloat> colorVector;
+			//managed resources
+			std::shared_ptr<pxpk::MeshObject> meshPtr;
+			std::shared_ptr<pxpk::TextureObject> texPtr;
 
-			//buffer IDs
-			GLuint vertexBufferID;
-			GLuint elementBufferID;
-			GLuint colorBufferID;
+			GLuint programID;
 
-			void initVertexBuffer();
-			void initElementBuffer();
-			void initColorBuffer();
 			glm::quat quatToVector(glm::vec3, glm::vec3);
 
 		public:
@@ -56,14 +50,13 @@ namespace pxpk {
 			~RenderObject();
 
 			GLenum getDrawMode();
-			glm::vec3 getObjColor();
 			glm::vec3 getPosition();
 			glm::quat getOrientaion();
 			glm::vec3 getOrientationEuler();
 			glm::vec3 getScale();
-			std::vector<GLfloat> getVertexVector();
-			std::vector<GLuint> getIndexVector();
-			std::vector<GLfloat> getColorVector();
+			std::shared_ptr<pxpk::MeshObject> getMeshPtr();
+			std::shared_ptr<pxpk::TextureObject> getTexturePtr();
+			GLuint getProgramID();
 
 			glm::mat4 getModelMatrix();
 
@@ -73,13 +66,9 @@ namespace pxpk {
 			void setOrientation(glm::quat);
 			void setOrientationEuler(glm::vec3);
 			void setScale(glm::vec3);
-			void setVertexVector(std::vector<GLfloat>);
-			void setIndexVector(std::vector<GLuint>);
-			void setColorVector(std::vector<GLfloat>);
-
-			void freeVertexVector();
-			void freeIndexVector();
-			void freeColorVector();
+			void setMeshPtr(std::shared_ptr<pxpk::MeshObject>);
+			void setTexturePtr(std::shared_ptr<pxpk::TextureObject>);
+			void setProgramID(GLuint);
 
 			void translate(glm::vec3);
 			void rotateEuler(glm::vec3);

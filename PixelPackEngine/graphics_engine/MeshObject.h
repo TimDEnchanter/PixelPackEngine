@@ -12,14 +12,14 @@ namespace pxpk
 	{
 	private:
 		GLuint vertexID;
-		GLuint colorID;
 		GLuint normalID;
 		GLuint uvID;
 		GLuint indexID;
 
+		GLsizei indexSize;
+
 	public:
 		void createResource(
-			std::vector<GLfloat>, 
 			std::vector<GLfloat>, 
 			std::vector<GLfloat>, 
 			std::vector<GLfloat>, 
@@ -31,6 +31,12 @@ namespace pxpk
 
 		MeshObject(std::string);
 		virtual ~MeshObject();
+
+		GLuint getVertexID();
+		GLuint getNormalID();
+		GLuint getUVID();
+		GLuint getIndexID();
+		GLsizei getIndexSize();
 	};
 }
 

@@ -102,17 +102,22 @@ int main(int argc, char **argv)
 	unsigned short floorIndex = 0;
 
 	pxpk::RenderQueue::getInstance().objAdd(floorIndex);
-	pxpk::RenderQueue::getInstance().objLoadVert(floorIndex, planeVerts);
-	pxpk::RenderQueue::getInstance().objLoadIndx(floorIndex, planeIndex);
+	//pxpk::RenderQueue::getInstance().objLoadVert(floorIndex, planeVerts);
+	//pxpk::RenderQueue::getInstance().objLoadIndx(floorIndex, planeIndex);
+	pxpk::RenderQueue::getInstance().objSetMesh(floorIndex, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/plane.obj"));
+	pxpk::RenderQueue::getInstance().objSetTex(floorIndex, std::string("floorTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(floorIndex, glm::vec3(0.0, -2.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(floorIndex, glm::vec3(0.2, 0.2, 0.2));
+	//pxpk::RenderQueue::getInstance().objRot(floorIndex, glm::quat(0.7071068, 0.0, 0.0, 0.7071068));
 
 	//first cube
 	unsigned short tc1Index = 1;
 	
 	pxpk::RenderQueue::getInstance().objAdd(tc1Index);
-	pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
-	pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
+	//pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
+	//pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
+	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("cube1Tex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
 
@@ -121,8 +126,10 @@ int main(int argc, char **argv)
 	//second cube
 	unsigned short tc2Index = 2;
 	pxpk::RenderQueue::getInstance().objAdd(tc2Index);
-	pxpk::RenderQueue::getInstance().objLoadVert(tc2Index, testVerts);
-	pxpk::RenderQueue::getInstance().objLoadIndx(tc2Index, index);
+	//pxpk::RenderQueue::getInstance().objLoadVert(tc2Index, testVerts);
+	//pxpk::RenderQueue::getInstance().objLoadIndx(tc2Index, index);
+	pxpk::RenderQueue::getInstance().objSetMesh(tc2Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc2Index, std::string("cube2Tex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc2Index, glm::vec3(2.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
 
@@ -132,8 +139,10 @@ int main(int argc, char **argv)
 	//third cube
 	unsigned short tc3Index = 3;
 	pxpk::RenderQueue::getInstance().objAdd(tc3Index);
-	pxpk::RenderQueue::getInstance().objLoadVert(tc3Index, testVerts);
-	pxpk::RenderQueue::getInstance().objLoadIndx(tc3Index, index);
+	//pxpk::RenderQueue::getInstance().objLoadVert(tc3Index, testVerts);
+	//pxpk::RenderQueue::getInstance().objLoadIndx(tc3Index, index);
+	pxpk::RenderQueue::getInstance().objSetMesh(tc3Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc3Index, std::string("cube3Tex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc3Index, glm::vec3(0.0, 2.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
 
@@ -142,8 +151,10 @@ int main(int argc, char **argv)
 	//fourth cube
 	unsigned short tc4Index = 4;
 	pxpk::RenderQueue::getInstance().objAdd(tc4Index);
-	pxpk::RenderQueue::getInstance().objLoadVert(tc4Index, testVerts);
-	pxpk::RenderQueue::getInstance().objLoadIndx(tc4Index, index);
+	//pxpk::RenderQueue::getInstance().objLoadVert(tc4Index, testVerts);
+	//pxpk::RenderQueue::getInstance().objLoadIndx(tc4Index, index);
+	pxpk::RenderQueue::getInstance().objSetMesh(tc4Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc4Index, std::string("cube4Tex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc4Index, glm::vec3(0.0, 0.0, 2.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
 
@@ -194,7 +205,7 @@ int main(int argc, char **argv)
 	float mouseAngleY = 0.0;
 	glm::vec3 camPos = glm::vec3(10.0, 10.0, 10.0);
 	bool lockMouse = true;
-	glm::vec3 lookDir = glm::vec3(1.0, 0.0, 0.0);
+	glm::vec3 lookDir = glm::vec3(0.0, -0.5, -0.5);
 	glm::vec3 rightDir = glm::vec3(0.0, 0.0, 1.0);
 
 	//main loop
@@ -230,7 +241,7 @@ int main(int argc, char **argv)
 			lockMouse = true;
 		if (lockMouse)
 		{
-			float lookSpeed = 0.8f;
+			float lookSpeed = 0.5f;
 			mouseAngleX += lookSpeed * dt * float(winWidth / 2 - pxpk::InputsPC::getInstance().getmouseX());
 			mouseAngleY += lookSpeed * dt * float(winHeight / 2 - pxpk::InputsPC::getInstance().getmouseY());
 			lookDir = glm::vec3(
@@ -260,6 +271,9 @@ int main(int argc, char **argv)
 		//set movement & look results ORDER IMPORTANT
 		pxpk::RenderQueue::getInstance().camSetPos(camIndex, camPos);
 		pxpk::RenderQueue::getInstance().camLookat(camIndex, camPos + lookDir);
+
+		if (pxpk::InputsPC::getInstance().isKeyPressed('t'))
+			pxpk::RenderQueue::getInstance().camLookat(camIndex, glm::vec3(0.0));
 
 		//manually unlock render queue and signal reader
 		//LOG("Test is done with Render Queue", pxpk::INFO_LOG);
