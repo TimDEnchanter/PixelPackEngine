@@ -11,7 +11,6 @@ namespace pxpk
 	{
 	private:
 		glm::vec3 baseColor;
-		GLuint programID;
 
 	public:
 		virtual void bindResource();
@@ -22,10 +21,8 @@ namespace pxpk
 		virtual ~TextureObject();
 
 		glm::vec3 getBaseColor();
-		GLuint getProgramID();
 
 		void setBaseColor(glm::vec3);
-		void setProgramID(GLuint);
 	};
 }
 

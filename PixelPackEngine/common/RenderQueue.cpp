@@ -52,6 +52,14 @@ void pxpk::RenderQueue::objSetTex(unsigned short id, std::string input)
 	writeEvent->writePayload(temp);
 }
 
+void pxpk::RenderQueue::objSetShader(unsigned short id, std::string vert, std::string frag)
+{
+	std::string compressed = vert + "|" + frag;
+	std::vector<char> temp(compressed.c_str(), compressed.c_str() + compressed.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_TEX, id));
+	writeEvent->writePayload(temp);
+}
+
 void pxpk::RenderQueue::objSetPos(unsigned short id, glm::vec3 input)
 {
 	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_POS, id));

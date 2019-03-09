@@ -1,6 +1,9 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "../../dependencies/GLEW/include/GL/glew.h"
+#include "../../dependencies/freeGLUT/include/GL/freeglut.h"
+
 #include <string>
 #include <cstring>
 #include <iostream>
@@ -55,9 +58,13 @@ namespace pxpk
 		// message functions
 		void _log(std::string msg, const char *file, int line);
 		void _log(std::string msg, pxpk::LogLevel msgLevel, const char *file, int line);
+
+		//OpenGL logging
+		void _logGL(const char *file, int line);
 	};
 }
 #define __FILENAME__ (strrchr("\\" __FILE__, '\\') + 1)
 #define LOG(MESSAGE, LEVEL) pxpk::Logger::getInstance()._log(MESSAGE, LEVEL, __FILENAME__, __LINE__)
+#define LOG_GL() pxpk::Logger::getInstance()._logGL(__FILENAME__, __LINE__)
 
 #endif // !LOGGER_H

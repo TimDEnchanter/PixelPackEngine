@@ -83,9 +83,9 @@ std::shared_ptr<pxpk::TextureObject> pxpk::RenderObject::getTexturePtr()
 	return texPtr;
 }
 
-GLuint pxpk::RenderObject::getProgramID()
+std::shared_ptr<pxpk::ShaderObject> pxpk::RenderObject::getShaderPtr()
 {
-	return programID;
+	return shaderPtr;
 }
 
 glm::mat4 pxpk::RenderObject::getModelMatrix()
@@ -112,7 +112,6 @@ void pxpk::RenderObject::setDrawMode(GLenum input)
 void pxpk::RenderObject::setObjColor(glm::vec3 input)
 {
 	texPtr->setBaseColor(input);
-	texPtr->setProgramID(programID);
 }
 
 void pxpk::RenderObject::setPosition(glm::vec3 input)
@@ -145,9 +144,9 @@ void pxpk::RenderObject::setTexturePtr(std::shared_ptr<pxpk::TextureObject> inpu
 	texPtr = input;
 }
 
-void pxpk::RenderObject::setProgramID(GLuint input)
+void pxpk::RenderObject::setShaderPtr(std::shared_ptr<pxpk::ShaderObject> input)
 {
-	programID = input;
+	shaderPtr = input;
 }
 
 void pxpk::RenderObject::translate(glm::vec3 input)
@@ -184,11 +183,17 @@ void pxpk::RenderObject::lookAt(glm::vec3 target)
 
 void pxpk::RenderObject::draw()
 {	
+	//set model matrix
+	shaderPtr->setMat4("Model", getModelMatrix());
+
+	//set base color
+	shaderPtr->setVec3("objColor", texPtr->getBaseColor());
+
 	//bind mesh data
 	meshPtr->bindResource();
 
 	//bind texture data
-	texPtr->bindResource();
+	//texPtr->bindResource();
 	
 	//set focus to element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshPtr->getIndexID());
@@ -200,6 +205,8 @@ void pxpk::RenderObject::draw()
 		GL_UNSIGNED_INT,
 		(void*)0
 	);
+
+	LOG_GL();
 
 	//done with object, release
 	meshPtr->freeResource();

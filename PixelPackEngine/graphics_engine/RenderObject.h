@@ -16,12 +16,7 @@
 RenderObject
 
 the 3D object rendered in OpeGL.
-Usually part of another object
 
-NOTE:
-ALL BUFFERS ARE NECESSARY
-ALWAYS CREATE VERTEX BUFFER FIRST
-ALWAYS FREE BUFFERS BEFORE DELETE
 */
 
 namespace pxpk {
@@ -39,8 +34,7 @@ namespace pxpk {
 			//managed resources
 			std::shared_ptr<pxpk::MeshObject> meshPtr;
 			std::shared_ptr<pxpk::TextureObject> texPtr;
-
-			GLuint programID;
+			std::shared_ptr<pxpk::ShaderObject> shaderPtr;
 
 			glm::quat quatToVector(glm::vec3, glm::vec3);
 
@@ -56,7 +50,7 @@ namespace pxpk {
 			glm::vec3 getScale();
 			std::shared_ptr<pxpk::MeshObject> getMeshPtr();
 			std::shared_ptr<pxpk::TextureObject> getTexturePtr();
-			GLuint getProgramID();
+			std::shared_ptr<pxpk::ShaderObject> getShaderPtr();
 
 			glm::mat4 getModelMatrix();
 
@@ -68,7 +62,7 @@ namespace pxpk {
 			void setScale(glm::vec3);
 			void setMeshPtr(std::shared_ptr<pxpk::MeshObject>);
 			void setTexturePtr(std::shared_ptr<pxpk::TextureObject>);
-			void setProgramID(GLuint);
+			void setShaderPtr(std::shared_ptr<pxpk::ShaderObject>);
 
 			void translate(glm::vec3);
 			void rotateEuler(glm::vec3);

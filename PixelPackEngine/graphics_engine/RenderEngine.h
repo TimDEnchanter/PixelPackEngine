@@ -5,6 +5,7 @@
 #include "RenderObject.h"
 #include "Camera.h"
 #include "MeshObject.h"
+#include "ShaderObject.h"
 #include "ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
@@ -40,19 +41,14 @@ namespace pxpk {
 
 			unsigned short activeCam = 0;
 
-			GLuint programID;
-			GLuint vertShaderID;
-			GLuint fragShaderID;
+			std::shared_ptr<ShaderObject> defaultShader;
 
 			pxpk::DeltaTimer frameTimer;
 			int frames;
 
 			void drawObj(unsigned short);
 
-			void loadShaders();
 			void processEvent(pxpk::QueueEvent);
-
-			void checkGLError(const char *file, int line);
 
 		public:
 			RenderEngine();

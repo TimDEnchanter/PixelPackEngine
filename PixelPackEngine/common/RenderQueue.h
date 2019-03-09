@@ -19,6 +19,7 @@ namespace pxpk
 		RENDER_OBJ_SET_COLOR,
 		RENDER_OBJ_SET_MESH,
 		RENDER_OBJ_SET_TEX,
+		REDEDR_OBJ_SET_SHADER,
 		RENDER_OBJ_SET_POS,
 		RENDER_OBJ_SET_ORIENT,
 		RENDER_OBJ_SET_ORIENT_EULER,
@@ -66,6 +67,7 @@ namespace pxpk
 			void objSetColor(unsigned short, glm::vec3);
 			void objSetMesh(unsigned short, std::string);
 			void objSetTex(unsigned short, std::string);
+			void objSetShader(unsigned short, std::string, std::string);
 			void objSetPos(unsigned short, glm::vec3);
 			void objSetOrient(unsigned short, glm::quat);
 			void objSetOrientEuler(unsigned short, glm::vec3);

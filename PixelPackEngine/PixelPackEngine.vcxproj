@@ -34,6 +34,7 @@
     <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
     <ClInclude Include="graphics_engine\Camera.h" />
+    <ClInclude Include="graphics_engine\ShaderObject.h" />
     <ClInclude Include="graphics_engine\TextureObject.h" />
     <ClInclude Include="graphics_engine\MeshObject.h" />
     <ClInclude Include="graphics_engine\ObjectResource.h" />
@@ -56,6 +57,7 @@
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\RenderObject.cpp" />
     <ClCompile Include="graphics_engine\ResourceManager.cpp" />
+    <ClCompile Include="graphics_engine\ShaderObject.cpp" />
     <ClCompile Include="graphics_engine\TextureObject.cpp" />
     <ClCompile Include="testing_utils\test.cpp" />
     <ClCompile Include="utility\debugging\Logger.cpp" />
@@ -111,6 +113,8 @@
     <None Include="dependencies\GLEW\x64\bin\Release\visualinfo.pdb" />
     <None Include="dependencies\GLEW\x64\lib\Debug\glew32d.exp" />
     <None Include="dependencies\GLEW\x64\lib\Release\glew32.exp" />
+    <None Include="graphics_engine\shaders\default.frag" />
+    <None Include="graphics_engine\shaders\default.vert" />
     <None Include="graphics_engine\shaders\fragShader.frag" />
     <None Include="graphics_engine\shaders\vertShader.vert" />
   </ItemGroup>

@@ -86,116 +86,6 @@ pxpk::RenderEngine::RenderEngine()
 	pxpk::renderEngineInstance = this;
 }
 
-void pxpk::RenderEngine::loadShaders()
-{
-	//create shaders
-	vertShaderID = glCreateShader(GL_VERTEX_SHADER);
-	fragShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-	//find working directory
-	char buf[1000];
-	GetModuleFileName(NULL, buf, 1000);
-	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
-	LOG("shader directory: " + dir, pxpk::ERROR_LOG);
-
-	// read vertex shader from file
-	std::string vertCode;
-	std::ifstream vertStream(dir + "/shaders/vertShader.vert", std::ios::in);
-	if (vertStream.is_open())
-	{
-		vertCode = std::string(std::istreambuf_iterator<char>(vertStream), std::istreambuf_iterator<char>());
-		vertStream.close();
-		//pxpk::Logger::getInstance().log(vertCode, pxpk::ERROR_LOG);
-	}
-	else
-	{
-		LOG("unable to open the vertex shader file", pxpk::ERROR_LOG);
-	}
-
-	// read fragment shader from file
-	std::string fragCode;
-	std::ifstream fragStream(dir + "/shaders/fragShader.frag", std::ios::in);
-	if (fragStream.is_open())
-	{
-		fragCode = std::string(std::istreambuf_iterator<char>(fragStream), std::istreambuf_iterator<char>());
-		fragStream.close();
-		//pxpk::Logger::getInstance().log(fragCode, pxpk::ERROR_LOG);
-	}
-	else
-	{
-		LOG("unable to open the fragment shader file", pxpk::ERROR_LOG);
-	}
-
-	// compile vertex shader
-	const char* vertPointer = vertCode.c_str();
-	glShaderSource(vertShaderID, 1, &vertPointer, NULL);
-	glCompileShader(vertShaderID);
-	GLint vertStatus;
-	glGetShaderiv(vertShaderID, GL_COMPILE_STATUS, &vertStatus);
-	if (vertStatus == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetShaderiv(vertShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetShaderInfoLog(vertShaderID, infoLogLength, NULL, strInfoLog);
-
-		std::string logStr = strInfoLog;
-
-		LOG("Compile failure in vertex shader: " + logStr, pxpk::ERROR_LOG);
-		delete[] strInfoLog;
-	}
-
-	// compile fragment shader
-	const char* fragPointer = fragCode.c_str();
-	glShaderSource(fragShaderID, 1, &fragPointer, NULL);
-	glCompileShader(fragShaderID);
-	GLint fragStatus;
-	glGetShaderiv(fragShaderID, GL_COMPILE_STATUS, &fragStatus);
-	if (fragStatus == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetShaderiv(fragShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetShaderInfoLog(fragShaderID, infoLogLength, NULL, strInfoLog);
-
-		std::string logStr = strInfoLog;
-
-		LOG("Compile failure in fragment shader: " + logStr, pxpk::ERROR_LOG);
-		delete[] strInfoLog;
-	}
-
-	// add shaders to program
-	programID = glCreateProgram();
-	glAttachShader(programID, vertShaderID);
-	glAttachShader(programID, fragShaderID);
-
-	// link program to GL
-	glLinkProgram(programID);
-	GLint status;
-	glGetProgramiv(programID, GL_LINK_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetProgramInfoLog(programID, infoLogLength, NULL, strInfoLog);
-		std::string logStr = strInfoLog;
-		LOG("Linker error: " + logStr, pxpk::ERROR_LOG);
-		delete[] strInfoLog;
-	}
-
-	glDetachShader(programID, vertShaderID);
-	glDetachShader(programID, fragShaderID);
-
-	glDeleteShader(vertShaderID);
-	glDeleteShader(fragShaderID);
-
-	LOG("Shaders Loaded", pxpk::INFO_LOG);
-}
-
 void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 {
 	std::uint8_t cmd = event.getType();
@@ -206,6 +96,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	case pxpk::RENDER_OBJ_ADD:
 	{
 		objects.insert({ ID, pxpk::RenderObject() });
+		objects[ID].setShaderPtr(defaultShader);
 		break;
 	}
 	case pxpk::RENDER_OBJ_REMOVE:
@@ -223,7 +114,6 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		glm::vec3 payload;
 		event.readPayload(payload);
 		objects[ID].setObjColor(payload);
-		objects[ID].setProgramID(programID);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_MESH:
@@ -240,6 +130,14 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		std::string file(payload.begin(), payload.end());
 		objects[ID].setTexturePtr(resources.addTexture(file));
+		break;
+	}
+	case pxpk::REDEDR_OBJ_SET_SHADER:
+	{
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string file(payload.begin(), payload.end());
+		objects[ID].setShaderPtr(resources.addShader(file));
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_POS:
@@ -391,34 +289,6 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	}
 }
 
-void pxpk::RenderEngine::checkGLError(const char *file, int line)
-{
-	GLenum err(glGetError());
-
-	while (err != GL_NO_ERROR)
-	{
-		std::string errStr;
-
-		switch (err)
-		{
-		case GL_INVALID_OPERATION: errStr = "OpenGL error - INVALID_OPERATION"; break;
-		case GL_INVALID_ENUM:  errStr = "OpenGL error - INVALID_ENUM"; break;
-		case GL_INVALID_VALUE:  errStr = "OpenGL error - INVALID_VALUE"; break;
-		case GL_OUT_OF_MEMORY:  errStr = "OpenGL error - OUT_OF_MEMORY"; break;
-		case GL_STACK_OVERFLOW:  errStr = "OpenGL error - STACK_OVERFLOW"; break;
-		case GL_STACK_UNDERFLOW:  errStr = "OpenGL error - STACK_UNDERFLOW"; break;
-		case GL_INVALID_FRAMEBUFFER_OPERATION:  errStr = "OpenGL error - INVALID_FRAMEBUFFER_OPERATION"; break;
-		case GL_CONTEXT_LOST:  errStr = "OpenGL error - CONTEXT_LOST"; break;
-		case GL_TABLE_TOO_LARGE:  errStr = "OpenGL error - TABLE_TOO_LARGE"; break;
-		default: errStr = "OpenGL error - Unknown"; break;
-		}
-
-		pxpk::Logger::getInstance()._log(errStr, pxpk::ERROR_LOG, file, line);
-
-		err = glGetError();
-	}
-}
-
 void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 {
 	//glut setup
@@ -455,9 +325,6 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 	GLuint unusedIDs = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIDs, true);
 	LOG("callbacks registered", pxpk::INFO_LOG);
-
-	//load the shaders
-	//loadShaders();
 
 	//start input sampling
 	pxpk::InputsPC::getInstance().initInput();
@@ -512,8 +379,8 @@ void pxpk::RenderEngine::render()
 
 	if (!pxpk::engineStarted)
 	{
-		// load shaders on first run
-		loadShaders();
+		// load default shaders on first run
+		defaultShader = resources.addShader("/shaders/default.vert|/shaders/default.frag");
 
 		LOG("Engine Started", pxpk::INFO_LOG);
 		//signal writer that engine has started
@@ -527,13 +394,8 @@ void pxpk::RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//error check
-	checkGLError(__FILENAME__, __LINE__);
-
-	// tell GL to use the shader program
-	glUseProgram(programID);
-
-	//error check
-	checkGLError(__FILENAME__, __LINE__);
+	//checkGLError(__FILENAME__, __LINE__);
+	LOG_GL();
 
 	//wait until writer declares render queue is ready
 	//LOG("Engine is waiting for Render Queue", pxpk::INFO_LOG);
@@ -555,18 +417,14 @@ void pxpk::RenderEngine::render()
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
 		//error check
-		checkGLError(__FILENAME__, __LINE__);
+		//checkGLError(__FILENAME__, __LINE__);
+		LOG_GL();
 
 		pxpk::RenderQueue::getInstance().pop();
 	}
 
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
-	GLuint projectionID = glGetUniformLocation(programID, "Projection");
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-
 	glm::mat4 View = cameras[activeCam].getViewMatrix();
-	GLuint viewID = glGetUniformLocation(programID, "View");
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 
 	//pxpk::Logger::getInstance().log("drawing objects", pxpk::INFO_LOG);
 
@@ -589,22 +447,26 @@ void pxpk::RenderEngine::render()
 		//fetch ID from queue
 		unsigned short ID = pxpk::DrawQueue::getInstance().read().getID();
 
-		//get Model matrix from object
-		glm::mat4 Model = objects[ID].getModelMatrix();
-		GLuint modelID = glGetUniformLocation(programID, "Model");
-		glUniformMatrix4fv(modelID, 1, GL_FALSE, &Model[0][0]);
+		//fetch shader used for this object
+		std::shared_ptr<pxpk::ShaderObject> shaderPtr = objects[ID].getShaderPtr();
 
-		GLuint colorID = glGetUniformLocation(programID, "objColor");
-		glUniform3fv(colorID, 1, glm::value_ptr(objects[ID].getTexturePtr()->getBaseColor()));
+		//set active shader
+		shaderPtr->use();
+
+		//set camera's projection and view
+		shaderPtr->setMat4("Projection", Projection);
+		shaderPtr->setMat4("View", View);
 
 		//error check
-		checkGLError(__FILENAME__, __LINE__);
+		//checkGLError(__FILENAME__, __LINE__);
+		LOG_GL();
 
 		//draw the object
 		objects[ID].draw();
 
 		//error check
-		checkGLError(__FILENAME__, __LINE__);
+		//checkGLError(__FILENAME__, __LINE__);
+		LOG_GL();
 
 		pxpk::DrawQueue::getInstance().pop();
 	}
