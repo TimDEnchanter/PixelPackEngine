@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\DeltaTimer.h" />
-    <ClInclude Include="common\DoubleBufferQueue.h" />
-    <ClInclude Include="common\DrawQueue.h" />
+    <ClInclude Include="common\queue\DoubleBufferQueue.h" />
+    <ClInclude Include="common\queue\DrawQueue.h" />
     <ClInclude Include="common\Inputs.h" />
-    <ClInclude Include="common\QueueEvent.h" />
-    <ClInclude Include="common\RenderQueue.h" />
+    <ClInclude Include="common\queue\QueueEvent.h" />
+    <ClInclude Include="common\queue\RenderQueue.h" />
     <ClInclude Include="dependencies\freeGLUT\include\GL\freeglut.h" />
     <ClInclude Include="dependencies\freeGLUT\include\GL\freeglut_ext.h" />
     <ClInclude Include="dependencies\freeGLUT\include\GL\freeglut_std.h" />
@@ -33,34 +33,34 @@
     <ClInclude Include="dependencies\GLEW\include\GL\glew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
-    <ClInclude Include="graphics_engine\Camera.h" />
-    <ClInclude Include="graphics_engine\Model.h" />
-    <ClInclude Include="graphics_engine\ShaderObject.h" />
-    <ClInclude Include="graphics_engine\TextureObject.h" />
-    <ClInclude Include="graphics_engine\MeshObject.h" />
-    <ClInclude Include="graphics_engine\ObjectResource.h" />
+    <ClInclude Include="graphics_engine\objects\Camera.h" />
+    <ClInclude Include="graphics_engine\objects\Model.h" />
+    <ClInclude Include="graphics_engine\managedResources\ShaderObject.h" />
+    <ClInclude Include="graphics_engine\managedResources\TextureObject.h" />
+    <ClInclude Include="graphics_engine\managedResources\MeshObject.h" />
+    <ClInclude Include="graphics_engine\managedResources\ObjectResource.h" />
     <ClInclude Include="graphics_engine\RenderEngine.h" />
-    <ClInclude Include="graphics_engine\RenderObject.h" />
-    <ClInclude Include="graphics_engine\ResourceManager.h" />
+    <ClInclude Include="graphics_engine\objects\RenderObject.h" />
+    <ClInclude Include="graphics_engine\managedResources\ResourceManager.h" />
     <ClInclude Include="graphics_engine\SharedVariables.h" />
     <ClInclude Include="utility\debugging\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\DeltaTimer.cpp" />
-    <ClCompile Include="common\DoubleBufferQueue.cpp" />
+    <ClCompile Include="common\queue\DoubleBufferQueue.cpp" />
     <ClCompile Include="common\Inputs.cpp" />
-    <ClCompile Include="common\QueueEvent.cpp" />
-    <ClCompile Include="common\RenderQueue.cpp" />
-    <ClCompile Include="common\DrawQueue.cpp" />
-    <ClCompile Include="graphics_engine\Camera.cpp" />
-    <ClCompile Include="graphics_engine\MeshObject.cpp" />
-    <ClCompile Include="graphics_engine\Model.cpp" />
-    <ClCompile Include="graphics_engine\ObjectResource.cpp" />
+    <ClCompile Include="common\queue\QueueEvent.cpp" />
+    <ClCompile Include="common\queue\RenderQueue.cpp" />
+    <ClCompile Include="common\queue\DrawQueue.cpp" />
+    <ClCompile Include="graphics_engine\objects\Camera.cpp" />
+    <ClCompile Include="graphics_engine\managedResources\MeshObject.cpp" />
+    <ClCompile Include="graphics_engine\objects\Model.cpp" />
+    <ClCompile Include="graphics_engine\managedResources\ObjectResource.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
-    <ClCompile Include="graphics_engine\RenderObject.cpp" />
-    <ClCompile Include="graphics_engine\ResourceManager.cpp" />
-    <ClCompile Include="graphics_engine\ShaderObject.cpp" />
-    <ClCompile Include="graphics_engine\TextureObject.cpp" />
+    <ClCompile Include="graphics_engine\objects\RenderObject.cpp" />
+    <ClCompile Include="graphics_engine\managedResources\ResourceManager.cpp" />
+    <ClCompile Include="graphics_engine\managedResources\TextureObject.cpp" />
+    <ClCompile Include="graphics_engine\managedResources\ShaderObject.cpp" />
     <ClCompile Include="testing_utils\test.cpp" />
     <ClCompile Include="utility\debugging\Logger.cpp" />
   </ItemGroup>

@@ -3,8 +3,8 @@
 
 #include <algorithm>
 #include "ObjectResource.h"
-#include "..\dependencies\glm\vec3.hpp"
-#include "..\dependencies\glm\vec2.hpp"
+#include "..\..\dependencies\glm\vec3.hpp"
+#include "..\..\dependencies\glm\vec2.hpp"
 
 namespace pxpk
 {

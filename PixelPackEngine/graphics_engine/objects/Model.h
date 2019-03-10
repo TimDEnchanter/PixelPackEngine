@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include "RenderObject.h"
+#include "../managedResources/ResourceManager.h"
 
 namespace pxpk
 {

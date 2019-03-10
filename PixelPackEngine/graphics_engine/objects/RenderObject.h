@@ -1,13 +1,12 @@
 #ifndef RENDER_OBJECT_H
 #define RENDER_OBJECT_H
 
-#include "SharedVariables.h"
-#include "ResourceManager.h"
-#include "../utility/debugging/Logger.h"
-#include "../dependencies/glm/vec3.hpp"
-#include "../dependencies/glm/mat4x4.hpp"
-#include "../dependencies/glm/gtc/quaternion.hpp"
-#include "../dependencies/glm/gtc/matrix_transform.hpp"
+#include "../SharedVariables.h"
+#include "../../utility/debugging/Logger.h"
+#include "../../dependencies/glm/vec3.hpp"
+#include "../../dependencies/glm/mat4x4.hpp"
+#include "../../dependencies/glm/gtc/quaternion.hpp"
+#include "../../dependencies/glm/gtc/matrix_transform.hpp"
 
 #include <vector>
 #include <memory>
@@ -52,8 +51,6 @@ namespace pxpk {
 			void rotateEuler(glm::vec3);
 			void rotate(glm::quat);
 			virtual void lookAt(glm::vec3);
-
-			virtual void draw();
 	};
 }
 #endif // !RENDER_OBJECT_H

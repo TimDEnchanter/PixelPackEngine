@@ -440,7 +440,7 @@ void pxpk::RenderEngine::render()
 		//fetch ID from queue
 		unsigned short ID = pxpk::DrawQueue::getInstance().read().getID();
 
-		//fetch shader used for this object
+		//fetch shader used for this model
 		std::shared_ptr<pxpk::ShaderObject> shaderPtr = models[ID].getShaderPtr();
 
 		//set active shader
@@ -453,7 +453,7 @@ void pxpk::RenderEngine::render()
 		//error check
 		LOG_GL();
 
-		//draw the object
+		//draw the model
 		models[ID].draw();
 
 		//error check

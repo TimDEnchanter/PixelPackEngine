@@ -2,17 +2,15 @@
 #define RENDER_ENGINE_H
 
 #include "SharedVariables.h"
-#include "RenderObject.h"
-#include "Camera.h"
-#include "Model.h"
-#include "MeshObject.h"
-#include "ShaderObject.h"
-#include "ResourceManager.h"
+#include "objects/RenderObject.h"
+#include "objects/Camera.h"
+#include "objects/Model.h"
+#include "managedResources/ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
 #include "../dependencies/glm/gtc/matrix_transform.hpp"
-#include "../common/RenderQueue.h"
-#include "../common/DrawQueue.h"
+#include "../common/queue/RenderQueue.h"
+#include "../common/queue/DrawQueue.h"
 #include "../common/DeltaTimer.h"
 #include "../common/Inputs.h"
 

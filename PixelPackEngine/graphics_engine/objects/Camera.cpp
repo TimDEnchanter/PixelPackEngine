@@ -46,11 +46,6 @@ void pxpk::Camera::init()
 
 }
 
-void pxpk::Camera::draw()
-{
-
-}
-
 glm::mat4 pxpk::Camera::getProjectionMatrix()
 {
 	glm::mat4 projectionOut = glm::perspective(

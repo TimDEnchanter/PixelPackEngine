@@ -133,8 +133,3 @@ void pxpk::RenderObject::lookAt(glm::vec3 target)
 	//ORDER IMPORTANT
 	orientation = upRotation * rotation;
 }
-
-void pxpk::RenderObject::draw()
-{	
-
-}

@@ -21,13 +21,3 @@ pxpk::TextureObject::TextureObject(std::string filepath) : ObjectResource(filepa
 pxpk::TextureObject::~TextureObject()
 {
 }
-
-//glm::vec3 pxpk::TextureObject::getBaseColor()
-//{
-//	return baseColor;
-//}
-//
-//void pxpk::TextureObject::setBaseColor(glm::vec3 input)
-//{
-//	baseColor = input;
-//}

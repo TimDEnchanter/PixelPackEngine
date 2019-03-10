@@ -8,9 +8,9 @@
 #include <algorithm>
 #include <memory>
 
-#include "../dependencies/freeGLUT/include/GL/freeglut.h"
-#include "../dependencies/glm/vec3.hpp"
-#include "../dependencies/glm/gtc/quaternion.hpp"
+#include "../../dependencies/freeGLUT/include/GL/freeglut.h"
+#include "../../dependencies/glm/vec3.hpp"
+#include "../../dependencies/glm/gtc/quaternion.hpp"
 
 namespace pxpk
 {

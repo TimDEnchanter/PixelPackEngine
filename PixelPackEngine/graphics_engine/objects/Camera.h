@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "SharedVariables.h"
+#include "../SharedVariables.h"
 #include "RenderObject.h"
 
 /*
@@ -34,7 +34,6 @@ namespace pxpk
 
 		virtual void lookAt(glm::vec3, glm::vec3);
 		virtual void init();
-		virtual void draw();
 
 		glm::mat4 getProjectionMatrix();
 		glm::mat4 getViewMatrix();

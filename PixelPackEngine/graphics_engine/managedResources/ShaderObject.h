@@ -2,8 +2,8 @@
 #define SHADER_OBJECT_H
 
 #include "ObjectResource.h"
-#include "../dependencies/glm/vec3.hpp"
-#include "../dependencies/glm/mat4x4.hpp"
+#include "../../dependencies/glm/vec3.hpp"
+#include "../../dependencies/glm/mat4x4.hpp"
 
 namespace pxpk 
 {

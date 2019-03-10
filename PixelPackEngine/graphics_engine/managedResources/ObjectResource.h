@@ -1,8 +1,8 @@
 #ifndef OBJECT_RESOURCE_H
 #define OBJECT_RESOURCE_H
 
-#include "SharedVariables.h"
-#include "../utility/debugging/Logger.h"
+#include "../SharedVariables.h"
+#include "../../utility/debugging/Logger.h"
 
 #include <string>
 #include <vector>
