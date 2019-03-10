@@ -34,6 +34,7 @@
     <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
     <ClInclude Include="graphics_engine\Camera.h" />
+    <ClInclude Include="graphics_engine\Model.h" />
     <ClInclude Include="graphics_engine\ShaderObject.h" />
     <ClInclude Include="graphics_engine\TextureObject.h" />
     <ClInclude Include="graphics_engine\MeshObject.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="common\DrawQueue.cpp" />
     <ClCompile Include="graphics_engine\Camera.cpp" />
     <ClCompile Include="graphics_engine\MeshObject.cpp" />
+    <ClCompile Include="graphics_engine\Model.cpp" />
     <ClCompile Include="graphics_engine\ObjectResource.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\RenderObject.cpp" />

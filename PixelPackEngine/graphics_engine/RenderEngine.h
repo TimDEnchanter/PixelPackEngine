@@ -4,6 +4,7 @@
 #include "SharedVariables.h"
 #include "RenderObject.h"
 #include "Camera.h"
+#include "Model.h"
 #include "MeshObject.h"
 #include "ShaderObject.h"
 #include "ResourceManager.h"
@@ -34,7 +35,7 @@ namespace pxpk {
 	class RenderEngine
 	{
 		private:
-			std::unordered_map<unsigned short, pxpk::RenderObject> objects;
+			std::unordered_map<unsigned short, pxpk::Model> models;
 			std::unordered_map<unsigned short, pxpk::Camera> cameras;
 
 			pxpk::ResourceManager resources;
@@ -46,8 +47,6 @@ namespace pxpk {
 			pxpk::DeltaTimer frameTimer;
 			int frames;
 
-			void drawObj(unsigned short);
-
 			void processEvent(pxpk::QueueEvent);
 
 		public:
@@ -56,7 +55,7 @@ namespace pxpk {
 
 			unsigned short getActiveCam();
 
-			pxpk::RenderObject & getObject(unsigned short);
+			pxpk::Model & getModel(unsigned short);
 			pxpk::Camera & getCamera(unsigned short);
 
 			void init(int argc, char **argv, std::string windowName);

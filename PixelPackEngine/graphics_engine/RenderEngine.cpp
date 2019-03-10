@@ -95,25 +95,25 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	{
 	case pxpk::RENDER_OBJ_ADD:
 	{
-		objects.insert({ ID, pxpk::RenderObject() });
-		objects[ID].setShaderPtr(defaultShader);
+		models.insert({ ID, pxpk::Model() });
+		models[ID].setShaderPtr(defaultShader);
 		break;
 	}
 	case pxpk::RENDER_OBJ_REMOVE:
 	{
-		objects.erase(ID);
+		models.erase(ID);
 		break;
 	}
 	case pxpk::RENDER_OBJ_CLEAR:
 	{
-		objects.clear();
+		models.clear();
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_COLOR:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].setObjColor(payload);
+		models[ID].setBaseColor(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_MESH:
@@ -121,7 +121,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		std::vector<char> payload;
 		event.readPayload(payload);
 		std::string file(payload.begin(),payload.end());
-		objects[ID].setMeshPtr(resources.addMesh(file));
+		models[ID].setMeshPtr(resources.addMesh(file));
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_TEX:
@@ -129,7 +129,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		std::vector<char> payload;
 		event.readPayload(payload);
 		std::string file(payload.begin(), payload.end());
-		objects[ID].setTexturePtr(resources.addTexture(file));
+		models[ID].setTexturePtr(resources.addTexture(file));
 		break;
 	}
 	case pxpk::REDEDR_OBJ_SET_SHADER:
@@ -137,63 +137,63 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		std::vector<char> payload;
 		event.readPayload(payload);
 		std::string file(payload.begin(), payload.end());
-		objects[ID].setShaderPtr(resources.addShader(file));
+		models[ID].setShaderPtr(resources.addShader(file));
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_POS:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].setPosition(payload);
+		models[ID].setPosition(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_ORIENT:
 	{
 		glm::quat payload;
 		event.readPayload(payload);
-		objects[ID].setOrientation(payload);
+		models[ID].setOrientation(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_ORIENT_EULER:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].setOrientationEuler(payload);
+		models[ID].setOrientationEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_SCALE:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].setScale(payload);
+		models[ID].setScale(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_TRANSLATE:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].translate(payload);
+		models[ID].translate(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_ROTATE:
 	{
 		glm::quat payload;
 		event.readPayload(payload);
-		objects[ID].rotate(payload);
+		models[ID].rotate(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_ROTATE_EULER:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].rotateEuler(payload);
+		models[ID].rotateEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_LOOKAT:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		objects[ID].lookAt(payload);
+		models[ID].lookAt(payload);
 		break;
 	}
 	case pxpk::RENDER_CAM_ADD:
@@ -342,14 +342,9 @@ void pxpk::RenderEngine::startEngine(int argc, char **argv, std::string windowNa
 	glutMainLoop();
 }
 
-void pxpk::RenderEngine::drawObj(unsigned short id)
+pxpk::Model & pxpk::RenderEngine::getModel(unsigned short id)
 {
-	objects[id].draw();
-}
-
-pxpk::RenderObject & pxpk::RenderEngine::getObject(unsigned short id)
-{
-	return objects[id];
+	return models[id];
 }
 
 pxpk::Camera & pxpk::RenderEngine::getCamera(unsigned short id)
@@ -394,7 +389,6 @@ void pxpk::RenderEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//error check
-	//checkGLError(__FILENAME__, __LINE__);
 	LOG_GL();
 
 	//wait until writer declares render queue is ready
@@ -417,7 +411,6 @@ void pxpk::RenderEngine::render()
 		QueueEvent event = pxpk::RenderQueue::getInstance().read();
 		processEvent(event);
 		//error check
-		//checkGLError(__FILENAME__, __LINE__);
 		LOG_GL();
 
 		pxpk::RenderQueue::getInstance().pop();
@@ -448,7 +441,7 @@ void pxpk::RenderEngine::render()
 		unsigned short ID = pxpk::DrawQueue::getInstance().read().getID();
 
 		//fetch shader used for this object
-		std::shared_ptr<pxpk::ShaderObject> shaderPtr = objects[ID].getShaderPtr();
+		std::shared_ptr<pxpk::ShaderObject> shaderPtr = models[ID].getShaderPtr();
 
 		//set active shader
 		shaderPtr->use();
@@ -458,14 +451,12 @@ void pxpk::RenderEngine::render()
 		shaderPtr->setMat4("View", View);
 
 		//error check
-		//checkGLError(__FILENAME__, __LINE__);
 		LOG_GL();
 
 		//draw the object
-		objects[ID].draw();
+		models[ID].draw();
 
 		//error check
-		//checkGLError(__FILENAME__, __LINE__);
 		LOG_GL();
 
 		pxpk::DrawQueue::getInstance().pop();

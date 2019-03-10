@@ -29,13 +29,6 @@ namespace pxpk {
 			glm::vec3 scale = glm::vec3(1.0);
 
 		private:
-			GLenum drawMode = GL_TRIANGLES;                        //draw mode of vertices
-
-			//managed resources
-			std::shared_ptr<pxpk::MeshObject> meshPtr;
-			std::shared_ptr<pxpk::TextureObject> texPtr;
-			std::shared_ptr<pxpk::ShaderObject> shaderPtr;
-
 			glm::quat quatToVector(glm::vec3, glm::vec3);
 
 		public:
@@ -43,26 +36,17 @@ namespace pxpk {
 			RenderObject(const RenderObject&);
 			~RenderObject();
 
-			GLenum getDrawMode();
 			glm::vec3 getPosition();
 			glm::quat getOrientaion();
 			glm::vec3 getOrientationEuler();
 			glm::vec3 getScale();
-			std::shared_ptr<pxpk::MeshObject> getMeshPtr();
-			std::shared_ptr<pxpk::TextureObject> getTexturePtr();
-			std::shared_ptr<pxpk::ShaderObject> getShaderPtr();
 
 			glm::mat4 getModelMatrix();
 
-			void setDrawMode(GLenum);
-			void setObjColor(glm::vec3);
 			void setPosition(glm::vec3);
 			void setOrientation(glm::quat);
 			void setOrientationEuler(glm::vec3);
 			void setScale(glm::vec3);
-			void setMeshPtr(std::shared_ptr<pxpk::MeshObject>);
-			void setTexturePtr(std::shared_ptr<pxpk::TextureObject>);
-			void setShaderPtr(std::shared_ptr<pxpk::ShaderObject>);
 
 			void translate(glm::vec3);
 			void rotateEuler(glm::vec3);

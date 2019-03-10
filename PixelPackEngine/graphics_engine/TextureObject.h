@@ -10,7 +10,6 @@ namespace pxpk
 	class TextureObject : public ObjectResource
 	{
 	private:
-		glm::vec3 baseColor;
 
 	public:
 		virtual void bindResource();
@@ -19,10 +18,6 @@ namespace pxpk
 
 		TextureObject(std::string);
 		virtual ~TextureObject();
-
-		glm::vec3 getBaseColor();
-
-		void setBaseColor(glm::vec3);
 	};
 }
 

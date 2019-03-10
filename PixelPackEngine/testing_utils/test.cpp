@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
 	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
-	pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("cube1Tex"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
 
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc2Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc2Index, index);
 	pxpk::RenderQueue::getInstance().objSetMesh(tc2Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
-	pxpk::RenderQueue::getInstance().objSetTex(tc2Index, std::string("cube2Tex"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc2Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc2Index, glm::vec3(2.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
 
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc3Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc3Index, index);
 	pxpk::RenderQueue::getInstance().objSetMesh(tc3Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
-	pxpk::RenderQueue::getInstance().objSetTex(tc3Index, std::string("cube3Tex"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc3Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc3Index, glm::vec3(0.0, 2.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
 
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc4Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc4Index, index);
 	pxpk::RenderQueue::getInstance().objSetMesh(tc4Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
-	pxpk::RenderQueue::getInstance().objSetTex(tc4Index, std::string("cube4Tex"));
+	pxpk::RenderQueue::getInstance().objSetTex(tc4Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc4Index, glm::vec3(0.0, 0.0, 2.0));
 	pxpk::RenderQueue::getInstance().objSetColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
 
