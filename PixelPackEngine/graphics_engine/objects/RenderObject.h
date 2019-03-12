@@ -23,8 +23,8 @@ namespace pxpk {
 	class RenderObject
 	{
 		protected:
-			glm::vec3 position = glm::vec3();                      //location of origin point
-			glm::quat orientation = glm::quat(0.0, 0.0, 0.0, 1.0); //orientation in quaternions
+			glm::vec3 position = glm::vec3();    //location of origin point
+			glm::quat orientation = glm::quat(1.0, 0.0, 0.0, 0.0); //orientation in quaternions
 			glm::vec3 scale = glm::vec3(1.0);
 
 		private:

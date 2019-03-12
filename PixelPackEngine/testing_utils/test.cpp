@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(tc1Index);
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
-	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/bunny.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/suzanne.obj"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("cubeTex"));
 	//pxpk::RenderQueue::getInstance().objSetShader(tc1Index, std::string("/shaders/noLighting.vert"), std::string("/shaders/noLighting.frag"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));

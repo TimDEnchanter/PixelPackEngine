@@ -10,8 +10,8 @@ namespace pxpk
 	private:
 		//attenuation rate values
 		float constant = 1.0f;
-		float linear = 0.045f;
-		float quadratic = 0.0075f;
+		float linear = 0.022f;
+		float quadratic = 0.0019f;
 
 	public:
 		float getConstant();
