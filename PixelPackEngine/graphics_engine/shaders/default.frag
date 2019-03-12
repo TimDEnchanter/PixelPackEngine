@@ -2,10 +2,85 @@
 
 #version 330
 
-in vec3 fragColor;
-out vec3 outColor;
+struct PointLight {
+	vec3 position;
+
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+
+	float constant;
+	float linear;
+	float quadratic;
+};
+#define MAX_POINT_LIGHTS 100
+
+struct Material {
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+};
+
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform int numPointLights;
+uniform Material material;
+
+in vec3 viewPos;
+
+in vec3 vertPos;
+in vec3 vertNorm;
+
+out vec4 fragColor;
+
+vec3 addPointLight(PointLight light, vec3 normal, vec3 vertPos, vec3 viewDir)
+{
+	//find light vector
+	vec3 lightDir = normalize(light.position - vertPos);
+
+	//calculate diffuse intensity
+	float diff = clamp( dot(normal, lightDir), 0.0, 1.0 );
+
+	//calculate specular intensity
+	float spec;
+	if ( dot(normal, lightDir) < 0.0)
+	{
+		spec = 0.0;  //wrong side
+	}
+	else
+	{
+		vec3 reflectDir = reflect(-lightDir, normal);
+		spec = pow( max( dot(reflectDir, viewDir), 0.0 ), material.shininess );
+	}
+
+	//calculate attenuation intensity
+	float lightDist = length( light.position - vertPos );
+	float atten = 1.0 / ( light.constant + light.linear * lightDist + light.quadratic * (lightDist * lightDist) );
+
+	//combine
+	vec3 ambient = light.ambient * material.ambient;
+	vec3 diffuse = light.diffuse * diff * material.diffuse;
+	vec3 specular = light.specular * spec * material.specular;
+	ambient *= atten;
+	diffuse *= atten;
+	specular *= atten;
+
+	return( ambient + diffuse + specular );
+}
 
 void main()
 {
-	outColor = fragColor;
+	//normalize properties
+	vec3 normalized = normalize(vertNorm);
+	vec3 viewDir = normalize(viewPos - vertPos);
+
+	//base value
+	vec3 output = vec3(0.0);
+
+	//add point lights
+	for (int i=0; i<numPointLights; i++)
+		output += addPointLight(pointLights[i], normalized, vertPos, viewDir);
+
+	fragColor = vec4(output, 1.0);
+	//fragColor = vec4(normalized, 1.0);
 }

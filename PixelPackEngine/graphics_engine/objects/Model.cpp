@@ -5,9 +5,24 @@ GLenum pxpk::Model::getDrawMode()
 	return drawMode;
 }
 
-glm::vec3 pxpk::Model::getBaseColor()
+glm::vec3 pxpk::Model::getAmbient()
 {
-	return baseColor;
+	return ambient;
+}
+
+glm::vec3 pxpk::Model::getDiffuse()
+{
+	return diffuse;
+}
+
+glm::vec3 pxpk::Model::getSpecular()
+{
+	return specular;
+}
+
+float pxpk::Model::getShininess()
+{
+	return shininess;
 }
 
 std::shared_ptr<pxpk::MeshObject> pxpk::Model::getMeshPtr()
@@ -30,9 +45,24 @@ void pxpk::Model::setDrawMode(GLenum input)
 	drawMode = input;
 }
 
-void pxpk::Model::setBaseColor(glm::vec3 input)
+void pxpk::Model::setAmbient(glm::vec3 input)
 {
-	baseColor = input;
+	ambient = input;
+}
+
+void pxpk::Model::setDiffuse(glm::vec3 input)
+{
+	diffuse = input;
+}
+
+void pxpk::Model::setSpecular(glm::vec3 input)
+{
+	specular = input;
+}
+
+void pxpk::Model::setShininess(float input)
+{
+	shininess = input;
 }
 
 void pxpk::Model::setMeshPtr(std::shared_ptr<pxpk::MeshObject> input)
@@ -52,11 +82,17 @@ void pxpk::Model::setShaderPtr(std::shared_ptr<pxpk::ShaderObject> input)
 
 void pxpk::Model::draw()
 {
+	//set current shader
+	shaderPtr->use();
+
 	//set model matrix
 	shaderPtr->setMat4("Model", getModelMatrix());
 
-	//set base color
-	shaderPtr->setVec3("objColor", baseColor);
+	//set material
+	shaderPtr->setVec3("material.ambient", ambient);
+	shaderPtr->setVec3("material.diffuse", diffuse);
+	shaderPtr->setVec3("material.specular", specular);
+	shaderPtr->setFloat("material.shininess", shininess);
 
 	//bind mesh data
 	meshPtr->bindResource();

@@ -21,6 +21,7 @@ namespace pxpk
 		ResourceManager();
 		~ResourceManager();
 
+		std::unordered_map < std::string, std::weak_ptr<pxpk::ObjectResource> > getMap();
 		
 		std::shared_ptr<pxpk::MeshObject> addMesh(std::string);
 		std::shared_ptr<pxpk::TextureObject> addTexture(std::string);

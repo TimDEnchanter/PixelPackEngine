@@ -5,6 +5,8 @@
 #include "objects/RenderObject.h"
 #include "objects/Camera.h"
 #include "objects/Model.h"
+#include "objects/lights/Light.h"
+#include "objects/lights/PointLight.h"
 #include "managedResources/ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
@@ -35,8 +37,11 @@ namespace pxpk {
 		private:
 			std::unordered_map<unsigned short, pxpk::Model> models;
 			std::unordered_map<unsigned short, pxpk::Camera> cameras;
+			std::unordered_map<unsigned short, pxpk::PointLight> pointLights;
 
-			pxpk::ResourceManager resources;
+			pxpk::ResourceManager meshes;
+			pxpk::ResourceManager shaders;
+			pxpk::ResourceManager textures;
 
 			unsigned short activeCam = 0;
 
@@ -55,6 +60,7 @@ namespace pxpk {
 
 			pxpk::Model & getModel(unsigned short);
 			pxpk::Camera & getCamera(unsigned short);
+			pxpk::Light & getLight(unsigned short);
 
 			void init(int argc, char **argv, std::string windowName);
 			void startEngine(int argc, char **argv, std::string windowName);

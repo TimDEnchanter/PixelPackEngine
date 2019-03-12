@@ -13,13 +13,10 @@ namespace pxpk
 
 	enum RenderType : std::uint8_t
 	{
+		//object
 		RENDER_OBJ_ADD,
 		RENDER_OBJ_REMOVE,
 		RENDER_OBJ_CLEAR,
-		RENDER_OBJ_SET_COLOR,
-		RENDER_OBJ_SET_MESH,
-		RENDER_OBJ_SET_TEX,
-		REDEDR_OBJ_SET_SHADER,
 		RENDER_OBJ_SET_POS,
 		RENDER_OBJ_SET_ORIENT,
 		RENDER_OBJ_SET_ORIENT_EULER,
@@ -28,6 +25,14 @@ namespace pxpk
 		RENDER_OBJ_ROTATE,
 		RENDER_OBJ_ROTATE_EULER,
 		RENDER_OBJ_LOOKAT,
+		RENDER_OBJ_SET_AMBI,
+		RENDER_OBJ_SET_DIFF,
+		RENDER_OBJ_SET_SPEC,
+		RENDER_OBJ_SET_SHINE,
+		RENDER_OBJ_SET_MESH,
+		RENDER_OBJ_SET_TEX,
+		RENDER_OBJ_SET_SHADER,
+		//camera
 		RENDER_CAM_ADD,
 		RENDER_CAM_REMOVE,
 		RENDER_CAM_CLEAR,
@@ -41,7 +46,26 @@ namespace pxpk
 		RENDER_CAM_SET_FOV,
 		RENDER_CAM_SET_NEAR,
 		RENDER_CAM_SET_FAR,
-		RENDER_CAM_SET_ACTIVE
+		RENDER_CAM_SET_ACTIVE,
+		//light
+		RENDER_LIGHT_REMOVE,
+		RENDER_LIGHT_CLEAR,
+		RENDER_LIGHT_SET_POS,
+		RENDER_LIGHT_SET_ORIENT,
+		RENDER_LIGHT_SET_ORIENT_EULER,
+		RENDER_LIGHT_TRANSLATE,
+		RENDER_LIGHT_ROTATE,
+		RENDER_LIGHT_ROTATE_EULER,
+		RENDER_LIGHT_LOOKAT,
+		RENDER_LIGHT_SET_SHADER,
+		RENDER_LIGHT_SET_AMBI,
+		RENDER_LIGHT_SET_DIFF,
+		RENDER_LIGHT_SET_SPEC,
+		//light: point light
+		RENDER_LIGHT_POINT_ADD,
+		RENDER_LIGHT_POINT_SET_CONST,
+		RENDER_LIGHT_POINT_SET_LIN,
+		RENDER_LIGHT_POINT_SET_QUAD
 	};
 
 	class RenderQueue : public pxpk::DoubleBuffferQueue
@@ -64,7 +88,10 @@ namespace pxpk
 			void objAdd(unsigned short);
 			void objRemove(unsigned short);
 			void objClear();
-			void objSetColor(unsigned short, glm::vec3);
+			void objSetAmbient(unsigned short, glm::vec3);
+			void objSetDiffuse(unsigned short, glm::vec3);
+			void objSetSpecular(unsigned short, glm::vec3);
+			void objSetShininess(unsigned short, GLfloat);
 			void objSetMesh(unsigned short, std::string);
 			void objSetTex(unsigned short, std::string);
 			void objSetShader(unsigned short, std::string, std::string);
@@ -91,6 +118,25 @@ namespace pxpk
 			void camSetNear(unsigned short, GLfloat);
 			void camSetFar(unsigned short, GLfloat);
 			void camSetActive(unsigned short);
+
+			void lightRemove(unsigned short);
+			void lightClear();
+			void lightSetPos(unsigned short, glm::vec3);
+			void lightSetOrient(unsigned short, glm::quat);
+			void lightSetOrientEuler(unsigned short, glm::vec3);
+			void lightTrans(unsigned short, glm::vec3);
+			void lightRot(unsigned short, glm::quat);
+			void lightRotEuler(unsigned short, glm::vec3);
+			void lightLookat(unsigned short, glm::vec3);
+			void lightSetShader(unsigned short, std::string, std::string);
+			void lightSetAmbient(unsigned short, glm::vec3);
+			void lightSetDiffuse(unsigned short, glm::vec3);
+			void lightSetSpecular(unsigned short, glm::vec3);
+
+			void lightPointAdd(unsigned short);
+			void lightPointSetConstant(unsigned short, GLfloat);
+			void lightPointSetLinear(unsigned short, GLfloat);
+			void lightPointSetQuadratic(unsigned short, GLfloat);
 	};
 }
 

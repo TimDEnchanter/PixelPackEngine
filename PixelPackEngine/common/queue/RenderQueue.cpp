@@ -32,9 +32,27 @@ void pxpk::RenderQueue::objClear()
 	this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_CLEAR, 0));
 }
 
-void pxpk::RenderQueue::objSetColor(unsigned short id, glm::vec3 input)
+void pxpk::RenderQueue::objSetAmbient(unsigned short id, glm::vec3 input)
 {
-	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_COLOR, id));
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_AMBI, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::objSetDiffuse(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_DIFF, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::objSetSpecular(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_SPEC, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::objSetShininess(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_SHINE, id));
 	writeEvent->writePayload(input);
 }
 
@@ -56,7 +74,7 @@ void pxpk::RenderQueue::objSetShader(unsigned short id, std::string vert, std::s
 {
 	std::string compressed = vert + "|" + frag;
 	std::vector<char> temp(compressed.c_str(), compressed.c_str() + compressed.length() + 1);
-	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_TEX, id));
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_SET_SHADER, id));
 	writeEvent->writePayload(temp);
 }
 
@@ -186,4 +204,105 @@ void pxpk::RenderQueue::camSetFar(unsigned short id, GLfloat input)
 void pxpk::RenderQueue::camSetActive(unsigned short id)
 {
 	this->write(pxpk::QueueEvent(RenderType::RENDER_CAM_SET_ACTIVE, id));
+}
+
+void pxpk::RenderQueue::lightRemove(unsigned short id)
+{
+	this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_REMOVE, id));
+}
+
+void pxpk::RenderQueue::lightClear()
+{
+	this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_CLEAR, 0));
+}
+
+void pxpk::RenderQueue::lightSetPos(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_POS, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSetOrient(unsigned short id, glm::quat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_ORIENT, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSetOrientEuler(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_ORIENT_EULER, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightTrans(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_TRANSLATE, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightRot(unsigned short id, glm::quat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_ROTATE, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightRotEuler(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_ROTATE_EULER, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightLookat(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_LOOKAT, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSetShader(unsigned short id, std::string vert, std::string frag)
+{
+	std::string compressed = vert + "|" + frag;
+	std::vector<char> temp(compressed.c_str(), compressed.c_str() + compressed.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_SHADER, id));
+	writeEvent->writePayload(temp);
+}
+
+void pxpk::RenderQueue::lightSetAmbient(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_AMBI, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSetDiffuse(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_DIFF, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSetSpecular(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SET_SPEC, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightPointAdd(unsigned short id)
+{
+	this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_POINT_ADD, id));
+}
+
+void pxpk::RenderQueue::lightPointSetConstant(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_POINT_SET_CONST, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightPointSetLinear(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_POINT_SET_LIN, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightPointSetQuadratic(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_POINT_SET_QUAD, id));
+	writeEvent->writePayload(input);
 }

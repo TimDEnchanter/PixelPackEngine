@@ -109,11 +109,32 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		models.clear();
 		break;
 	}
-	case pxpk::RENDER_OBJ_SET_COLOR:
+	case pxpk::RENDER_OBJ_SET_AMBI:
 	{
 		glm::vec3 payload;
 		event.readPayload(payload);
-		models[ID].setBaseColor(payload);
+		models[ID].setAmbient(payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_DIFF:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		models[ID].setDiffuse(payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_SPEC:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		models[ID].setSpecular(payload);
+		break;
+	}
+	case pxpk::RENDER_OBJ_SET_SHINE:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		models[ID].setShininess(payload);
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_MESH:
@@ -121,7 +142,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		std::vector<char> payload;
 		event.readPayload(payload);
 		std::string file(payload.begin(),payload.end());
-		models[ID].setMeshPtr(resources.addMesh(file));
+		models[ID].setMeshPtr(meshes.addMesh(file));
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_TEX:
@@ -129,15 +150,15 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		std::vector<char> payload;
 		event.readPayload(payload);
 		std::string file(payload.begin(), payload.end());
-		models[ID].setTexturePtr(resources.addTexture(file));
+		models[ID].setTexturePtr(textures.addTexture(file));
 		break;
 	}
-	case pxpk::REDEDR_OBJ_SET_SHADER:
+	case pxpk::RENDER_OBJ_SET_SHADER:
 	{
 		std::vector<char> payload;
 		event.readPayload(payload);
 		std::string file(payload.begin(), payload.end());
-		models[ID].setShaderPtr(resources.addShader(file));
+		models[ID].setShaderPtr(shaders.addShader(file));
 		break;
 	}
 	case pxpk::RENDER_OBJ_SET_POS:
@@ -286,6 +307,133 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		activeCam = ID;
 		break;
 	}
+	case pxpk::RENDER_LIGHT_REMOVE:
+	{
+		if(pointLights.find(ID) != pointLights.end())
+			pointLights.erase(ID);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_CLEAR:
+	{
+		pointLights.clear();
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_POS:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setPosition(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_ORIENT:
+	{
+		glm::quat payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setOrientation(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_ORIENT_EULER:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setOrientationEuler(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_TRANSLATE:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].translate(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_ROTATE:
+	{
+		glm::quat payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].rotate(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_ROTATE_EULER:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].rotateEuler(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_LOOKAT:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].lookAt(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_SHADER:
+	{
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string file(payload.begin(), payload.end());
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setShaderPtr(shaders.addShader(file));
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_AMBI:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setAmbient(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_DIFF:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setDiffuse(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_SET_SPEC:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		if (pointLights.find(ID) != pointLights.end())
+			pointLights[ID].setSpecular(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_POINT_ADD:
+	{
+		pointLights.insert({ ID, pxpk::PointLight() });
+		pointLights[ID].setShaderPtr(defaultShader);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_POINT_SET_CONST:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		pointLights[ID].setConstant(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_POINT_SET_LIN:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		pointLights[ID].setLinear(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_POINT_SET_QUAD:
+	{
+		GLfloat payload;
+		event.readPayload(payload);
+		pointLights[ID].setQuadratic(payload);
+		break;
+	}
 	}
 }
 
@@ -352,6 +500,11 @@ pxpk::Camera & pxpk::RenderEngine::getCamera(unsigned short id)
 	return cameras[id];
 }
 
+pxpk::Light & pxpk::RenderEngine::getLight(unsigned short id)
+{
+	return pointLights[id];
+}
+
 pxpk::RenderEngine::~RenderEngine()
 {
 }
@@ -375,7 +528,7 @@ void pxpk::RenderEngine::render()
 	if (!pxpk::engineStarted)
 	{
 		// load default shaders on first run
-		defaultShader = resources.addShader("/shaders/default.vert|/shaders/default.frag");
+		defaultShader = shaders.addShader("/shaders/default.vert|/shaders/default.frag");
 
 		LOG("Engine Started", pxpk::INFO_LOG);
 		//signal writer that engine has started
@@ -416,8 +569,32 @@ void pxpk::RenderEngine::render()
 		pxpk::RenderQueue::getInstance().pop();
 	}
 
+	//get Projection and View from camera
 	glm::mat4 Projection = cameras[activeCam].getProjectionMatrix();
 	glm::mat4 View = cameras[activeCam].getViewMatrix();
+	glm::vec3 camPos = cameras[activeCam].getPosition();
+
+	//get size of light containers
+	int numPointLights = pointLights.size();
+
+	//assign global uniforms to all shaders
+	for (std::pair< std::string, std::weak_ptr<pxpk::ObjectResource> > it : shaders.getMap())
+	{
+		std::shared_ptr<pxpk::ShaderObject> temp = std::static_pointer_cast<pxpk::ShaderObject>(std::shared_ptr<pxpk::ObjectResource>(it.second));
+		temp->use();
+
+		//projection and view
+		temp->setMat4("Projection", Projection);
+		temp->setMat4("View", View);
+		temp->setVec3("viewPos", camPos);
+
+		temp->setInt("numPointLights", numPointLights);
+	}
+
+	//setup lights
+	int i = 0;
+	for (std::pair<unsigned short, pxpk::PointLight> it : pointLights)
+		it.second.draw(i++);
 
 	//pxpk::Logger::getInstance().log("drawing objects", pxpk::INFO_LOG);
 
@@ -439,19 +616,6 @@ void pxpk::RenderEngine::render()
 	{
 		//fetch ID from queue
 		unsigned short ID = pxpk::DrawQueue::getInstance().read().getID();
-
-		//fetch shader used for this model
-		std::shared_ptr<pxpk::ShaderObject> shaderPtr = models[ID].getShaderPtr();
-
-		//set active shader
-		shaderPtr->use();
-
-		//set camera's projection and view
-		shaderPtr->setMat4("Projection", Projection);
-		shaderPtr->setMat4("View", View);
-
-		//error check
-		LOG_GL();
 
 		//draw the model
 		models[ID].draw();

@@ -33,7 +33,10 @@
     <ClInclude Include="dependencies\GLEW\include\GL\glew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
+    <ClInclude Include="dependencies\tiny_OBJ_loader\tiny_obj_loader.h" />
     <ClInclude Include="graphics_engine\objects\Camera.h" />
+    <ClInclude Include="graphics_engine\objects\lights\Light.h" />
+    <ClInclude Include="graphics_engine\objects\lights\PointLight.h" />
     <ClInclude Include="graphics_engine\objects\Model.h" />
     <ClInclude Include="graphics_engine\managedResources\ShaderObject.h" />
     <ClInclude Include="graphics_engine\managedResources\TextureObject.h" />
@@ -52,10 +55,12 @@
     <ClCompile Include="common\queue\QueueEvent.cpp" />
     <ClCompile Include="common\queue\RenderQueue.cpp" />
     <ClCompile Include="common\queue\DrawQueue.cpp" />
+    <ClCompile Include="graphics_engine\managedResources\ObjectResource.cpp" />
     <ClCompile Include="graphics_engine\objects\Camera.cpp" />
     <ClCompile Include="graphics_engine\managedResources\MeshObject.cpp" />
+    <ClCompile Include="graphics_engine\objects\lights\Light.cpp" />
+    <ClCompile Include="graphics_engine\objects\lights\PointLight.cpp" />
     <ClCompile Include="graphics_engine\objects\Model.cpp" />
-    <ClCompile Include="graphics_engine\managedResources\ObjectResource.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\objects\RenderObject.cpp" />
     <ClCompile Include="graphics_engine\managedResources\ResourceManager.cpp" />
@@ -115,8 +120,8 @@
     <None Include="dependencies\GLEW\x64\bin\Release\visualinfo.pdb" />
     <None Include="dependencies\GLEW\x64\lib\Debug\glew32d.exp" />
     <None Include="dependencies\GLEW\x64\lib\Release\glew32.exp" />
-    <None Include="graphics_engine\shaders\default.frag" />
-    <None Include="graphics_engine\shaders\default.vert" />
+    <None Include="graphics_engine\shaders\noLighting.frag" />
+    <None Include="graphics_engine\shaders\noLighting.vert" />
     <None Include="graphics_engine\shaders\fragShader.frag" />
     <None Include="graphics_engine\shaders\vertShader.vert" />
   </ItemGroup>
@@ -133,6 +138,10 @@
     <Library Include="dependencies\GLEW\x64\lib\Debug\glew32sd.lib" />
     <Library Include="dependencies\GLEW\x64\lib\Release\glew32.lib" />
     <Library Include="dependencies\GLEW\x64\lib\Release\glew32s.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="graphics_engine\shaders\default.frag" />
+    <Text Include="graphics_engine\shaders\default.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -209,6 +218,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\freeGLUT\include;$(ProjectDir)dependencies\GLEW\include</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)dependencies\GLEW\$(Platform)\lib\$(Configuration);$(ProjectDir)dependencies\freeGLUT\$(Platform)\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

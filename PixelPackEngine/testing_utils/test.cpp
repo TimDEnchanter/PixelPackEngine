@@ -107,7 +107,10 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetMesh(floorIndex, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/plane.obj"));
 	pxpk::RenderQueue::getInstance().objSetTex(floorIndex, std::string("floorTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(floorIndex, glm::vec3(0.0, -2.0, 0.0));
-	pxpk::RenderQueue::getInstance().objSetColor(floorIndex, glm::vec3(0.2, 0.2, 0.2));
+	pxpk::RenderQueue::getInstance().objSetAmbient(floorIndex, glm::vec3(0.2));
+	pxpk::RenderQueue::getInstance().objSetDiffuse(floorIndex, glm::vec3(0.2, 0.2, 0.2));
+	pxpk::RenderQueue::getInstance().objSetSpecular(floorIndex, glm::vec3(0.5));
+	pxpk::RenderQueue::getInstance().objSetShininess(floorIndex, 0.25f);
 	//pxpk::RenderQueue::getInstance().objRot(floorIndex, glm::quat(0.7071068, 0.0, 0.0, 0.7071068));
 
 	//first cube
@@ -116,10 +119,14 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(tc1Index);
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
-	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/bunny.obj"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("cubeTex"));
+	//pxpk::RenderQueue::getInstance().objSetShader(tc1Index, std::string("/shaders/noLighting.vert"), std::string("/shaders/noLighting.frag"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));
-	pxpk::RenderQueue::getInstance().objSetColor(tc1Index, glm::vec3(0.5, 0.5, 0.5));
+	pxpk::RenderQueue::getInstance().objSetAmbient(tc1Index, glm::vec3(0.2));
+	pxpk::RenderQueue::getInstance().objSetDiffuse(tc1Index, glm::vec3(0.5, 0.5, 0.5));
+	pxpk::RenderQueue::getInstance().objSetSpecular(tc1Index, glm::vec3(0.6, 0.6, 0.6));
+	pxpk::RenderQueue::getInstance().objSetShininess(tc1Index, 0.25f);
 
 	LOG("Cube 1 queued", pxpk::INFO_LOG);
 
@@ -131,7 +138,10 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetMesh(tc2Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc2Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc2Index, glm::vec3(2.0, 0.0, 0.0));
-	pxpk::RenderQueue::getInstance().objSetColor(tc2Index, glm::vec3(1.0, 0.0, 0.0));
+	pxpk::RenderQueue::getInstance().objSetAmbient(tc2Index, glm::vec3(0.2));
+	pxpk::RenderQueue::getInstance().objSetDiffuse(tc2Index, glm::vec3(0.5, 0.0, 0.0));
+	pxpk::RenderQueue::getInstance().objSetSpecular(tc2Index, glm::vec3(0.7, 0.6, 0.6));
+	pxpk::RenderQueue::getInstance().objSetShininess(tc2Index, 0.25f);
 
 	LOG("Cube 2 queued", pxpk::INFO_LOG);
 
@@ -144,7 +154,10 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetMesh(tc3Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc3Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc3Index, glm::vec3(0.0, 2.0, 0.0));
-	pxpk::RenderQueue::getInstance().objSetColor(tc3Index, glm::vec3(0.0, 1.0, 0.0));
+	pxpk::RenderQueue::getInstance().objSetAmbient(tc3Index, glm::vec3(0.2));
+	pxpk::RenderQueue::getInstance().objSetDiffuse(tc3Index, glm::vec3(0.0, 0.5, 0.0));
+	pxpk::RenderQueue::getInstance().objSetSpecular(tc3Index, glm::vec3(0.6, 0.7, 0.6));
+	pxpk::RenderQueue::getInstance().objSetShininess(tc3Index, 0.25f);
 
 	LOG("Cube 3 queued", pxpk::INFO_LOG);
 
@@ -156,9 +169,17 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetMesh(tc4Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc4Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc4Index, glm::vec3(0.0, 0.0, 2.0));
-	pxpk::RenderQueue::getInstance().objSetColor(tc4Index, glm::vec3(0.0, 0.0, 1.0));
+	pxpk::RenderQueue::getInstance().objSetAmbient(tc4Index, glm::vec3(0.2));
+	pxpk::RenderQueue::getInstance().objSetDiffuse(tc4Index, glm::vec3(0.0, 0.0, 0.5));
+	pxpk::RenderQueue::getInstance().objSetSpecular(tc4Index, glm::vec3(0.6, 0.6, 0.7));
+	pxpk::RenderQueue::getInstance().objSetShininess(tc4Index, 0.25f);
 
 	LOG("Cube 4 queued", pxpk::INFO_LOG);
+
+	//setup light
+	unsigned short lightIndex = 5;
+	pxpk::RenderQueue::getInstance().lightPointAdd(lightIndex);
+	pxpk::RenderQueue::getInstance().lightSetPos(lightIndex, glm::vec3(5.0));
 
 	//setup camera
 	int camIndex = 0;
@@ -168,8 +189,6 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().camSetFar(camIndex, 100.0f);
 	pxpk::RenderQueue::getInstance().camSetPos(camIndex, glm::vec3(10.0, 10.0, 10.0));
 	pxpk::RenderQueue::getInstance().camLookat(camIndex, glm::vec3(0.0, 0.0, 0.0));
-
-	//renderer.startEngine();
 
 	//manually unlock render queue and signal reader
 	//pxpk::Logger::getInstance().log("Test is done with Render Queue", pxpk::INFO_LOG);

@@ -8,6 +8,11 @@ pxpk::ResourceManager::~ResourceManager()
 {
 }
 
+std::unordered_map<std::string, std::weak_ptr<pxpk::ObjectResource>> pxpk::ResourceManager::getMap()
+{
+	return observers;
+}
+
 
 std::shared_ptr<pxpk::MeshObject> pxpk::ResourceManager::addMesh(std::string filepath)
 {

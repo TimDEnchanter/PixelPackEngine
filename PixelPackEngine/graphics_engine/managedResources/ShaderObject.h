@@ -20,11 +20,11 @@ namespace pxpk
 
 		void use();
 
-		void setBool(const std::string&, bool);
-		void setInt(const std::string&, int);
-		void setFloat(const std::string&, float);
-		void setVec3(const std::string&, glm::vec3);
-		void setMat4(const std::string&, glm::mat4);
+		void setBool(const std::string, bool);
+		void setInt(const std::string, int);
+		void setFloat(const std::string, float);
+		void setVec3(const std::string, glm::vec3);
+		void setMat4(const std::string, glm::mat4);
 	};
 }
 
