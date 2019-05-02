@@ -40,6 +40,9 @@ namespace pxpk
 		GLuint getUVID();
 		GLuint getIndexID();
 		GLsizei getIndexSize();
+
+		void readOBJ(std::string);
+		void readPXO(std::string);
 	};
 }
 

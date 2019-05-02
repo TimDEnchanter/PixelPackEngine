@@ -129,14 +129,53 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 {
 	std::string extension = filepath.substr(filepath.size() - 5, 4);
 	//read file
-	if (extension != ".obj")
+	if (extension == ".obj")
 	{
-		LOG("Cannot load OBJ file: invalid file path " + filepath, pxpk::ERROR_LOG);
+		readOBJ(filepath);
+	}
+	else if (extension == ".pxo")
+	{
+		readPXO(filepath);
+	}
+	else
+	{
+		LOG("Cannot load file: invalid file path " + filepath, pxpk::ERROR_LOG);
 		return;
 	}
+}
 
+pxpk::MeshObject::~MeshObject()
+{
+}
+
+GLuint pxpk::MeshObject::getVertexID()
+{
+	return vertexID;
+}
+
+GLuint pxpk::MeshObject::getNormalID()
+{
+	return normalID;
+}
+
+GLuint pxpk::MeshObject::getUVID()
+{
+	return uvID;
+}
+
+GLuint pxpk::MeshObject::getIndexID()
+{
+	return indexID;
+}
+
+GLsizei pxpk::MeshObject::getIndexSize()
+{
+	return indexSize;
+}
+
+void pxpk::MeshObject::readOBJ(std::string filepath)
+{
 	LOG("Reading OBJ file: " + filepath, pxpk::INFO_LOG);
-	//std::ifstream inFile(filepath);
 
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -181,7 +220,7 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 		//check if already indexed
 		std::string findThis;
 		findThis = std::to_string(vert_idx) + '/' + std::to_string(tex_idx) + '/' + std::to_string(norm_idx);
-		
+
 		if (face_pts.find(findThis) != face_pts.end())
 		{
 			//point is already indexed
@@ -230,31 +269,29 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 	this->createResource(vertexes_indexed, normals_indexed, uvs_indexed, indexes);
 }
 
-pxpk::MeshObject::~MeshObject()
+void pxpk::MeshObject::readPXO(std::string filepath)
 {
-}
+	LOG("Reading PXO file: " + filepath, pxpk::INFO_LOG);
 
-GLuint pxpk::MeshObject::getVertexID()
-{
-	return vertexID;
-}
+	std::ifstream inFile(filepath, std::ios::binary);
 
-GLuint pxpk::MeshObject::getNormalID()
-{
-	return normalID;
-}
+	//get container sizes
+	size_t vertSize, normSize, uvSize, indexSize;
+	inFile.read(reinterpret_cast<char*>(&vertSize), sizeof(size_t));
+	inFile.read(reinterpret_cast<char*>(&normSize), sizeof(size_t));
+	inFile.read(reinterpret_cast<char*>(&uvSize), sizeof(size_t));
+	inFile.read(reinterpret_cast<char*>(&indexSize), sizeof(size_t));
 
-GLuint pxpk::MeshObject::getUVID()
-{
-	return uvID;
-}
+	//fetch data
+	std::vector<float> verts(vertSize / sizeof(float));
+	std::vector<float> norms(normSize / sizeof(float));
+	std::vector<float> uvs(uvSize / sizeof(float));
+	std::vector<uint32_t> indexes(indexSize / sizeof(uint32_t));
 
-GLuint pxpk::MeshObject::getIndexID()
-{
-	return indexID;
-}
+	inFile.read(reinterpret_cast<char*>(&verts.front()), vertSize);
+	if (normSize > 0) inFile.read(reinterpret_cast<char*>(&norms.front()), normSize);
+	if (uvSize > 0) inFile.read(reinterpret_cast<char*>(&uvs.front()), uvSize);
+	inFile.read(reinterpret_cast<char*>(&indexes.front()), indexSize);
 
-GLsizei pxpk::MeshObject::getIndexSize()
-{
-	return indexSize;
+	this->createResource(verts, norms, uvs, indexes);
 }

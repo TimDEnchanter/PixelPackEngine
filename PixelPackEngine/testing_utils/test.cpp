@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(floorIndex);
 	//pxpk::RenderQueue::getInstance().objLoadVert(floorIndex, planeVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(floorIndex, planeIndex);
-	pxpk::RenderQueue::getInstance().objSetMesh(floorIndex, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/plane.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(floorIndex, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/plane.pxo"));
 	pxpk::RenderQueue::getInstance().objSetTex(floorIndex, std::string("floorTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(floorIndex, glm::vec3(0.0, -2.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetAmbient(floorIndex, glm::vec3(0.2));
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(tc1Index);
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
-	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/suzanne.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/bunny.pxo"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("cubeTex"));
 	//pxpk::RenderQueue::getInstance().objSetShader(tc1Index, std::string("/shaders/noLighting.vert"), std::string("/shaders/noLighting.frag"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(tc2Index);
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc2Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc2Index, index);
-	pxpk::RenderQueue::getInstance().objSetMesh(tc2Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(tc2Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.pxo"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc2Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc2Index, glm::vec3(2.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc2Index, glm::vec3(0.2));
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(tc3Index);
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc3Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc3Index, index);
-	pxpk::RenderQueue::getInstance().objSetMesh(tc3Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(tc3Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.pxo"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc3Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc3Index, glm::vec3(0.0, 2.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc3Index, glm::vec3(0.2));
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(tc4Index);
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc4Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc4Index, index);
-	pxpk::RenderQueue::getInstance().objSetMesh(tc4Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(tc4Index, std::string("D:/Documents/Visual Studio 2017/Projects/PixelPackEngine/x64/Debug/models/cube.pxo"));
 	pxpk::RenderQueue::getInstance().objSetTex(tc4Index, std::string("cubeTex"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc4Index, glm::vec3(0.0, 0.0, 2.0));
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc4Index, glm::vec3(0.2));
