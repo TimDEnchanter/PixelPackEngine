@@ -17,7 +17,7 @@ struct PointLight {
 
 struct Material {
 	vec3 ambient;
-	vec3 diffuse;
+	sampler2D diffuse;
 	vec3 specular;
 	float shininess;
 };
@@ -30,6 +30,7 @@ in vec3 viewPos;
 
 in vec3 vertPos;
 in vec3 vertNorm;
+in vec2 vertUV;
 
 out vec4 fragColor;
 
@@ -58,8 +59,8 @@ vec3 addPointLight(PointLight light, vec3 normal, vec3 vertPos, vec3 viewDir)
 	float atten = 1.0 / ( light.constant + light.linear * lightDist + light.quadratic * (lightDist * lightDist) );
 
 	//combine
-	vec3 ambient = light.ambient * material.ambient;
-	vec3 diffuse = light.diffuse * diff * material.diffuse;
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, vertUV));
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, vertUV));
 	vec3 specular = light.specular * spec * material.specular;
 	ambient *= atten;
 	diffuse *= atten;

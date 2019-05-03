@@ -33,6 +33,7 @@
     <ClInclude Include="dependencies\GLEW\include\GL\glew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\glxew.h" />
     <ClInclude Include="dependencies\GLEW\include\GL\wglew.h" />
+    <ClInclude Include="dependencies\stb\stb_image.h" />
     <ClInclude Include="dependencies\tiny_OBJ_loader\tiny_obj_loader.h" />
     <ClInclude Include="graphics_engine\objects\Camera.h" />
     <ClInclude Include="graphics_engine\objects\lights\Light.h" />

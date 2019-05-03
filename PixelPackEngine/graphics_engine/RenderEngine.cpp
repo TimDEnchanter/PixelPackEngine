@@ -97,6 +97,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	{
 		models.insert({ ID, pxpk::Model() });
 		models[ID].setShaderPtr(defaultShader);
+		models[ID].setTexturePtr(defaultTexture);
 		break;
 	}
 	case pxpk::RENDER_OBJ_REMOVE:
@@ -527,8 +528,9 @@ void pxpk::RenderEngine::render()
 
 	if (!pxpk::engineStarted)
 	{
-		// load default shaders on first run
+		// load default resources on first run
 		defaultShader = shaders.addShader("/shaders/default.vert|/shaders/default.frag");
+		defaultTexture = textures.addTexture("/textures/default.jpg");
 
 		LOG("Engine Started", pxpk::INFO_LOG);
 		//signal writer that engine has started

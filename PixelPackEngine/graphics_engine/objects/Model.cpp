@@ -90,7 +90,7 @@ void pxpk::Model::draw()
 
 	//set material
 	shaderPtr->setVec3("material.ambient", ambient);
-	shaderPtr->setVec3("material.diffuse", diffuse);
+	//shaderPtr->setVec3("material.diffuse", diffuse);
 	shaderPtr->setVec3("material.specular", specular);
 	shaderPtr->setFloat("material.shininess", shininess);
 
@@ -98,7 +98,7 @@ void pxpk::Model::draw()
 	meshPtr->bindResource();
 
 	//bind texture data
-	//texPtr->bindResource();
+	texPtr->bindResource();
 
 	//set focus to element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshPtr->getIndexID());

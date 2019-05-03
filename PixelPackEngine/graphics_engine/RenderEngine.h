@@ -46,6 +46,7 @@ namespace pxpk {
 			unsigned short activeCam = 0;
 
 			std::shared_ptr<ShaderObject> defaultShader;
+			std::shared_ptr<TextureObject> defaultTexture;
 
 			pxpk::DeltaTimer frameTimer;
 			int frames;
