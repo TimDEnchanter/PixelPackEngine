@@ -13,9 +13,9 @@ namespace pxpk
 		std::shared_ptr<pxpk::ShaderObject> shaderPtr;
 
 		//common across all lights
-		glm::vec3 ambient = glm::vec3(1.0);
-		glm::vec3 diffuse = glm::vec3(1.0);
-		glm::vec3 specular = glm::vec3(1.0);
+		glm::vec3 ambient = glm::vec3(0.1);
+		glm::vec3 diffuse = glm::vec3(0.7);
+		glm::vec3 specular = glm::vec3(0.7);
 
 	public:
 		std::shared_ptr<pxpk::ShaderObject> getShaderPtr();

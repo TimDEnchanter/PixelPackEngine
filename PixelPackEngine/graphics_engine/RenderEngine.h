@@ -7,6 +7,7 @@
 #include "objects/Model.h"
 #include "objects/lights/Light.h"
 #include "objects/lights/PointLight.h"
+#include "objects/lights/DirLight.h"
 #include "managedResources/ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
@@ -38,6 +39,7 @@ namespace pxpk {
 			std::unordered_map<unsigned short, pxpk::Model> models;
 			std::unordered_map<unsigned short, pxpk::Camera> cameras;
 			std::unordered_map<unsigned short, pxpk::PointLight> pointLights;
+			std::unordered_map<unsigned short, pxpk::DirLight> dirLights;
 
 			pxpk::ResourceManager meshes;
 			pxpk::ResourceManager shaders;

@@ -65,7 +65,9 @@ namespace pxpk
 		RENDER_LIGHT_POINT_ADD,
 		RENDER_LIGHT_POINT_SET_CONST,
 		RENDER_LIGHT_POINT_SET_LIN,
-		RENDER_LIGHT_POINT_SET_QUAD
+		RENDER_LIGHT_POINT_SET_QUAD,
+		//light: direction light
+		RENDER_LIGHT_DIR_ADD
 	};
 
 	class RenderQueue : public pxpk::DoubleBuffferQueue
@@ -137,6 +139,8 @@ namespace pxpk
 			void lightPointSetConstant(unsigned short, GLfloat);
 			void lightPointSetLinear(unsigned short, GLfloat);
 			void lightPointSetQuadratic(unsigned short, GLfloat);
+
+			void lightDirAdd(unsigned short);
 	};
 }
 

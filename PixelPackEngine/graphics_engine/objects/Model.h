@@ -16,7 +16,7 @@ namespace pxpk
 		glm::vec3 ambient = glm::vec3(0.2, 0.0, 0.1);
 		glm::vec3 diffuse = glm::vec3(1.0, 0.0, 0.5);
 		glm::vec3 specular = glm::vec3(1.0, 0.0, 0.5);
-		float shininess = 0.75f;
+		float shininess = 0.7f;
 
 		//managed resources
 		std::shared_ptr<pxpk::MeshObject> meshPtr;

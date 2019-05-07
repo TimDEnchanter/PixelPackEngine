@@ -312,11 +312,14 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	{
 		if(pointLights.find(ID) != pointLights.end())
 			pointLights.erase(ID);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights.erase(ID);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_CLEAR:
 	{
 		pointLights.clear();
+		dirLights.clear();
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_POS:
@@ -325,6 +328,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setPosition(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setPosition(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_ORIENT:
@@ -333,6 +338,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setOrientation(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setOrientation(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_ORIENT_EULER:
@@ -341,6 +348,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setOrientationEuler(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setOrientationEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_TRANSLATE:
@@ -349,6 +358,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].translate(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].translate(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_ROTATE:
@@ -357,6 +368,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].rotate(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].rotate(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_ROTATE_EULER:
@@ -365,6 +378,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].rotateEuler(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].rotateEuler(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_LOOKAT:
@@ -373,6 +388,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].lookAt(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].lookAt(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_SHADER:
@@ -382,6 +399,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		std::string file(payload.begin(), payload.end());
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setShaderPtr(shaders.addShader(file));
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setShaderPtr(shaders.addShader(file));
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_AMBI:
@@ -390,6 +409,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setAmbient(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setAmbient(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_DIFF:
@@ -398,6 +419,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setDiffuse(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setDiffuse(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SET_SPEC:
@@ -406,6 +429,8 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		event.readPayload(payload);
 		if (pointLights.find(ID) != pointLights.end())
 			pointLights[ID].setSpecular(payload);
+		else if (dirLights.find(ID) != dirLights.end())
+			dirLights[ID].setSpecular(payload);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_POINT_ADD:
@@ -433,6 +458,12 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		GLfloat payload;
 		event.readPayload(payload);
 		pointLights[ID].setQuadratic(payload);
+		break;
+	}
+	case pxpk::RENDER_LIGHT_DIR_ADD:
+	{
+		dirLights.insert({ ID, pxpk::DirLight() });
+		dirLights[ID].setShaderPtr(defaultShader);
 		break;
 	}
 	}
@@ -578,6 +609,7 @@ void pxpk::RenderEngine::render()
 
 	//get size of light containers
 	int numPointLights = pointLights.size();
+	int numDirLights = dirLights.size();
 
 	//assign global uniforms to all shaders
 	for (std::pair< std::string, std::weak_ptr<pxpk::ObjectResource> > it : shaders.getMap())
@@ -591,11 +623,15 @@ void pxpk::RenderEngine::render()
 		temp->setVec3("viewPos", camPos);
 
 		temp->setInt("numPointLights", numPointLights);
+		temp->setInt("numDirLights", numDirLights);
 	}
 
 	//setup lights
 	int i = 0;
 	for (std::pair<unsigned short, pxpk::PointLight> it : pointLights)
+		it.second.draw(i++);
+	i = 0;
+	for (std::pair<unsigned short, pxpk::DirLight> it : dirLights)
 		it.second.draw(i++);
 
 	//pxpk::Logger::getInstance().log("drawing objects", pxpk::INFO_LOG);

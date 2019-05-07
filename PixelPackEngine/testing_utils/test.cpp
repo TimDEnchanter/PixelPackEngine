@@ -104,13 +104,13 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objAdd(floorIndex);
 	//pxpk::RenderQueue::getInstance().objLoadVert(floorIndex, planeVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(floorIndex, planeIndex);
-	pxpk::RenderQueue::getInstance().objSetMesh(floorIndex, std::string("/models/plane.obj"));
+	pxpk::RenderQueue::getInstance().objSetMesh(floorIndex, std::string("/models/plane.pxo"));
 	pxpk::RenderQueue::getInstance().objSetTex(floorIndex, std::string("/textures/container.jpg"));
 	pxpk::RenderQueue::getInstance().objSetPos(floorIndex, glm::vec3(0.0, -1.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetAmbient(floorIndex, glm::vec3(0.2));
 	pxpk::RenderQueue::getInstance().objSetDiffuse(floorIndex, glm::vec3(0.2, 0.2, 0.2));
 	pxpk::RenderQueue::getInstance().objSetSpecular(floorIndex, glm::vec3(0.5));
-	pxpk::RenderQueue::getInstance().objSetShininess(floorIndex, 0.25f);
+	pxpk::RenderQueue::getInstance().objSetShininess(floorIndex, 0.7f);
 	//pxpk::RenderQueue::getInstance().objRot(floorIndex, glm::quat(0.7071068, 0.0, 0.0, 0.7071068));
 
 	//first cube
@@ -120,13 +120,13 @@ int main(int argc, char **argv)
 	//pxpk::RenderQueue::getInstance().objLoadVert(tc1Index, testVerts);
 	//pxpk::RenderQueue::getInstance().objLoadIndx(tc1Index, index);
 	pxpk::RenderQueue::getInstance().objSetMesh(tc1Index, std::string("/models/bunny.pxo"));
-	//pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("/textures/default.jpg"));
+	//pxpk::RenderQueue::getInstance().objSetTex(tc1Index, std::string("/textures/container.jpg"));
 	//pxpk::RenderQueue::getInstance().objSetShader(tc1Index, std::string("/shaders/noLighting.vert"), std::string("/shaders/noLighting.frag"));
 	pxpk::RenderQueue::getInstance().objSetPos(tc1Index, glm::vec3(0.0, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc1Index, glm::vec3(0.2));
 	pxpk::RenderQueue::getInstance().objSetDiffuse(tc1Index, glm::vec3(0.5, 0.5, 0.5));
 	pxpk::RenderQueue::getInstance().objSetSpecular(tc1Index, glm::vec3(0.6, 0.6, 0.6));
-	pxpk::RenderQueue::getInstance().objSetShininess(tc1Index, 0.25f);
+	pxpk::RenderQueue::getInstance().objSetShininess(tc1Index, 0.5f);
 
 	LOG("Cube 1 queued", pxpk::INFO_LOG);
 
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc2Index, glm::vec3(0.2));
 	pxpk::RenderQueue::getInstance().objSetDiffuse(tc2Index, glm::vec3(0.5, 0.0, 0.0));
 	pxpk::RenderQueue::getInstance().objSetSpecular(tc2Index, glm::vec3(0.7, 0.6, 0.6));
-	pxpk::RenderQueue::getInstance().objSetShininess(tc2Index, 0.25f);
+	pxpk::RenderQueue::getInstance().objSetShininess(tc2Index, 0.5f);
 
 	LOG("Cube 2 queued", pxpk::INFO_LOG);
 
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc3Index, glm::vec3(0.2));
 	pxpk::RenderQueue::getInstance().objSetDiffuse(tc3Index, glm::vec3(0.0, 0.5, 0.0));
 	pxpk::RenderQueue::getInstance().objSetSpecular(tc3Index, glm::vec3(0.6, 0.7, 0.6));
-	pxpk::RenderQueue::getInstance().objSetShininess(tc3Index, 0.25f);
+	pxpk::RenderQueue::getInstance().objSetShininess(tc3Index, 0.5f);
 
 	LOG("Cube 3 queued", pxpk::INFO_LOG);
 
@@ -172,14 +172,24 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().objSetAmbient(tc4Index, glm::vec3(0.2));
 	pxpk::RenderQueue::getInstance().objSetDiffuse(tc4Index, glm::vec3(0.0, 0.0, 0.5));
 	pxpk::RenderQueue::getInstance().objSetSpecular(tc4Index, glm::vec3(0.6, 0.6, 0.7));
-	pxpk::RenderQueue::getInstance().objSetShininess(tc4Index, 0.25f);
+	pxpk::RenderQueue::getInstance().objSetShininess(tc4Index, 0.5f);
 
 	LOG("Cube 4 queued", pxpk::INFO_LOG);
 
-	//setup light
+	//setup point light
 	unsigned short lightIndex = 5;
 	pxpk::RenderQueue::getInstance().lightPointAdd(lightIndex);
-	pxpk::RenderQueue::getInstance().lightSetPos(lightIndex, glm::vec3(5.0));
+	pxpk::RenderQueue::getInstance().lightSetPos(lightIndex, glm::vec3(10.0, 10.0, 0.0));
+
+	//unsigned short light2Index = 6;
+	//pxpk::RenderQueue::getInstance().lightPointAdd(light2Index);
+	//pxpk::RenderQueue::getInstance().lightSetPos(light2Index, glm::vec3(-10.0, 10.0, 10.0));
+
+	//setup dir light
+	//unsigned short light2Index = 6;
+	//pxpk::RenderQueue::getInstance().lightDirAdd(light2Index);
+	//pxpk::RenderQueue::getInstance().lightSetOrientEuler(light2Index, glm::vec3(-0.2, -1.0, -0.3));
+	//pxpk::RenderQueue::getInstance().lightSetDiffuse(light2Index, glm::vec3(0.0, 0.0, 1.0));
 
 	//setup camera
 	int camIndex = 0;

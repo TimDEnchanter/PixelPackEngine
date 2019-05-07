@@ -306,3 +306,8 @@ void pxpk::RenderQueue::lightPointSetQuadratic(unsigned short id, GLfloat input)
 	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_POINT_SET_QUAD, id));
 	writeEvent->writePayload(input);
 }
+
+void pxpk::RenderQueue::lightDirAdd(unsigned short id)
+{
+	this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_DIR_ADD, id));
+}
