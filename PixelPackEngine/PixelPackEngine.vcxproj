@@ -37,6 +37,7 @@
     <ClInclude Include="dependencies\tiny_OBJ_loader\tiny_obj_loader.h" />
     <ClInclude Include="graphics_engine\objects\lights\DirLight.h" />
     <ClInclude Include="graphics_engine\objects\Camera.h" />
+    <ClInclude Include="graphics_engine\objects\lights\SpotLight.h" />
     <ClInclude Include="graphics_engine\objects\lights\Light.h" />
     <ClInclude Include="graphics_engine\objects\lights\PointLight.h" />
     <ClInclude Include="graphics_engine\objects\Model.h" />
@@ -63,6 +64,7 @@
     <ClCompile Include="graphics_engine\managedResources\MeshObject.cpp" />
     <ClCompile Include="graphics_engine\objects\lights\Light.cpp" />
     <ClCompile Include="graphics_engine\objects\lights\PointLight.cpp" />
+    <ClCompile Include="graphics_engine\objects\lights\SpotLight.cpp" />
     <ClCompile Include="graphics_engine\objects\Model.cpp" />
     <ClCompile Include="graphics_engine\RenderEngine.cpp" />
     <ClCompile Include="graphics_engine\objects\RenderObject.cpp" />

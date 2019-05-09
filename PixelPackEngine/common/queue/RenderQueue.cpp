@@ -311,3 +311,50 @@ void pxpk::RenderQueue::lightDirAdd(unsigned short id)
 {
 	this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_DIR_ADD, id));
 }
+
+void pxpk::RenderQueue::lightDirSetDir(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_DIR_SET_DIR, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSpotAdd(unsigned short id)
+{
+	this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_ADD, id));
+}
+
+void pxpk::RenderQueue::lightSpotSetDir(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_DIR, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSpotSetInCutoff(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_IN_CUTOFF, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSpotSetOutCutoff(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_OUT_CUTOFF, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSpotSetConstant(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_CONST, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSpotSetLinear(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_LIN, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::lightSpotSetQuadratic(unsigned short id, GLfloat input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_QUAD, id));
+	writeEvent->writePayload(input);
+}

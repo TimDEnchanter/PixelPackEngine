@@ -120,16 +120,27 @@ void pxpk::RenderObject::rotate(glm::quat input)
 
 void pxpk::RenderObject::lookAt(glm::vec3 target)
 {
-	glm::vec3 targetVector = target - position;
-	glm::quat rotation = quatToVector(glm::vec3(0.0f,0.0f,1.0f), targetVector);
+	glm::vec3 targetVector = glm::normalize(target - position);
+	//glm::quat rotation = quatToVector(glm::vec3(0.0f,0.0f,1.0f), targetVector);
 
 	glm::vec3 targetUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 right = glm::cross(targetVector, targetUp);
-	targetUp = glm::cross(right, targetVector);
-	glm::vec3 newUp = rotation * glm::vec3(0.0f, 1.0f, 0.0f);
+	//glm::vec3 right = glm::cross(targetVector, targetUp);
+	//targetUp = glm::cross(right, targetVector);
+	//glm::vec3 newUp = rotation * glm::vec3(0.0f, 1.0f, 0.0f);
 
-	glm::quat upRotation = quatToVector(newUp, targetUp);
+	//glm::quat upRotation = quatToVector(newUp, targetUp);
 
-	//ORDER IMPORTANT
-	orientation = upRotation * rotation;
+	////ORDER IMPORTANT
+	//orientation = upRotation * rotation;
+
+	if (glm::abs(glm::dot(targetVector, targetUp)) == 1.0)
+		targetUp = glm::vec3(0.0, 0.0, 1.0);
+
+	glm::mat4 lookMat = glm::lookAt(
+		position,
+		target,
+		targetUp
+	);
+
+	orientation = glm::conjugate(glm::quat(lookMat));
 }

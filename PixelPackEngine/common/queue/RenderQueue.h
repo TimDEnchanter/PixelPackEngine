@@ -67,7 +67,16 @@ namespace pxpk
 		RENDER_LIGHT_POINT_SET_LIN,
 		RENDER_LIGHT_POINT_SET_QUAD,
 		//light: direction light
-		RENDER_LIGHT_DIR_ADD
+		RENDER_LIGHT_DIR_ADD,
+		RENDER_LIGHT_DIR_SET_DIR,
+		//light: spot light
+		RENDER_LIGHT_SPOT_ADD,
+		RENDER_LIGHT_SPOT_SET_DIR,
+		RENDER_LIGHT_SPOT_SET_IN_CUTOFF,
+		RENDER_LIGHT_SPOT_SET_OUT_CUTOFF,
+		RENDER_LIGHT_SPOT_SET_CONST,
+		RENDER_LIGHT_SPOT_SET_LIN,
+		RENDER_LIGHT_SPOT_SET_QUAD
 	};
 
 	class RenderQueue : public pxpk::DoubleBuffferQueue
@@ -141,6 +150,15 @@ namespace pxpk
 			void lightPointSetQuadratic(unsigned short, GLfloat);
 
 			void lightDirAdd(unsigned short);
+			void lightDirSetDir(unsigned short, glm::vec3);
+
+			void lightSpotAdd(unsigned short);
+			void lightSpotSetDir(unsigned short, glm::vec3);
+			void lightSpotSetInCutoff(unsigned short, GLfloat);
+			void lightSpotSetOutCutoff(unsigned short, GLfloat);
+			void lightSpotSetConstant(unsigned short, GLfloat);
+			void lightSpotSetLinear(unsigned short, GLfloat);
+			void lightSpotSetQuadratic(unsigned short, GLfloat);
 	};
 }
 

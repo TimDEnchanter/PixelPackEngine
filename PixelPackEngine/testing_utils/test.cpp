@@ -177,19 +177,20 @@ int main(int argc, char **argv)
 	LOG("Cube 4 queued", pxpk::INFO_LOG);
 
 	//setup point light
-	unsigned short lightIndex = 5;
-	pxpk::RenderQueue::getInstance().lightPointAdd(lightIndex);
-	pxpk::RenderQueue::getInstance().lightSetPos(lightIndex, glm::vec3(10.0, 10.0, 0.0));
+	//unsigned short lightIndex = 5;
+	//pxpk::RenderQueue::getInstance().lightPointAdd(lightIndex);
+	//pxpk::RenderQueue::getInstance().lightSetPos(lightIndex, glm::vec3(10.0, 10.0, -10.0));
 
-	//unsigned short light2Index = 6;
-	//pxpk::RenderQueue::getInstance().lightPointAdd(light2Index);
-	//pxpk::RenderQueue::getInstance().lightSetPos(light2Index, glm::vec3(-10.0, 10.0, 10.0));
+	//setup spot light
+	unsigned short light2Index = 6;
+	pxpk::RenderQueue::getInstance().lightSpotAdd(light2Index);
+	pxpk::RenderQueue::getInstance().lightSetPos(light2Index, glm::vec3(10.0, 10.0, 0.0));
+	pxpk::RenderQueue::getInstance().lightSpotSetDir(light2Index, glm::vec3(-1.0, -1.0, 0.0));
 
 	//setup dir light
-	//unsigned short light2Index = 6;
-	//pxpk::RenderQueue::getInstance().lightDirAdd(light2Index);
-	//pxpk::RenderQueue::getInstance().lightSetOrientEuler(light2Index, glm::vec3(-0.2, -1.0, -0.3));
-	//pxpk::RenderQueue::getInstance().lightSetDiffuse(light2Index, glm::vec3(0.0, 0.0, 1.0));
+	//unsigned short light3Index = 7;
+	//pxpk::RenderQueue::getInstance().lightDirAdd(light3Index);
+	//pxpk::RenderQueue::getInstance().lightDirSetDir(light3Index, glm::vec3(1.0, -1.0, -1.0));
 
 	//setup camera
 	int camIndex = 0;
