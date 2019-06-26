@@ -146,6 +146,7 @@ pxpk::MeshObject::MeshObject(std::string filepath) : ObjectResource(filepath)
 
 pxpk::MeshObject::~MeshObject()
 {
+	deleteResource();
 }
 
 GLuint pxpk::MeshObject::getVertexID()
@@ -185,11 +186,7 @@ void pxpk::MeshObject::readOBJ(std::string filepath)
 	std::string err;
 
 	//find working directory
-	char buf[1000];
-	GetModuleFileName(NULL, buf, 1000);
-	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
-
-	std::string fullPath = dir + filepath;
+	std::string fullPath = pxpk::getWorkingDir() + filepath;
 
 	bool success = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fullPath.c_str());
 
@@ -281,11 +278,9 @@ void pxpk::MeshObject::readPXO(std::string filepath)
 	LOG("Reading PXO file: " + filepath, pxpk::INFO_LOG);
 
 	//find working directory
-	char buf[1000];
-	GetModuleFileName(NULL, buf, 1000);
-	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
+	std::string fullPath = pxpk::getWorkingDir() + filepath;
 
-	std::ifstream inFile(dir + filepath, std::ios::binary);
+	std::ifstream inFile(fullPath, std::ios::binary);
 
 	//get container sizes
 	size_t vertSize, normSize, uvSize, indexSize;

@@ -17,6 +17,12 @@ pxpk::RenderQueue::~RenderQueue()
 {
 }
 
+void pxpk::RenderQueue::showStats(bool input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SHOW_STATS, 0));
+	writeEvent->writePayload(input);
+}
+
 void pxpk::RenderQueue::objAdd(unsigned short id)
 {
 	this->write(pxpk::QueueEvent(RenderType::RENDER_OBJ_ADD, id));
@@ -357,4 +363,49 @@ void pxpk::RenderQueue::lightSpotSetQuadratic(unsigned short id, GLfloat input)
 {
 	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_LIGHT_SPOT_SET_QUAD, id));
 	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::screenSetPosition(unsigned short id, glm::vec2 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_SET_POS, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::screenSetSize(unsigned short id, glm::vec2 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_SET_SIZE, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::screenSetShader(unsigned short id, std::string vert, std::string frag)
+{
+	std::string compressed = vert + "|" + frag;
+	std::vector<char> temp(compressed.c_str(), compressed.c_str() + compressed.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_SET_SHADER, id));
+	writeEvent->writePayload(temp);
+}
+
+void pxpk::RenderQueue::screenTextAdd(unsigned short id)
+{
+	this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_TEXT_ADD, id));
+}
+
+void pxpk::RenderQueue::screenTextSetData(unsigned short id, std::string input)
+{
+	std::vector<char> temp(input.c_str(), input.c_str() + input.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_TEXT_SET_DATA, id));
+	writeEvent->writePayload(temp);
+}
+
+void pxpk::RenderQueue::screenTextSetColor(unsigned short id, glm::vec3 input)
+{
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_TEXT_SET_COLOR, id));
+	writeEvent->writePayload(input);
+}
+
+void pxpk::RenderQueue::screenTextSetFont(unsigned short id, std::string input)
+{
+	std::vector<char> temp(input.c_str(), input.c_str() + input.length() + 1);
+	pxpk::QueueEvent * writeEvent = this->write(pxpk::QueueEvent(RenderType::RENDER_SCREEN_TEXT_SET_FONT, id));
+	writeEvent->writePayload(temp);
 }

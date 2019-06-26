@@ -7,10 +7,9 @@ pxpk::ShaderObject::ShaderObject(std::string input) : pxpk::ObjectResource(input
 	fragShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//find working directory
-	char buf[1000];
-	GetModuleFileName(NULL, buf, 1000);
-	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
-	LOG("shader directory: " + dir, pxpk::ERROR_LOG);
+	std::string dir = pxpk::getWorkingDir();
+
+	//LOG("shader directory: " + dir, pxpk::ERROR_LOG);
 
 	//separate input into filepaths
 	int delim = input.find_first_of('|');
@@ -115,6 +114,16 @@ pxpk::ShaderObject::ShaderObject(std::string input) : pxpk::ObjectResource(input
 	LOG("Shaders Loaded", pxpk::INFO_LOG);
 }
 
+void pxpk::ShaderObject::setPersective(bool input)
+{
+	usePerspective = input;
+}
+
+bool pxpk::ShaderObject::isPerspective()
+{
+	return usePerspective;
+}
+
 void pxpk::ShaderObject::use()
 {
 	glUseProgram(programID);
@@ -137,6 +146,11 @@ void pxpk::ShaderObject::setFloat(const std::string name, float input)
 {
 	glUniform1f(glGetUniformLocation(programID, name.c_str()), input);
 	LOG_GL();
+}
+
+void pxpk::ShaderObject::setvec2(const std::string name, glm::vec2 input)
+{
+	glUniform2fv(glGetUniformLocation(programID, name.c_str()), 1, &input[0]);
 }
 
 void pxpk::ShaderObject::setVec3(const std::string name, glm::vec3 input)

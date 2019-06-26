@@ -13,6 +13,8 @@ namespace pxpk
 
 	enum RenderType : std::uint8_t
 	{
+		//base settings
+		RENDER_SHOW_STATS,
 		//object
 		RENDER_OBJ_ADD,
 		RENDER_OBJ_REMOVE,
@@ -76,7 +78,16 @@ namespace pxpk
 		RENDER_LIGHT_SPOT_SET_OUT_CUTOFF,
 		RENDER_LIGHT_SPOT_SET_CONST,
 		RENDER_LIGHT_SPOT_SET_LIN,
-		RENDER_LIGHT_SPOT_SET_QUAD
+		RENDER_LIGHT_SPOT_SET_QUAD,
+		//screenspace text
+		RENDER_SCREEN_SET_POS,
+		RENDER_SCREEN_SET_SIZE,
+		RENDER_SCREEN_SET_SHADER,
+		//text
+		RENDER_SCREEN_TEXT_ADD,
+		RENDER_SCREEN_TEXT_SET_FONT,
+		RENDER_SCREEN_TEXT_SET_DATA,
+		RENDER_SCREEN_TEXT_SET_COLOR
 	};
 
 	class RenderQueue : public pxpk::DoubleBuffferQueue
@@ -95,6 +106,8 @@ namespace pxpk
 			void operator=(RenderQueue const&) = delete;
 
 			~RenderQueue();
+
+			void showStats(bool);
 
 			void objAdd(unsigned short);
 			void objRemove(unsigned short);
@@ -159,6 +172,15 @@ namespace pxpk
 			void lightSpotSetConstant(unsigned short, GLfloat);
 			void lightSpotSetLinear(unsigned short, GLfloat);
 			void lightSpotSetQuadratic(unsigned short, GLfloat);
+
+			void screenSetPosition(unsigned short, glm::vec2);
+			void screenSetSize(unsigned short, glm::vec2);
+			void screenSetShader(unsigned short, std::string, std::string);
+
+			void screenTextAdd(unsigned short);
+			void screenTextSetData(unsigned short, std::string);
+			void screenTextSetColor(unsigned short, glm::vec3);
+			void screenTextSetFont(unsigned short, std::string);
 	};
 }
 

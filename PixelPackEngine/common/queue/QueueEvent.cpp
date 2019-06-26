@@ -116,6 +116,15 @@ void pxpk::QueueEvent::writePayload(std::vector<GLuint>& data)
 		payload);
 }
 
+void pxpk::QueueEvent::writePayload(glm::vec2& data)
+{
+	payloadSize = sizeof(glm::vec2);
+	payload = new std::uint8_t[payloadSize];
+	std::copy(reinterpret_cast<uint8_t*>(&data),
+		reinterpret_cast<uint8_t*>(&data) + payloadSize,
+		payload);
+}
+
 void pxpk::QueueEvent::writePayload(glm::vec3& data)
 {
 	payloadSize = sizeof(glm::vec3);
@@ -152,6 +161,15 @@ void pxpk::QueueEvent::writePayload(std::vector<char>& data)
 		payload);
 }
 
+void pxpk::QueueEvent::writePayload(bool& data)
+{
+	payloadSize = sizeof(bool);
+	payload = new std::uint8_t[payloadSize];
+	std::copy(reinterpret_cast<uint8_t*>(&data),
+		reinterpret_cast<uint8_t*>(&data) + payloadSize,
+		payload);
+}
+
 void pxpk::QueueEvent::readPayload(std::vector<GLfloat>& dest)
 {
 	dest.resize(payloadSize / sizeof(GLfloat));
@@ -162,6 +180,11 @@ void pxpk::QueueEvent::readPayload(std::vector<GLuint>& dest)
 {
 	dest.resize(payloadSize / sizeof(GLfloat));
 	std::copy(payload, payload + payloadSize, reinterpret_cast<uint8_t*>(dest.data()));
+}
+
+void pxpk::QueueEvent::readPayload(glm::vec2& dest)
+{
+	std::copy(payload, payload + payloadSize, reinterpret_cast<uint8_t*>(&dest));
 }
 
 void pxpk::QueueEvent::readPayload(glm::vec3& dest)
@@ -183,4 +206,9 @@ void pxpk::QueueEvent::readPayload(std::vector<char>& dest)
 {
 	dest.resize(payloadSize / sizeof(char));
 	std::copy(payload, payload + payloadSize, reinterpret_cast<uint8_t*>(dest.data()));
+}
+
+void pxpk::QueueEvent::readPayload(bool& dest)
+{
+	std::copy(payload, payload + payloadSize, reinterpret_cast<uint8_t*>(&dest));
 }

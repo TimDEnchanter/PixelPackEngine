@@ -93,10 +93,17 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 
 	switch (cmd)
 	{
+	case pxpk::RENDER_SHOW_STATS:
+	{
+		bool payload;
+		event.readPayload(payload);
+		showStats = payload;
+		break;
+	}
 	case pxpk::RENDER_OBJ_ADD:
 	{
 		models.insert({ ID, pxpk::Model() });
-		models[ID].setShaderPtr(defaultShader);
+		models[ID].setShaderPtr(defaultModelShader);
 		models[ID].setTexturePtr(defaultTexture);
 		break;
 	}
@@ -461,7 +468,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	case pxpk::RENDER_LIGHT_POINT_ADD:
 	{
 		pointLights.insert({ ID, pxpk::PointLight() });
-		pointLights[ID].setShaderPtr(defaultShader);
+		pointLights[ID].setShaderPtr(defaultModelShader);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_POINT_SET_CONST:
@@ -488,7 +495,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	case pxpk::RENDER_LIGHT_DIR_ADD:
 	{
 		dirLights.insert({ ID, pxpk::DirLight() });
-		dirLights[ID].setShaderPtr(defaultShader);
+		dirLights[ID].setShaderPtr(defaultModelShader);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_DIR_SET_DIR:
@@ -501,7 +508,7 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 	case pxpk::RENDER_LIGHT_SPOT_ADD:
 	{
 		spotLights.insert({ ID, pxpk::SpotLight() });
-		spotLights[ID].setShaderPtr(defaultShader);
+		spotLights[ID].setShaderPtr(defaultModelShader);
 		break;
 	}
 	case pxpk::RENDER_LIGHT_SPOT_SET_DIR:
@@ -546,6 +553,56 @@ void pxpk::RenderEngine::processEvent(pxpk::QueueEvent event)
 		spotLights[ID].setQuadratic(payload);
 		break;
 	}
+	case pxpk::RENDER_SCREEN_SET_POS:
+	{
+		glm::vec2 payload;
+		event.readPayload(payload);
+		if (textStrings.count(ID) != 0) textStrings[ID].setPosition(payload);
+		break;
+	}
+	case pxpk::RENDER_SCREEN_SET_SIZE:
+	{
+		glm::vec2 payload;
+		event.readPayload(payload);
+		if (textStrings.count(ID) != 0) textStrings[ID].setPixelSize(payload);
+		break;
+	}
+	case pxpk::RENDER_SCREEN_SET_SHADER:
+	{
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string file(payload.begin(), payload.end());
+		if (textStrings.count(ID) != 0) textStrings[ID].setShaderPtr(shaders.addShader(file));
+		break;
+	}
+	case pxpk::RENDER_SCREEN_TEXT_ADD:
+	{
+		textStrings.insert({ ID, pxpk::TextString() });
+		textStrings[ID].setShaderPtr(defaultTextShader);
+		textStrings[ID].setFontPtr(defaultFont);
+		break;
+	}
+	case pxpk::RENDER_SCREEN_TEXT_SET_DATA:
+	{
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string data(payload.begin(), payload.end());
+		textStrings[ID].setData(data);
+		break;
+	}
+	case pxpk::RENDER_SCREEN_TEXT_SET_COLOR:
+	{
+		glm::vec3 payload;
+		event.readPayload(payload);
+		textStrings[ID].setTextColor(payload);
+		break;
+	}
+	case pxpk::RENDER_SCREEN_TEXT_SET_FONT:
+		std::vector<char> payload;
+		event.readPayload(payload);
+		std::string file(payload.begin(), payload.end());
+		textStrings[ID].setFontPtr(fonts.addFont(file));
+		break;
 	}
 }
 
@@ -574,6 +631,10 @@ void pxpk::RenderEngine::init(int argc, char **argv, std::string windowName)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+
+	//set blending function
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//set function to determine depth culling
 	glDepthFunc(GL_LESS);
@@ -628,26 +689,44 @@ unsigned short pxpk::RenderEngine::getActiveCam()
 
 void pxpk::RenderEngine::render()
 {
-	//tick for FPS
-	if (frameTimer.tickCheckUpdate())
-	{
-		float frameTime = frameTimer.getFrameTime()/1000.0f;
-		//system("cls");
-		//LOG("Frametime - " + std::to_string(frameTime), pxpk::INFO_LOG);
-		//LOG("FPS - " + std::to_string(1.0/frameTime), pxpk::INFO_LOG);
-	}
-
 	if (!pxpk::engineStarted)
 	{
 		// load default resources on first run
-		defaultShader = shaders.addShader("/shaders/default.vert|/shaders/default.frag");
+		defaultModelShader = shaders.addShader("/shaders/default.vert|/shaders/default.frag");
+		defaultTextShader = shaders.addShader("/shaders/text.vert|/shaders/text.frag");
+		defaultTextShader->setPersective(false);
 		defaultTexture = textures.addTexture("/textures/default.jpg");
+		defaultFont = fonts.addFont("/fonts/arial.ttf");
+
+		statDisplays.resize(2);
+		//frametime
+		statDisplays[0].setFontPtr(defaultFont);
+		statDisplays[0].setShaderPtr(defaultTextShader);
+		statDisplays[0].setPosition(glm::vec2(10.0));
+		statDisplays[0].setPixelSize(glm::vec2(12.0));
+		statDisplays[0].setData("Frametime - " + std::to_string(0.0));
+		//FPS
+		statDisplays[1].setFontPtr(defaultFont);
+		statDisplays[1].setShaderPtr(defaultTextShader);
+		statDisplays[1].setPosition(glm::vec2(10.0, 25.0));
+		statDisplays[1].setPixelSize(glm::vec2(12.0));
+		statDisplays[1].setData("FPS - " + std::to_string(0.0));
 
 		LOG("Engine Started", pxpk::INFO_LOG);
 		//signal writer that engine has started
 		pxpk::engineStarted = true;
 		pxpk::RenderQ_Read_CV.notify_all();
 	}
+
+	//tick for FPS
+	if (frameTimer.tickCheckUpdate())
+	{
+		float frameTime = frameTimer.getFrameTime() / 1000.0f;
+
+		statDisplays[0].setData("Frametime - " + std::to_string(frameTime));
+		statDisplays[1].setData("FPS - " + std::to_string(1.0/frameTime));
+	}
+
 	//LOG("clearing buffer", pxpk::INFO_LOG);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0); //clear to black
@@ -698,14 +777,21 @@ void pxpk::RenderEngine::render()
 		std::shared_ptr<pxpk::ShaderObject> temp = std::static_pointer_cast<pxpk::ShaderObject>(std::shared_ptr<pxpk::ObjectResource>(it.second));
 		temp->use();
 
-		//projection and view
-		temp->setMat4("Projection", Projection);
-		temp->setMat4("View", View);
-		temp->setVec3("viewPos", camPos);
+		if (temp->isPerspective())
+		{
+			//projection and view
+			temp->setMat4("Projection", Projection);
+			temp->setMat4("View", View);
+			temp->setVec3("viewPos", camPos);
 
-		temp->setInt("numPointLights", numPointLights);
-		temp->setInt("numDirLights", numDirLights);
-		temp->setInt("numSpotLights", numSpotLights);
+			temp->setInt("numPointLights", numPointLights);
+			temp->setInt("numDirLights", numDirLights);
+			temp->setInt("numSpotLights", numSpotLights);
+		}
+		else
+		{
+			temp->setMat4("Projection", glm::ortho(0.0f, (float)pxpk::windowWidth, (float)pxpk::windowHeight, 0.0f, -1.0f, 1.0f));
+		}
 	}
 
 	//setup lights
@@ -735,18 +821,34 @@ void pxpk::RenderEngine::render()
 	drawLock.unlock();
 	pxpk::DrawQ_Read_CV.notify_all();
 
+	std::queue<unsigned short> screenspaceElements;
 	while (!pxpk::DrawQueue::getInstance().isReadEmpty())
 	{
 		//fetch ID from queue
 		unsigned short ID = pxpk::DrawQueue::getInstance().read().getID();
 
-		//draw the model
-		models[ID].draw();
+		//draw the or save 2D element for second draw
+		if (models.count(ID) != 0) models[ID].draw();
+		else screenspaceElements.push(ID);
 
 		//error check
 		LOG_GL();
 
 		pxpk::DrawQueue::getInstance().pop();
+	}
+
+	//draw 2D elements on top of 3D view
+	while (!screenspaceElements.empty())
+	{
+		textStrings[screenspaceElements.front()].draw();
+		LOG_GL();
+		screenspaceElements.pop();
+	}
+
+	//draw performance stats
+	if (showStats)
+	{
+		for (pxpk::TextString text : statDisplays) text.draw();
 	}
 
 	//LOG("swapping buffer", pxpk::INFO_LOG);

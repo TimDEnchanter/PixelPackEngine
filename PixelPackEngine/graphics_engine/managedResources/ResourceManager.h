@@ -5,6 +5,7 @@
 #include "MeshObject.h"
 #include "TextureObject.h"
 #include "ShaderObject.h"
+#include "fontObject.h"
 
 #include <unordered_map>
 #include <string>
@@ -26,6 +27,7 @@ namespace pxpk
 		std::shared_ptr<pxpk::MeshObject> addMesh(std::string);
 		std::shared_ptr<pxpk::TextureObject> addTexture(std::string);
 		std::shared_ptr<pxpk::ShaderObject> addShader(std::string);
+		std::shared_ptr<pxpk::FontObject> addFont(std::string);
 
 		void flushExpired();
 	};

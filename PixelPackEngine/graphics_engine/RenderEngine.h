@@ -9,6 +9,7 @@
 #include "objects/lights/PointLight.h"
 #include "objects/lights/DirLight.h"
 #include "objects/lights/SpotLight.h"
+#include "objects/TextString.h"
 #include "managedResources/ResourceManager.h"
 #include "../utility/debugging/Logger.h"
 #include "../dependencies/glm/mat4x4.hpp"
@@ -42,18 +43,24 @@ namespace pxpk {
 			std::unordered_map<unsigned short, pxpk::PointLight> pointLights;
 			std::unordered_map<unsigned short, pxpk::DirLight> dirLights;
 			std::unordered_map<unsigned short, pxpk::SpotLight> spotLights;
+			std::unordered_map<unsigned short, pxpk::TextString> textStrings;
 
 			pxpk::ResourceManager meshes;
 			pxpk::ResourceManager shaders;
 			pxpk::ResourceManager textures;
+			pxpk::ResourceManager fonts;
 
 			unsigned short activeCam = 0;
 
-			std::shared_ptr<ShaderObject> defaultShader;
+			std::shared_ptr<ShaderObject> defaultModelShader;
+			std::shared_ptr<ShaderObject> defaultTextShader;
 			std::shared_ptr<TextureObject> defaultTexture;
+			std::shared_ptr<FontObject> defaultFont;
 
 			pxpk::DeltaTimer frameTimer;
 			int frames;
+			bool showStats = false;
+			std::vector<pxpk::TextString> statDisplays;
 
 			void processEvent(pxpk::QueueEvent);
 

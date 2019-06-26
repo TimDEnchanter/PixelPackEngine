@@ -98,6 +98,9 @@ int main(int argc, char **argv)
 
 	pxpk::isRenderWriterReady = false;
 
+	//enable stat display
+	pxpk::RenderQueue::getInstance().showStats(true);
+
 	//floor
 	unsigned short floorIndex = 0;
 
@@ -201,6 +204,14 @@ int main(int argc, char **argv)
 	pxpk::RenderQueue::getInstance().camSetPos(camIndex, glm::vec3(10.0, 10.0, 10.0));
 	pxpk::RenderQueue::getInstance().camLookat(camIndex, glm::vec3(0.0, 0.0, 0.0));
 
+	//setup text
+	int textIndex = 10;
+	pxpk::RenderQueue::getInstance().screenTextAdd(textIndex);
+	pxpk::RenderQueue::getInstance().screenTextSetData(textIndex, "Hello World!");
+	pxpk::RenderQueue::getInstance().screenTextSetColor(textIndex, glm::vec3(0.2, 1.0, 0.2));
+	pxpk::RenderQueue::getInstance().screenSetPosition(textIndex, glm::vec2(pxpk::windowWidth / 2.0, 10.0));
+	pxpk::RenderQueue::getInstance().screenSetSize(textIndex, glm::vec2(25.0));
+
 	//manually unlock render queue and signal reader
 	//pxpk::Logger::getInstance().log("Test is done with Render Queue", pxpk::INFO_LOG);
 	pxpk::isRenderWriterReady = true;
@@ -220,6 +231,7 @@ int main(int argc, char **argv)
 	pxpk::DrawQueue::getInstance().draw(tc2Index);
 	pxpk::DrawQueue::getInstance().draw(tc3Index);
 	pxpk::DrawQueue::getInstance().draw(tc4Index);
+	pxpk::DrawQueue::getInstance().draw(textIndex);
 
 	//manually unlock draw queue and signal reader
 	//pxpk::Logger::getInstance().log("Test is done with Draw Queue", pxpk::INFO_LOG);
@@ -322,6 +334,7 @@ int main(int argc, char **argv)
 		pxpk::DrawQueue::getInstance().draw(tc2Index);
 		pxpk::DrawQueue::getInstance().draw(tc3Index);
 		pxpk::DrawQueue::getInstance().draw(tc4Index);
+		pxpk::DrawQueue::getInstance().draw(textIndex);
 
 		//manually unlock draw queue and signal reader
 		//LOG("Test is done with Draw Queue", pxpk::INFO_LOG);

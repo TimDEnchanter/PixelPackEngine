@@ -14,6 +14,7 @@ void pxpk::TextureObject::freeResource()
 
 void pxpk::TextureObject::deleteResource()
 {
+	glDeleteTextures(1, &texId);
 }
 
 pxpk::TextureObject::TextureObject(std::string filepath) : ObjectResource(filepath)
@@ -21,10 +22,7 @@ pxpk::TextureObject::TextureObject(std::string filepath) : ObjectResource(filepa
 	LOG("Reading texture file: " + filepath, pxpk::INFO_LOG);
 
 	//find working directory
-	char buf[1000];
-	GetModuleFileName(NULL, buf, 1000);
-	std::string dir = std::string(buf).substr(0, std::string(buf).find_last_of("\\/"));
-	std::string fullPath = dir + filepath;
+	std::string fullPath = pxpk::getWorkingDir() + filepath;
 
 	//fetch image data
 	int width, height, channels;
@@ -54,6 +52,7 @@ pxpk::TextureObject::TextureObject(std::string filepath) : ObjectResource(filepa
 
 pxpk::TextureObject::~TextureObject()
 {
+	deleteResource();
 }
 
 GLuint pxpk::TextureObject::getTexId()

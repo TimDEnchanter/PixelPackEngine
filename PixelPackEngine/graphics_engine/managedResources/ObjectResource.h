@@ -3,6 +3,7 @@
 
 #include "../SharedVariables.h"
 #include "../../utility/debugging/Logger.h"
+#include "../../common/FileUtils.h"
 
 #include <string>
 #include <vector>
