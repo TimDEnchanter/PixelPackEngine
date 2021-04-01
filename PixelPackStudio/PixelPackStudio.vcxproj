@@ -66,10 +66,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\PixelPackEngine.dll $(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy referenced dependencies</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
