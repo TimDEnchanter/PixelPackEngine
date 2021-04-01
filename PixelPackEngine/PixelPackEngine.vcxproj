@@ -60,6 +60,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -75,6 +76,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,12 +89,12 @@
     <ClInclude Include="src\core\EngineApp.h" />
     <ClInclude Include="src\core\ApiCore.h" />
     <ClInclude Include="src\core\EntryPoint.h" />
-    <ClInclude Include="src\core\Logging.h" />
+    <ClInclude Include="src\core\Logger.h" />
     <ClInclude Include="src\PixelPack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\EngineApp.cpp" />
-    <ClCompile Include="src\core\Logging.cpp" />
+    <ClCompile Include="src\core\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

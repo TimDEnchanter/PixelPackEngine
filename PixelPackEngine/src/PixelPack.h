@@ -7,4 +7,4 @@
 // ---ENTRY POINT---
 
 #include "core\EngineApp.h"
-#include "core\Logging.h"
+#include "core\Logger.h"
