@@ -1,7 +1,8 @@
+#include "Precompile.h"
+
 #pragma once
 
 #include "EngineApp.h"
-#include "Logger.h"
 
 #ifdef PXPK_PLATFORM_WINDOWS
 

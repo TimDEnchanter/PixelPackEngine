@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ApiCore.h"
-
 namespace PixelPack {
 
 	class PXPK_API EngineApp

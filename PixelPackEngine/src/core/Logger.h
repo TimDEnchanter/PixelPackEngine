@@ -1,9 +1,5 @@
 #pragma once
 
-#include "ApiCore.h"
-
-#include "spdlog\spdlog.h"
-
 namespace PixelPack
 {
 
@@ -16,8 +12,11 @@ namespace PixelPack
 		static std::shared_ptr<spdlog::logger>& GetClientLogger();
 
 	private:
+		#pragma warning( push )
+		#pragma warning( disable : 4251 ) // Disable C4251 for these lines. It's fine since these are private
 		static std::shared_ptr<spdlog::logger> sptr_EngineLogger;
 		static std::shared_ptr<spdlog::logger> sptr_ClientLogger;
+		#pragma warning( pop )
 	};
 
 }

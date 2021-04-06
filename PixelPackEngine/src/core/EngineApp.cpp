@@ -1,3 +1,4 @@
+#include "Precompile.h"
 #include "EngineApp.h"
 
 namespace PixelPack
