@@ -3,10 +3,13 @@
 // STDlib resources
 #include <string>
 #include <vector>
+#include <functional>
 
 // External Third-Party resources
 #include <spdlog\spdlog.h>
 #include <spdlog\sinks\stdout_color_sinks.h>
+
+#include <entt\entt.hpp>
 
 // Local project resources - DO NOT INCLUDE IN-DEV CODE HERE
 #include "core\ApiCore.h"
