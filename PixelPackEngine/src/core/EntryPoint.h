@@ -11,9 +11,7 @@ extern PixelPack::EngineApp* PixelPack::CreateEngine();
 int main(int argc, char**argv)
 {
 	PixelPack::Logger::Init();
-	PXPK_LOG_ENGINE_WARN("Initialized");
-	int var = 5;
-	PXPK_LOG_INFO("Initialized: var={0}", var);
+	PXPK_LOG_ENGINE_INFO("Logger Initialized");
 
 	auto engine = PixelPack::CreateEngine();
 	engine->Run();
@@ -21,5 +19,5 @@ int main(int argc, char**argv)
 }
 
 #else
-	#error Please use Windows! Other OS not yet supported!
+	#error Please use Windows! Other platforms not yet supported!
 #endif // PXPK_PLATFORM_WINDOWS

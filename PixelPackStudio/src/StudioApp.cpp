@@ -1,4 +1,4 @@
-#include <PixelPack.h>
+#include <PixelPackEngine.h>
 
 class StudioApp : public PixelPack::EngineApp
 {

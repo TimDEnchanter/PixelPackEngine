@@ -24,7 +24,7 @@
     <ClInclude Include="src\core\EngineApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PixelPack.h">
+    <ClInclude Include="src\PixelPackEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\EntryPoint.h">
