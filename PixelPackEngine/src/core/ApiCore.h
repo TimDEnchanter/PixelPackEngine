@@ -7,5 +7,5 @@
 		#define PXPK_API __declspec(dllimport)
 	#endif // PXPK_BUILD_DLL
 #else
-	#error Please use Windows! Other OS not yet supported!
+	#error Please use Windows! Other Platforms not yet supported!
 #endif // PXPK_PLATFORM_WINDOWS

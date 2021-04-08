@@ -60,13 +60,15 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\Vulcan-Headers\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)external\Vulkan-Loader\build\loader\$(Configuration);$(SolutionDir)external\glfw\build\src\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /y $(OutputPath)PixelPackEngine.dll $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackStudio\</Command>
@@ -84,7 +86,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\Vulcan-Headers\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -93,6 +95,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)external\Vulkan-Loader\build\loader\$(Configuration);$(SolutionDir)external\glfw\build\src\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -102,6 +106,8 @@
     <ClInclude Include="src\core\Logger.h" />
     <ClInclude Include="src\PixelPack.h" />
     <ClInclude Include="src\Precompile.h" />
+    <ClInclude Include="src\platform\Vulkan\VulkanWindow.h" />
+    <ClInclude Include="src\core\WindowInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\EngineApp.cpp" />
@@ -110,6 +116,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\platform\Vulkan\VulkanWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
