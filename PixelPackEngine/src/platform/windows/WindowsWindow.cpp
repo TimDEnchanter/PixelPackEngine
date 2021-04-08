@@ -2,6 +2,7 @@
 #include "WindowsWindow.h"
 
 #include "events\WindowCloseEvent.h"
+#include "events\WindowResizeEvent.h"
 
 namespace PixelPack
 {
@@ -19,6 +20,18 @@ namespace PixelPack
 		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
 
 		properties.sptr_Dispatcher->trigger<WindowCloseEvent>();
+	}
+
+	static void GLFWWindowResizeCallback(GLFWwindow* window, int width, int height)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		properties.Width = width;
+		properties.Height = height;
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		properties.sptr_Dispatcher->trigger<WindowResizeEvent>(width, height);
 	}
 
 	// Override the interface's Create() function
@@ -47,7 +60,9 @@ namespace PixelPack
 		glfwSetWindowUserPointer(ptr_Window, &Properties);
 		SetVSync(Properties.VSyncEnabled);
 
+		// Setup event callbacks
 		glfwSetWindowCloseCallback(ptr_Window, GLFWWindowCloseCallback);
+		glfwSetWindowSizeCallback(ptr_Window, GLFWWindowResizeCallback);
 	}
 
 	WindowsWindow::~WindowsWindow()

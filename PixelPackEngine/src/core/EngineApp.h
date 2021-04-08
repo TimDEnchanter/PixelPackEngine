@@ -2,6 +2,7 @@
 
 #include "core\WindowInterface.h"
 #include "events\WindowCloseEvent.h"
+#include "events\WindowResizeEvent.h"
 
 
 namespace PixelPack {
@@ -23,7 +24,8 @@ namespace PixelPack {
 
 	private:
 		void InitDispatcher();
-		void OnWindowClose(const WindowCloseEvent &);
+		void OnWindowClose(const WindowCloseEvent &event);
+		void OnWindowResize(const WindowResizeEvent &event);
 	};
 
 	// Defined by client application

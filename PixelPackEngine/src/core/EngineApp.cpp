@@ -33,11 +33,18 @@ namespace PixelPack
 	{
 		sptr_dispatcher = std::shared_ptr<entt::dispatcher>(new entt::dispatcher());
 		sptr_dispatcher->sink<WindowCloseEvent>().connect<&EngineApp::OnWindowClose>(this);
+		sptr_dispatcher->sink<WindowResizeEvent>().connect<&EngineApp::OnWindowResize>(this);
 	}
 	
-	void EngineApp::OnWindowClose(const WindowCloseEvent &)
+	void EngineApp::OnWindowClose(const WindowCloseEvent &event)
 	{
 		PXPK_LOG_ENGINE_INFO("Closing window");
 		windowRunning = false;
+	}
+
+	// TODO: Vulkan stuff for resize?
+	void EngineApp::OnWindowResize(const WindowResizeEvent &event)
+	{
+		PXPK_LOG_ENGINE_INFO("Resizing window {0}x{1}", event.Width, event.Height);
 	}
 }
