@@ -8,7 +8,7 @@ namespace PixelPack
 		std::string Name;
 		uint32_t Width, Height;
 		bool VSyncEnabled;
-		entt::delegate<void(void)> Listener;
+		std::shared_ptr<entt::dispatcher> sptr_Dispatcher;
 
 		WindowProperties
 		(
@@ -16,9 +16,9 @@ namespace PixelPack
 			uint32_t width = 1920,
 			uint32_t height = 1080,
 			bool vsync = true,
-			entt::delegate<void(void)> listener = NULL
+			std::shared_ptr<entt::dispatcher> sptr_dispatcher = nullptr
 		)
-			:Name(name), Width(width), Height(height), VSyncEnabled(vsync), Listener(listener)
+			:Name(name), Width(width), Height(height), VSyncEnabled(vsync), sptr_Dispatcher(sptr_dispatcher)
 		{
 
 		}
@@ -35,11 +35,10 @@ namespace PixelPack
 
 		virtual std::string GetName() const = 0;
 		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int Getheight() const = 0;
+		virtual unsigned int GetHeight() const = 0;
 		virtual bool IsVSyncEnabled() const = 0;
 
-		// TODO: determine the event input for window/input event
-		virtual void ConnectEventListener(entt::delegate<void(void)> listener) = 0;
+		virtual void SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 
 		virtual void OnUpdate() = 0;

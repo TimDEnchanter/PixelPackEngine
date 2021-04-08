@@ -1,6 +1,8 @@
 #pragma once
 
 #include "core\WindowInterface.h"
+#include "events\WindowCloseEvent.h"
+
 
 namespace PixelPack {
 
@@ -15,6 +17,13 @@ namespace PixelPack {
 	private:
 		static EngineApp* ptr_Instance;
 		std::unique_ptr<WindowInterface> uptr_Window;
+		std::shared_ptr<entt::dispatcher> sptr_dispatcher;
+
+		bool windowRunning = true;
+
+	private:
+		void InitDispatcher();
+		void OnWindowClose(const WindowCloseEvent &);
 	};
 
 	// Defined by client application

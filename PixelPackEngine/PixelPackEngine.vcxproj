@@ -104,9 +104,10 @@
     <ClInclude Include="src\core\ApiCore.h" />
     <ClInclude Include="src\core\EntryPoint.h" />
     <ClInclude Include="src\core\Logger.h" />
+    <ClInclude Include="src\events\WindowCloseEvent.h" />
     <ClInclude Include="src\PixelPack.h" />
     <ClInclude Include="src\Precompile.h" />
-    <ClInclude Include="src\platform\Vulkan\VulkanWindow.h" />
+    <ClInclude Include="src\platform\windows\WindowsWindow.h" />
     <ClInclude Include="src\core\WindowInterface.h" />
   </ItemGroup>
   <ItemGroup>
@@ -116,7 +117,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\platform\Vulkan\VulkanWindow.cpp" />
+    <ClCompile Include="src\platform\windows\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

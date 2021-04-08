@@ -1,5 +1,7 @@
 #include "Precompile.h"
-#include "VulkanWindow.h"
+#include "WindowsWindow.h"
+
+#include "events\WindowCloseEvent.h"
 
 namespace PixelPack
 {
@@ -10,13 +12,22 @@ namespace PixelPack
 		PXPK_LOG_ENGINE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
+	static void GLFWWindowCloseCallback(GLFWwindow* window)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		properties.sptr_Dispatcher->trigger<WindowCloseEvent>();
+	}
+
 	// Override the interface's Create() function
 	WindowInterface* WindowInterface::Create(const WindowProperties& properties)
 	{
-		return new VulkanWindow(properties);
+		return new WindowsWindow(properties);
 	}
 
-	VulkanWindow::VulkanWindow(const WindowProperties& properties)
+	WindowsWindow::WindowsWindow(const WindowProperties& properties)
 	{
 		Properties = properties;
 
@@ -28,15 +39,18 @@ namespace PixelPack
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Tells GLFW that OpenGL is not being used
+
 		ptr_Window = glfwCreateWindow((int)Properties.Width, (int)Properties.Height, Properties.Name.c_str(), nullptr, nullptr);
 		GLFWWindowCount++;
 
 		glfwSetWindowUserPointer(ptr_Window, &Properties);
 		SetVSync(Properties.VSyncEnabled);
+
+		glfwSetWindowCloseCallback(ptr_Window, GLFWWindowCloseCallback);
 	}
 
-	VulkanWindow::~VulkanWindow()
+	WindowsWindow::~WindowsWindow()
 	{
 		glfwDestroyWindow(ptr_Window);
 		GLFWWindowCount--;
@@ -47,34 +61,34 @@ namespace PixelPack
 		}
 	}
 
-	std::string VulkanWindow::GetName() const
+	std::string WindowsWindow::GetName() const
 	{
 		return Properties.Name;
 	}
 
-	unsigned int VulkanWindow::GetWidth() const
+	unsigned int WindowsWindow::GetWidth() const
 	{
 		return Properties.Width;
 	}
 
-	unsigned int VulkanWindow::Getheight() const
+	unsigned int WindowsWindow::GetHeight() const
 	{
 		return Properties.Height;
 	}
 
-	bool VulkanWindow::IsVSyncEnabled() const
+	bool WindowsWindow::IsVSyncEnabled() const
 	{
 		return Properties.VSyncEnabled;
 	}
 
-	void VulkanWindow::ConnectEventListener(entt::delegate<void(void)> listener)
+	void WindowsWindow::SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher)
 	{
-		// TODO: Figure this out!
+		Properties.sptr_Dispatcher = sptr_dispatcher;
 	}
 
-	void VulkanWindow::SetVSync(bool enabled)
+	// TODO: figure out how to do this in Vulkan.
+	void WindowsWindow::SetVSync(bool enabled)
 	{
-		// TODO: figure out how to do this in Vulkan.
 		// Look into VK_PRESENT_MODE_FIFO_KHR
 		//if (enabled)
 		//{
@@ -88,7 +102,7 @@ namespace PixelPack
 		Properties.VSyncEnabled = enabled;
 	}
 
-	void VulkanWindow::OnUpdate()
+	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
 	}
