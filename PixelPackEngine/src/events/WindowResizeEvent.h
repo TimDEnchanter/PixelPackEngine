@@ -1,6 +1,9 @@
 #pragma once
 
-struct WindowResizeEvent
+namespace PixelPack
 {
-	unsigned int Width, Height;
-};
+	struct WindowResizeEvent
+	{
+		int Width, Height;
+	};
+}

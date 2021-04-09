@@ -45,6 +45,24 @@
     <ClInclude Include="src\events\WindowResizeEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\events\input\KeyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\input\UnicodeInputEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\input\MouseButtonEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\input\KeyAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\input\MouseMoveEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\input\MouseScrollEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Logger.cpp">

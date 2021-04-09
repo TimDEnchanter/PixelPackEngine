@@ -3,6 +3,11 @@
 
 #include "events\WindowCloseEvent.h"
 #include "events\WindowResizeEvent.h"
+#include "events\input\KeyEvent.h"
+#include "events\input\UnicodeInputEvent.h"
+#include "events\input\MouseButtonEvent.h"
+#include "events\input\MouseScrollEvent.h"
+#include "events\input\MouseMoveEvent.h"
 
 namespace PixelPack
 {
@@ -34,6 +39,76 @@ namespace PixelPack
 		properties.sptr_Dispatcher->trigger<WindowResizeEvent>(width, height);
 	}
 
+	static void GLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		switch (action)
+		{
+		case GLFW_PRESS:
+			properties.sptr_Dispatcher->enqueue<KeyEvent>(key, mods, KeyAction::PRESS);
+			break;
+		case GLFW_REPEAT:
+			properties.sptr_Dispatcher->enqueue<KeyEvent>(key, mods, KeyAction::REPEAT);
+			break;
+		case GLFW_RELEASE:
+			properties.sptr_Dispatcher->enqueue<KeyEvent>(key, mods, KeyAction::RELEASE);
+			break;
+		default:
+			PXPK_LOG_ENGINE_ERROR("Invalid key state ({0})", action);
+			break;
+		}
+	}
+
+	static void GLFWCharCallback(GLFWwindow* window, unsigned int codepoint)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		properties.sptr_Dispatcher->enqueue<UnicodeInputEvent>(codepoint);
+	}
+
+	static void GLFWMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		switch (action)
+		{
+		case GLFW_PRESS:
+			properties.sptr_Dispatcher->enqueue<MouseButtonEvent>(button, mods, KeyAction::PRESS);
+			break;
+		case GLFW_RELEASE:
+			properties.sptr_Dispatcher->enqueue<MouseButtonEvent>(button, mods, KeyAction::RELEASE);
+			break;
+		default:
+			PXPK_LOG_ENGINE_ERROR("Invalid mouse button state ({0})", action);
+			break;
+		}
+	}
+
+	static void GLFWScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		properties.sptr_Dispatcher->enqueue<MouseScrollEvent>(xOffset, yOffset);
+	}
+
+	static void GLFWCursorCallback(GLFWwindow* window, double xpos, double ypos)
+	{
+		WindowProperties& properties = *(WindowProperties*)glfwGetWindowUserPointer(window);
+
+		PXPK_ASSERT_ENGINE(properties.sptr_Dispatcher, "No dispatcher attatched to {0} window!", properties.Name);
+
+		properties.sptr_Dispatcher->enqueue<MouseMoveEvent>(xpos, ypos);
+	}
+
 	// Override the interface's Create() function
 	WindowInterface* WindowInterface::Create(const WindowProperties& properties)
 	{
@@ -63,6 +138,11 @@ namespace PixelPack
 		// Setup event callbacks
 		glfwSetWindowCloseCallback(ptr_Window, GLFWWindowCloseCallback);
 		glfwSetWindowSizeCallback(ptr_Window, GLFWWindowResizeCallback);
+		glfwSetKeyCallback(ptr_Window, GLFWKeyCallback);
+		glfwSetCharCallback(ptr_Window, GLFWCharCallback);
+		glfwSetMouseButtonCallback(ptr_Window, GLFWMouseButtonCallback);
+		glfwSetScrollCallback(ptr_Window, GLFWScrollCallback);
+		glfwSetCursorPosCallback(ptr_Window, GLFWCursorCallback);
 	}
 
 	WindowsWindow::~WindowsWindow()

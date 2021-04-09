@@ -2,8 +2,8 @@
 
 namespace PixelPack
 {
-	struct WindowCloseEvent
+	struct MouseMoveEvent
 	{
-
+		double xPos, yPos;
 	};
 }
