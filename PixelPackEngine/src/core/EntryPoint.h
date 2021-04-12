@@ -1,6 +1,6 @@
-#include "Precompile.h"
-
 #pragma once
+
+#include "Precompile.h"
 
 #include "EngineApp.h"
 

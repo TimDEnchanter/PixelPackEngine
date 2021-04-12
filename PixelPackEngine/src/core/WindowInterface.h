@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+#include <entt\entt.hpp>
+
 namespace PixelPack
 {
 	// Struct containing common window properties needed to create a basic window

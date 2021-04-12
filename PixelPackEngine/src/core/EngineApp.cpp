@@ -19,7 +19,7 @@ namespace PixelPack
 		InitDispatcher();
 
 		uptr_Window = std::unique_ptr<WindowInterface>(WindowInterface::Create());
-		uptr_Window->SetEventDispatcher(sptr_dispatcher);
+		uptr_Window->SetEventDispatcher(sptr_Dispatcher);
 	}
 
 	EngineApp::~EngineApp()
@@ -31,66 +31,71 @@ namespace PixelPack
 	{
 		while (windowRunning)
 		{
-			sptr_dispatcher->update();
+			sptr_Dispatcher->update();
+
+			for (std::shared_ptr<LayerInterface> layer : LayerStack)
+			{
+				layer->Update();
+			}
 
 			uptr_Window->OnUpdate();
 		}
 	}
 
+	void EngineApp::PushLayer(std::shared_ptr<LayerInterface> sptr_layer)
+	{
+		LayerStack.PushLayer(sptr_layer);
+	}
+
+	void EngineApp::PushOverlay(std::shared_ptr<LayerInterface> sptr_overlay)
+	{
+		LayerStack.PushOverlay(sptr_overlay);
+	}
+
+	void EngineApp::Poplayer(std::shared_ptr<LayerInterface> sptr_layer)
+	{
+		LayerStack.PopLayer(sptr_layer);
+	}
+
+	void EngineApp::PopOverlay(std::shared_ptr<LayerInterface> sptr_overlay)
+	{
+		LayerStack.PopOverlay(sptr_overlay);
+	}
+
 	void EngineApp::InitDispatcher()
 	{
-		sptr_dispatcher = std::shared_ptr<entt::dispatcher>(new entt::dispatcher());
-		sptr_dispatcher->sink<WindowCloseEvent>().connect<&EngineApp::OnWindowClose>(this);
-		sptr_dispatcher->sink<WindowResizeEvent>().connect<&EngineApp::OnWindowResize>(this);
-		sptr_dispatcher->sink<KeyEvent>().connect<&EngineApp::OnInputEvent>(this);
-		sptr_dispatcher->sink<UnicodeInputEvent>().connect<&EngineApp::OnInputEvent>(this);
-		sptr_dispatcher->sink<MouseButtonEvent>().connect<&EngineApp::OnInputEvent>(this);
-		sptr_dispatcher->sink<MouseScrollEvent>().connect<&EngineApp::OnInputEvent>(this);
-		sptr_dispatcher->sink<MouseMoveEvent>().connect<&EngineApp::OnInputEvent>(this);
+		sptr_Dispatcher = std::shared_ptr<entt::dispatcher>(new entt::dispatcher());
+		sptr_Dispatcher->sink<WindowCloseEvent>().connect<&EngineApp::OnWindowClose>(this);
+		sptr_Dispatcher->sink<WindowResizeEvent>().connect<&EngineApp::OnWindowResize>(this);
+		sptr_Dispatcher->sink<KeyEvent>().connect<&EngineApp::OnInputEvent>(this);
+		sptr_Dispatcher->sink<UnicodeInputEvent>().connect<&EngineApp::OnInputEvent>(this);
+		sptr_Dispatcher->sink<MouseButtonEvent>().connect<&EngineApp::OnInputEvent>(this);
+		sptr_Dispatcher->sink<MouseScrollEvent>().connect<&EngineApp::OnInputEvent>(this);
+		sptr_Dispatcher->sink<MouseMoveEvent>().connect<&EngineApp::OnInputEvent>(this);
+	}
+
+	void EngineApp::OnInputEvent(const entt::any& event)
+	{
+		for (auto iter = LayerStack.rbegin(); iter != LayerStack.rend(); ++iter)
+		{
+			if ((*iter)->OnEvent(event))
+			{
+				return;
+			}
+		}
+
+		PXPK_LOG_ENGINE_WARN("Event not handled {0}", event.type().name());
 	}
 	
 	void EngineApp::OnWindowClose(const WindowCloseEvent &event)
 	{
-		PXPK_LOG_ENGINE_INFO("Closing window");
+		PXPK_LOG_ENGINE_INFO("{0}", event);
 		windowRunning = false;
 	}
 
 	// TODO: Vulkan stuff for resize?
 	void EngineApp::OnWindowResize(const WindowResizeEvent &event)
 	{
-		PXPK_LOG_ENGINE_INFO("Resizing window {0}x{1}", event.Width, event.Height);
-	}
-
-	void EngineApp::OnInputEvent(const entt::any& event)
-	{
-		if (event.type() == entt::type_id<KeyEvent>())
-		{
-			KeyEvent& keyEvent = *(KeyEvent*) event.data();
-			PXPK_LOG_ENGINE_INFO("Found Key Event ({0}) {1}", keyEvent.key, keyEvent.action);
-		}
-		else if (event.type() == entt::type_id<UnicodeInputEvent>())
-		{
-			UnicodeInputEvent& unicodeEvent = *(UnicodeInputEvent*)event.data();
-			PXPK_LOG_ENGINE_INFO("Found Unicode Event ({0})", unicodeEvent.codepoint);
-		}
-		else if (event.type() == entt::type_id<MouseButtonEvent>())
-		{
-			MouseButtonEvent& mouseButtonEvent = *(MouseButtonEvent*)event.data();
-			PXPK_LOG_ENGINE_INFO("Found Mouse Button Event ({0}) {1}", mouseButtonEvent.button, mouseButtonEvent.action);
-		}
-		else if (event.type() == entt::type_id<MouseScrollEvent>())
-		{
-			MouseScrollEvent& mouseScrollEvent = *(MouseScrollEvent*)event.data();
-			PXPK_LOG_ENGINE_INFO("Found Mouse Scroll Event {0} {1}", mouseScrollEvent.xOffset, mouseScrollEvent.yOffset);
-		}
-		else if (event.type() == entt::type_id<MouseMoveEvent>())
-		{
-			MouseMoveEvent& mouseMoveEvent = *(MouseMoveEvent*)event.data();
-			PXPK_LOG_ENGINE_INFO("Found Mouse Move Event {0} {1}", mouseMoveEvent.xPos, mouseMoveEvent.yPos);
-		}
-		else
-		{
-			PXPK_LOG_ENGINE_ERROR("Received unhandled event!");
-		}
+		PXPK_LOG_ENGINE_INFO("{0}", event);
 	}
 }

@@ -100,6 +100,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\LayerStack.h" />
+    <ClInclude Include="src\core\LayerInterface.h" />
     <ClInclude Include="src\core\EngineApp.h" />
     <ClInclude Include="src\core\ApiCore.h" />
     <ClInclude Include="src\core\EntryPoint.h" />
@@ -118,6 +120,7 @@
     <ClInclude Include="src\core\WindowInterface.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\LayerStack.cpp" />
     <ClCompile Include="src\core\EngineApp.cpp" />
     <ClCompile Include="src\core\Logger.cpp" />
     <ClCompile Include="src\Precompile.cpp">
