@@ -60,7 +60,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\Vulcan-Headers\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\Vulkan-Headers\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -86,7 +86,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\Vulcan-Headers\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\Vulkan-Headers\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>

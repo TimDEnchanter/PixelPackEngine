@@ -24,5 +24,11 @@ namespace PixelPack
 	private:
 		GLFWwindow* ptr_Window;
 		WindowProperties Properties;
+
+		VkInstance VulkanInstance;
+
+	private:
+		void InitWindow();
+		void InitVulkan();
 	};
 }

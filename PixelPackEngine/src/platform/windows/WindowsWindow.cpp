@@ -119,34 +119,14 @@ namespace PixelPack
 	{
 		Properties = properties;
 
-		PXPK_LOG_ENGINE_INFO("Creating Window {0} ({1}, {2})", Properties.Name, Properties.Width, Properties.Height);
-
-		if (GLFWWindowCount == 0)
-		{
-			PXPK_VERIFY(glfwInit(), "Could not initialize GLFW!!");
-			glfwSetErrorCallback(GLFWErrorCallback);
-		}
-
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Tells GLFW that OpenGL is not being used
-
-		ptr_Window = glfwCreateWindow((int)Properties.Width, (int)Properties.Height, Properties.Name.c_str(), nullptr, nullptr);
-		GLFWWindowCount++;
-
-		glfwSetWindowUserPointer(ptr_Window, &Properties);
-		SetVSync(Properties.VSyncEnabled);
-
-		// Setup event callbacks
-		glfwSetWindowCloseCallback(ptr_Window, GLFWWindowCloseCallback);
-		glfwSetWindowSizeCallback(ptr_Window, GLFWWindowResizeCallback);
-		glfwSetKeyCallback(ptr_Window, GLFWKeyCallback);
-		glfwSetCharCallback(ptr_Window, GLFWCharCallback);
-		glfwSetMouseButtonCallback(ptr_Window, GLFWMouseButtonCallback);
-		glfwSetScrollCallback(ptr_Window, GLFWScrollCallback);
-		glfwSetCursorPosCallback(ptr_Window, GLFWCursorCallback);
+		InitWindow();
+		InitVulkan();
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		vkDestroyInstance(VulkanInstance, nullptr);
+
 		glfwDestroyWindow(ptr_Window);
 		GLFWWindowCount--;
 
@@ -200,5 +180,62 @@ namespace PixelPack
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
+	}
+	
+	void WindowsWindow::InitWindow()
+	{
+		PXPK_LOG_ENGINE_INFO("Creating Window {0} ({1}, {2})", Properties.Name, Properties.Width, Properties.Height);
+
+		if (GLFWWindowCount == 0)
+		{
+			PXPK_VERIFY(glfwInit(), "Failed to initialize GLFW!!");
+			glfwSetErrorCallback(GLFWErrorCallback);
+		}
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Tells GLFW that OpenGL is not being used
+
+		ptr_Window = glfwCreateWindow((int)Properties.Width, (int)Properties.Height, Properties.Name.c_str(), nullptr, nullptr);
+		GLFWWindowCount++;
+
+		glfwSetWindowUserPointer(ptr_Window, &Properties);
+		SetVSync(Properties.VSyncEnabled);
+
+		// Setup event callbacks
+		glfwSetWindowCloseCallback(ptr_Window, GLFWWindowCloseCallback);
+		glfwSetWindowSizeCallback(ptr_Window, GLFWWindowResizeCallback);
+		glfwSetKeyCallback(ptr_Window, GLFWKeyCallback);
+		glfwSetCharCallback(ptr_Window, GLFWCharCallback);
+		glfwSetMouseButtonCallback(ptr_Window, GLFWMouseButtonCallback);
+		glfwSetScrollCallback(ptr_Window, GLFWScrollCallback);
+		glfwSetCursorPosCallback(ptr_Window, GLFWCursorCallback);
+	}
+	
+	void WindowsWindow::InitVulkan()
+	{
+		// Application Information
+		VkApplicationInfo applicationInfo{};
+		applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+		applicationInfo.pApplicationName = Properties.Name.c_str();
+		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+		applicationInfo.pEngineName = "PixelPack Engine";
+		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+		applicationInfo.apiVersion = VK_API_VERSION_1_2;
+
+		// Instance Information
+		VkInstanceCreateInfo createInformation{};
+		createInformation.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+		createInformation.pApplicationInfo = &applicationInfo;
+
+		uint32_t glfwExtensionCount = 0;
+		const char** glfwExtensions;
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+		createInformation.enabledExtensionCount = glfwExtensionCount;
+		createInformation.ppEnabledExtensionNames = glfwExtensions;
+
+		createInformation.enabledLayerCount = 0;
+
+		// Start a Vulkan instance
+		PXPK_VERIFY_ENGINE(vkCreateInstance(&createInformation, nullptr, &VulkanInstance) == VK_SUCCESS, "Failed to create a Vulkan instance!!");
 	}
 }
