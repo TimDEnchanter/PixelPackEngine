@@ -13,6 +13,43 @@ namespace PixelPack
 {
 	static uint8_t GLFWWindowCount = 0;
 
+	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+		void* userData
+	)
+	{
+		std::string type = "NONE";
+		switch (messageType)
+		{
+		case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT :
+			type = "GENERAL";
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT :
+			type = "VALIDATION";
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT :
+			type = "PERFORMANCE";
+			break;
+		}
+
+		if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			PXPK_LOG_ENGINE_ERROR("Vulkan Message ({0}): {1}", type, callbackData->pMessage);
+		}
+		else if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		{
+			PXPK_LOG_ENGINE_WARN("Vulkan Message ({0}): {1}", type, callbackData->pMessage);
+		}
+		else if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+		{
+			PXPK_LOG_ENGINE_INFO("Vulkan Message ({0}): {1}", type, callbackData->pMessage);
+		}
+
+		return VK_FALSE;
+	}
+
 	static void GLFWErrorCallback(int error, const char* description)
 	{
 		PXPK_LOG_ENGINE_ERROR("GLFW Error ({0}): {1}", error, description);
@@ -125,6 +162,13 @@ namespace PixelPack
 
 	WindowsWindow::~WindowsWindow()
 	{
+		if (EnableValidationLayers)
+		{
+			auto destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
+			PXPK_ASSERT_ENGINE(destroyDebugMessengerFunc != nullptr, "Failed to find Debug messenger in Vulkan Instance!");
+			destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
+		}
+
 		vkDestroyInstance(VulkanInstance, nullptr);
 
 		glfwDestroyWindow(ptr_Window);
@@ -226,16 +270,94 @@ namespace PixelPack
 		createInformation.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInformation.pApplicationInfo = &applicationInfo;
 
+		// Validation layers
+		const std::vector<const char*> validationLayers =
+		{
+			"VK_LAYER_KHRONOS_validation"
+		};
+
+		#ifdef _DEBUG
+			EnableValidationLayers = true;
+		#else
+			EnableValidationLayers = false;
+		#endif // DEBUG
+
+		// Enables Vulkan debugging layer
+		if (EnableValidationLayers)
+		{
+
+			uint32_t instanceLayerCount;
+			vkEnumerateInstanceLayerProperties(&instanceLayerCount, nullptr);
+			std::vector<VkLayerProperties> instanceLayers(instanceLayerCount);
+			vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayers.data());
+
+			for (const char* layerName : validationLayers)
+			{
+				bool foundLayer = false;
+				for (const auto& layerProperties : instanceLayers)
+				{
+					if (strcmp(layerName, layerProperties.layerName) == 0)
+					{
+						foundLayer = true;
+						break;
+					}
+				}
+
+				PXPK_ASSERT_ENGINE(foundLayer, "Validation layer not available");
+					}
+
+			createInformation.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+			createInformation.ppEnabledLayerNames = validationLayers.data();
+		}
+		else
+		{
+			createInformation.enabledLayerCount = 0;
+		}
+
+		// Set up Vulkan Extensions
 		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-		createInformation.enabledExtensionCount = glfwExtensionCount;
-		createInformation.ppEnabledExtensionNames = glfwExtensions;
+		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		createInformation.enabledLayerCount = 0;
+		if (EnableValidationLayers)
+		{
+			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		}
+
+		createInformation.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+		createInformation.ppEnabledExtensionNames = extensions.data();
+
+		// Setup the debug callback
+		VkDebugUtilsMessengerCreateInfoEXT createMessengerInfo{};
+		if (EnableValidationLayers)
+		{
+			createMessengerInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+			createMessengerInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
+				| VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
+				| VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+			createMessengerInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
+				| VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
+				| VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+			createMessengerInfo.pfnUserCallback = VulkanDebugCallback;
+			createMessengerInfo.pUserData = &Properties;
+
+			createInformation.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&createMessengerInfo;
+		}
+		else
+		{
+			createInformation.pNext = nullptr;
+		}
 
 		// Start a Vulkan instance
 		PXPK_VERIFY_ENGINE(vkCreateInstance(&createInformation, nullptr, &VulkanInstance) == VK_SUCCESS, "Failed to create a Vulkan instance!!");
+
+		// Connect the debug messenger to the new instance
+		if (EnableValidationLayers)
+		{
+			auto createDebugMessengerFunc = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanInstance, "vkCreateDebugUtilsMessengerEXT");
+			PXPK_ASSERT_ENGINE(createDebugMessengerFunc != nullptr, "Failed to find Debug messenger in Vulkan Instance!");
+			PXPK_VERIFY_ENGINE(createDebugMessengerFunc(VulkanInstance, &createMessengerInfo, nullptr, &DebugMessenger) == VK_SUCCESS, "Failed to connect thhe Vulkan debug messenger callback!");
+		}
 	}
 }

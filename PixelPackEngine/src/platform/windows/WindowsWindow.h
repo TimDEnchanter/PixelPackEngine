@@ -25,7 +25,9 @@ namespace PixelPack
 		GLFWwindow* ptr_Window;
 		WindowProperties Properties;
 
+		bool EnableValidationLayers;
 		VkInstance VulkanInstance;
+		VkDebugUtilsMessengerEXT DebugMessenger;
 
 	private:
 		void InitWindow();
