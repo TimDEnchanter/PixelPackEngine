@@ -162,6 +162,8 @@ namespace PixelPack
 
 	WindowsWindow::~WindowsWindow()
 	{
+		vkDestroyDevice(Device, nullptr);
+
 		if (EnableValidationLayers)
 		{
 			auto destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
@@ -256,6 +258,13 @@ namespace PixelPack
 	
 	void WindowsWindow::InitVulkan()
 	{
+		CreateVulkanInstance();
+		SelectPhysicalDevice();
+		CreateLogicalDevice();
+	}
+
+	void WindowsWindow::CreateVulkanInstance()
+	{
 		// Application Information
 		VkApplicationInfo applicationInfo{};
 		applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -276,11 +285,11 @@ namespace PixelPack
 			"VK_LAYER_KHRONOS_validation"
 		};
 
-		#ifdef _DEBUG
-			EnableValidationLayers = true;
-		#else
-			EnableValidationLayers = false;
-		#endif // DEBUG
+#ifdef _DEBUG
+		EnableValidationLayers = true;
+#else
+		EnableValidationLayers = false;
+#endif // DEBUG
 
 		// Enables Vulkan debugging layer
 		if (EnableValidationLayers)
@@ -304,7 +313,7 @@ namespace PixelPack
 				}
 
 				PXPK_ASSERT_ENGINE(foundLayer, "Validation layer not available");
-					}
+			}
 
 			createInformation.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 			createInformation.ppEnabledLayerNames = validationLayers.data();
@@ -359,5 +368,74 @@ namespace PixelPack
 			PXPK_ASSERT_ENGINE(createDebugMessengerFunc != nullptr, "Failed to find Debug messenger in Vulkan Instance!");
 			PXPK_VERIFY_ENGINE(createDebugMessengerFunc(VulkanInstance, &createMessengerInfo, nullptr, &DebugMessenger) == VK_SUCCESS, "Failed to connect thhe Vulkan debug messenger callback!");
 		}
+	}
+	
+	void WindowsWindow::SelectPhysicalDevice()
+	{
+		// Select Graphics Card to use
+		uint32_t deviceCount = 0;
+		vkEnumeratePhysicalDevices(VulkanInstance, &deviceCount, nullptr);
+		PXPK_ASSERT_ENGINE(deviceCount > 0, "Falied to find GPU with Vulkan support!");
+
+		std::vector<VkPhysicalDevice> devices(deviceCount);
+		vkEnumeratePhysicalDevices(VulkanInstance, &deviceCount, devices.data());
+
+		for (const auto& device : devices)
+		{
+			uint32_t queueFamilyCount = 0;
+			vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+			std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+			vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+			// TODO: Figure out criteria for devices
+			int i = 0;
+			for (const auto& queueFamily : queueFamilies)
+			{
+				if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+				{
+					PhysicalDevice = device;
+					GraphicsFamilyProperties = std::make_pair(i, queueFamily);
+					break;
+				}
+				i++;
+			}
+
+			if (PhysicalDevice != VK_NULL_HANDLE)
+			{
+				break;
+			}
+		}
+		PXPK_ASSERT_ENGINE(PhysicalDevice != VK_NULL_HANDLE, "Failed to find suitable GPU!");
+	}
+	
+	void WindowsWindow::CreateLogicalDevice()
+	{
+		// Assign command queues
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = GraphicsFamilyProperties.first;
+		queueCreateInfo.queueCount = 1;
+
+		float queuePriority = 1.0f;
+		queueCreateInfo.pQueuePriorities = &queuePriority;
+
+		// Assign device features
+		VkPhysicalDeviceFeatures deviceFeatures{};
+
+		// Setup the logical device
+		VkDeviceCreateInfo deviceCreateInfo{};
+		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
+		deviceCreateInfo.queueCreateInfoCount = 1;
+		deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
+
+		deviceCreateInfo.enabledExtensionCount = 0;
+
+		// Create the logical device
+		PXPK_VERIFY_ENGINE(vkCreateDevice(PhysicalDevice, &deviceCreateInfo, nullptr, &Device) == VK_SUCCESS, "Failed to create Vulkan logical device!");
+
+		// Grab queues from the device
+		vkGetDeviceQueue(Device, GraphicsFamilyProperties.first, 0, &GraphicsQueue);
 	}
 }

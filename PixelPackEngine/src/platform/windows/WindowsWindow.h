@@ -28,9 +28,17 @@ namespace PixelPack
 		bool EnableValidationLayers;
 		VkInstance VulkanInstance;
 		VkDebugUtilsMessengerEXT DebugMessenger;
+		VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
+		std::pair<uint32_t, VkQueueFamilyProperties> GraphicsFamilyProperties;
+		VkDevice Device;
+		VkQueue GraphicsQueue;
 
 	private:
 		void InitWindow();
+
 		void InitVulkan();
+		void CreateVulkanInstance();
+		void SelectPhysicalDevice();
+		void CreateLogicalDevice();
 	};
 }

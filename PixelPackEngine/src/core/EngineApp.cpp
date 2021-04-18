@@ -84,7 +84,7 @@ namespace PixelPack
 			}
 		}
 
-		PXPK_LOG_ENGINE_WARN("Event not handled {0}", event.type().name());
+		//PXPK_LOG_ENGINE_WARN("Event not handled {0}", event.type().name());
 	}
 	
 	void EngineApp::OnWindowClose(const WindowCloseEvent &event)
