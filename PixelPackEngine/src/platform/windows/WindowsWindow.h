@@ -29,9 +29,17 @@ namespace PixelPack
 		VkInstance VulkanInstance;
 		VkDebugUtilsMessengerEXT DebugMessenger;
 		VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
-		std::pair<uint32_t, VkQueueFamilyProperties> GraphicsFamilyProperties;
+		std::optional<uint32_t> GraphicsFamilyIndex;
+		std::optional<uint32_t> PresentationFamilyIndex;
 		VkDevice Device;
 		VkQueue GraphicsQueue;
+		VkQueue PresentationQueue;
+		VkSurfaceKHR Surface;
+
+		const std::vector<const char*> DeviceExtensions =
+		{
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
 
 	private:
 		void InitWindow();
@@ -40,5 +48,6 @@ namespace PixelPack
 		void CreateVulkanInstance();
 		void SelectPhysicalDevice();
 		void CreateLogicalDevice();
+		void CreateSurface();
 	};
 }

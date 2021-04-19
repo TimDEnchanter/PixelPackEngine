@@ -171,6 +171,8 @@ namespace PixelPack
 			destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
 		}
 
+		vkDestroySurfaceKHR(VulkanInstance, Surface, nullptr);
+
 		vkDestroyInstance(VulkanInstance, nullptr);
 
 		glfwDestroyWindow(ptr_Window);
@@ -259,6 +261,7 @@ namespace PixelPack
 	void WindowsWindow::InitVulkan()
 	{
 		CreateVulkanInstance();
+		CreateSurface();
 		SelectPhysicalDevice();
 		CreateLogicalDevice();
 	}
@@ -279,17 +282,16 @@ namespace PixelPack
 		createInformation.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInformation.pApplicationInfo = &applicationInfo;
 
-		// Validation layers
-		const std::vector<const char*> validationLayers =
-		{
-			"VK_LAYER_KHRONOS_validation"
-		};
-
 #ifdef _DEBUG
 		EnableValidationLayers = true;
 #else
 		EnableValidationLayers = false;
 #endif // DEBUG
+
+		const std::vector<const char*> validationLayers =
+		{
+			"VK_LAYER_KHRONOS_validation"
+		};
 
 		// Enables Vulkan debugging layer
 		if (EnableValidationLayers)
@@ -334,7 +336,7 @@ namespace PixelPack
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		}
 
-		createInformation.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+ 		createInformation.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInformation.ppEnabledExtensionNames = extensions.data();
 
 		// Setup the debug callback
@@ -380,6 +382,7 @@ namespace PixelPack
 		std::vector<VkPhysicalDevice> devices(deviceCount);
 		vkEnumeratePhysicalDevices(VulkanInstance, &deviceCount, devices.data());
 
+		// TODO: Figure out aditional criteria for devices
 		for (const auto& device : devices)
 		{
 			uint32_t queueFamilyCount = 0;
@@ -388,21 +391,38 @@ namespace PixelPack
 			std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 			vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
-			// TODO: Figure out criteria for devices
 			int i = 0;
 			for (const auto& queueFamily : queueFamilies)
 			{
 				if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 				{
-					PhysicalDevice = device;
-					GraphicsFamilyProperties = std::make_pair(i, queueFamily);
-					break;
+					GraphicsFamilyIndex = i;
 				}
+
+				VkBool32 supportsPresentation = false;
+				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Surface, &supportsPresentation);
+				if (supportsPresentation)
+				{
+					PresentationFamilyIndex = i;
+				}
+
 				i++;
 			}
 
-			if (PhysicalDevice != VK_NULL_HANDLE)
+			uint32_t deviceExtensionCount;
+			vkEnumerateDeviceExtensionProperties(device, nullptr, &deviceExtensionCount, nullptr);
+			std::vector<VkExtensionProperties> availableDeviceExtensions(deviceExtensionCount);
+			vkEnumerateDeviceExtensionProperties(device, nullptr, &deviceExtensionCount, availableDeviceExtensions.data());
+
+			std::set<std::string> requiredDeviceExtensions(DeviceExtensions.begin(), DeviceExtensions.end());
+			for (const auto& extension : availableDeviceExtensions)
 			{
+				requiredDeviceExtensions.erase(extension.extensionName);
+			}
+
+			if (GraphicsFamilyIndex && PresentationFamilyIndex && requiredDeviceExtensions.empty())
+			{
+				PhysicalDevice = device;
 				break;
 			}
 		}
@@ -412,13 +432,23 @@ namespace PixelPack
 	void WindowsWindow::CreateLogicalDevice()
 	{
 		// Assign command queues
-		VkDeviceQueueCreateInfo queueCreateInfo{};
-		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = GraphicsFamilyProperties.first;
-		queueCreateInfo.queueCount = 1;
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+		std::set<uint32_t> queueFamilySet = 
+		{
+			GraphicsFamilyIndex.value(),
+			PresentationFamilyIndex.value()
+		};
 
 		float queuePriority = 1.0f;
-		queueCreateInfo.pQueuePriorities = &queuePriority;
+		for (uint32_t queueFamily : queueFamilySet)
+		{
+			VkDeviceQueueCreateInfo queueCreateInfo{};
+			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo.queueFamilyIndex = queueFamily;
+			queueCreateInfo.queueCount = 1;
+			queueCreateInfo.pQueuePriorities = &queuePriority;
+			queueCreateInfos.push_back(queueCreateInfo);
+		}
 
 		// Assign device features
 		VkPhysicalDeviceFeatures deviceFeatures{};
@@ -426,16 +456,23 @@ namespace PixelPack
 		// Setup the logical device
 		VkDeviceCreateInfo deviceCreateInfo{};
 		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
-		deviceCreateInfo.queueCreateInfoCount = 1;
+		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
 
-		deviceCreateInfo.enabledExtensionCount = 0;
+		deviceCreateInfo.enabledExtensionCount = DeviceExtensions.size();
+		deviceCreateInfo.ppEnabledExtensionNames = DeviceExtensions.data();
 
 		// Create the logical device
 		PXPK_VERIFY_ENGINE(vkCreateDevice(PhysicalDevice, &deviceCreateInfo, nullptr, &Device) == VK_SUCCESS, "Failed to create Vulkan logical device!");
 
 		// Grab queues from the device
-		vkGetDeviceQueue(Device, GraphicsFamilyProperties.first, 0, &GraphicsQueue);
+		vkGetDeviceQueue(Device, GraphicsFamilyIndex.value(), 0, &GraphicsQueue);
+		vkGetDeviceQueue(Device, PresentationFamilyIndex.value(), 0, &PresentationQueue);
+	}
+
+	void WindowsWindow::CreateSurface()
+	{
+		PXPK_VERIFY_ENGINE(glfwCreateWindowSurface(VulkanInstance, ptr_Window, nullptr, &Surface) == VK_SUCCESS, "Failed to create a Vulkan surface!");
 	}
 }
