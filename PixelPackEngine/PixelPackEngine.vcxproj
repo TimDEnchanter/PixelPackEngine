@@ -60,7 +60,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;D:\Programs\VulkanSDK\1.2.170.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\imgui;D:\Programs\VulkanSDK\1.2.170.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -86,7 +86,7 @@
       <PreprocessorDefinitions>PXPK_PLATFORM_WINDOWS;PXPK_BUILD_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;D:\Programs\VulkanSDK\1.2.170.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\imgui;D:\Programs\VulkanSDK\1.2.170.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -100,6 +100,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\layers\ImGuiLayer.h" />
     <ClInclude Include="src\core\LayerStack.h" />
     <ClInclude Include="src\core\LayerInterface.h" />
     <ClInclude Include="src\core\EngineApp.h" />
@@ -120,6 +121,35 @@
     <ClInclude Include="src\core\WindowInterface.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\external\imgui\backends\imgui_impl_glfw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\backends\imgui_impl_vulkan.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\layers\ImGuiLayer.cpp" />
     <ClCompile Include="src\core\LayerStack.cpp" />
     <ClCompile Include="src\core\EngineApp.cpp" />
     <ClCompile Include="src\core\Logger.cpp" />

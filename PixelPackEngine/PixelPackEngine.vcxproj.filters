@@ -69,6 +69,9 @@
     <ClInclude Include="src\core\LayerStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\layers\ImGuiLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Logger.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\LayerStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\ImGuiLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

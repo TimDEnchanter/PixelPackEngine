@@ -11,7 +11,6 @@ namespace PixelPack
 	{
 		std::string Name;
 		uint32_t Width, Height;
-		bool VSyncEnabled;
 		std::shared_ptr<entt::dispatcher> sptr_Dispatcher;
 
 		WindowProperties
@@ -19,10 +18,9 @@ namespace PixelPack
 			const std::string name = "PixelPack Engine",
 			uint32_t width = 1920,
 			uint32_t height = 1080,
-			bool vsync = true,
 			std::shared_ptr<entt::dispatcher> sptr_dispatcher = nullptr
 		)
-			:Name(name), Width(width), Height(height), VSyncEnabled(vsync), sptr_Dispatcher(sptr_dispatcher)
+			:Name(name), Width(width), Height(height), sptr_Dispatcher(sptr_dispatcher)
 		{
 
 		}
@@ -40,10 +38,11 @@ namespace PixelPack
 		virtual std::string GetName() const = 0;
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
-		virtual bool IsVSyncEnabled() const = 0;
+
+		virtual void* GetPlatformWindow() const = 0;
+		virtual void* GetPlatformData() const = 0;
 
 		virtual void SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher) = 0;
-		virtual void SetVSync(bool enabled) = 0;
 
 		virtual void OnUpdate() = 0;
 	};

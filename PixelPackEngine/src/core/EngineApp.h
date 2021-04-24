@@ -21,12 +21,15 @@ namespace PixelPack {
 		void Poplayer(std::shared_ptr<LayerInterface> sptr_layer);
 		void PopOverlay(std::shared_ptr<LayerInterface> sptr_overlay);
 
+		static EngineApp& Get();
+		std::shared_ptr<WindowInterface> GetWindow();
+
 	private:
 		static EngineApp* ptr_Instance;
 
 		#pragma warning( push )
 		#pragma warning( disable : 4251 ) // Disable C4251 for these lines. It's fine since these are private
-		std::unique_ptr<WindowInterface> uptr_Window;
+		std::shared_ptr<WindowInterface> sptr_Window;
 		std::shared_ptr<entt::dispatcher> sptr_Dispatcher;
 		LayerStack LayerStack;
 		#pragma warning( pop )

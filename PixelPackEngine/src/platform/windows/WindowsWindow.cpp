@@ -162,18 +162,27 @@ namespace PixelPack
 
 	WindowsWindow::~WindowsWindow()
 	{
-		vkDestroyDevice(Device, nullptr);
+		vkDestroyDescriptorPool(Handles.LogicalDevice, Handles.DescriptorPool, nullptr);
 
-		if (EnableValidationLayers)
+		for (auto imageView : Handles.SwapchainImageViews)
 		{
-			auto destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
-			PXPK_ASSERT_ENGINE(destroyDebugMessengerFunc != nullptr, "Failed to find Debug messenger in Vulkan Instance!");
-			destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
+			vkDestroyImageView(Handles.LogicalDevice, imageView, nullptr);
 		}
 
-		vkDestroySurfaceKHR(VulkanInstance, Surface, nullptr);
+		vkDestroySwapchainKHR(Handles.LogicalDevice, Handles.Swapchain, nullptr);
 
-		vkDestroyInstance(VulkanInstance, nullptr);
+		vkDestroyDevice(Handles.LogicalDevice, nullptr);
+
+		if (Handles.EnableValidationLayers)
+		{
+			auto destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(Handles.Instance, "vkDestroyDebugUtilsMessengerEXT");
+			PXPK_ASSERT_ENGINE(destroyDebugMessengerFunc != nullptr, "Failed to find Debug messenger in Vulkan Instance!");
+			destroyDebugMessengerFunc(Handles.Instance, Handles.DebugMessenger, nullptr);
+		}
+
+		vkDestroySurfaceKHR(Handles.Instance, Handles.Surface, nullptr);
+
+		vkDestroyInstance(Handles.Instance, nullptr);
 
 		glfwDestroyWindow(ptr_Window);
 		GLFWWindowCount--;
@@ -199,30 +208,19 @@ namespace PixelPack
 		return Properties.Height;
 	}
 
-	bool WindowsWindow::IsVSyncEnabled() const
+	void* WindowsWindow::GetPlatformWindow() const
 	{
-		return Properties.VSyncEnabled;
+		return ptr_Window;
+	}
+
+	void* WindowsWindow::GetPlatformData() const
+	{
+		return (void*)&Handles;
 	}
 
 	void WindowsWindow::SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher)
 	{
 		Properties.sptr_Dispatcher = sptr_dispatcher;
-	}
-
-	// TODO: figure out how to do this in Vulkan.
-	void WindowsWindow::SetVSync(bool enabled)
-	{
-		// Look into VK_PRESENT_MODE_FIFO_KHR
-		//if (enabled)
-		//{
-		//	glfwSwapInterval(1);
-		//}
-		//else
-		//{
-		//	glfwSwapInterval(0);
-		//}
-
-		Properties.VSyncEnabled = enabled;
 	}
 
 	void WindowsWindow::OnUpdate()
@@ -246,7 +244,6 @@ namespace PixelPack
 		GLFWWindowCount++;
 
 		glfwSetWindowUserPointer(ptr_Window, &Properties);
-		SetVSync(Properties.VSyncEnabled);
 
 		// Setup event callbacks
 		glfwSetWindowCloseCallback(ptr_Window, GLFWWindowCloseCallback);
@@ -264,6 +261,9 @@ namespace PixelPack
 		CreateSurface();
 		SelectPhysicalDevice();
 		CreateLogicalDevice();
+		CreateSwapchain();
+		CreateImageViews();
+		CreateDescriptorPool();
 	}
 
 	void WindowsWindow::CreateVulkanInstance()
@@ -283,9 +283,9 @@ namespace PixelPack
 		createInformation.pApplicationInfo = &applicationInfo;
 
 #ifdef _DEBUG
-		EnableValidationLayers = true;
+		Handles.EnableValidationLayers = true;
 #else
-		EnableValidationLayers = false;
+		Handles.EnableValidationLayers = false;
 #endif // DEBUG
 
 		const std::vector<const char*> validationLayers =
@@ -294,7 +294,7 @@ namespace PixelPack
 		};
 
 		// Enables Vulkan debugging layer
-		if (EnableValidationLayers)
+		if (Handles.EnableValidationLayers)
 		{
 
 			uint32_t instanceLayerCount;
@@ -331,7 +331,7 @@ namespace PixelPack
 
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		if (EnableValidationLayers)
+		if (Handles.EnableValidationLayers)
 		{
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		}
@@ -341,7 +341,7 @@ namespace PixelPack
 
 		// Setup the debug callback
 		VkDebugUtilsMessengerCreateInfoEXT createMessengerInfo{};
-		if (EnableValidationLayers)
+		if (Handles.EnableValidationLayers)
 		{
 			createMessengerInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 			createMessengerInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
@@ -361,14 +361,14 @@ namespace PixelPack
 		}
 
 		// Start a Vulkan instance
-		PXPK_VERIFY_ENGINE(vkCreateInstance(&createInformation, nullptr, &VulkanInstance) == VK_SUCCESS, "Failed to create a Vulkan instance!!");
+		PXPK_VERIFY_ENGINE(vkCreateInstance(&createInformation, nullptr, &Handles.Instance) == VK_SUCCESS, "Failed to create a Vulkan instance!!");
 
 		// Connect the debug messenger to the new instance
-		if (EnableValidationLayers)
+		if (Handles.EnableValidationLayers)
 		{
-			auto createDebugMessengerFunc = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanInstance, "vkCreateDebugUtilsMessengerEXT");
+			auto createDebugMessengerFunc = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(Handles.Instance, "vkCreateDebugUtilsMessengerEXT");
 			PXPK_ASSERT_ENGINE(createDebugMessengerFunc != nullptr, "Failed to find Debug messenger in Vulkan Instance!");
-			PXPK_VERIFY_ENGINE(createDebugMessengerFunc(VulkanInstance, &createMessengerInfo, nullptr, &DebugMessenger) == VK_SUCCESS, "Failed to connect thhe Vulkan debug messenger callback!");
+			PXPK_VERIFY_ENGINE(createDebugMessengerFunc(Handles.Instance, &createMessengerInfo, nullptr, &Handles.DebugMessenger) == VK_SUCCESS, "Failed to connect thhe Vulkan debug messenger callback!");
 		}
 	}
 	
@@ -376,15 +376,16 @@ namespace PixelPack
 	{
 		// Select Graphics Card to use
 		uint32_t deviceCount = 0;
-		vkEnumeratePhysicalDevices(VulkanInstance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(Handles.Instance, &deviceCount, nullptr);
 		PXPK_ASSERT_ENGINE(deviceCount > 0, "Falied to find GPU with Vulkan support!");
 
 		std::vector<VkPhysicalDevice> devices(deviceCount);
-		vkEnumeratePhysicalDevices(VulkanInstance, &deviceCount, devices.data());
+		vkEnumeratePhysicalDevices(Handles.Instance, &deviceCount, devices.data());
 
 		// TODO: Figure out aditional criteria for devices
 		for (const auto& device : devices)
 		{
+			// 1)Find if the device supports the neceessary queues
 			uint32_t queueFamilyCount = 0;
 			vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
@@ -396,19 +397,25 @@ namespace PixelPack
 			{
 				if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 				{
-					GraphicsFamilyIndex = i;
+					Handles.GraphicsFamilyIndex = i;
 				}
 
 				VkBool32 supportsPresentation = false;
-				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Surface, &supportsPresentation);
+				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Handles.Surface, &supportsPresentation);
 				if (supportsPresentation)
 				{
-					PresentationFamilyIndex = i;
+					Handles.PresentationFamilyIndex = i;
 				}
 
 				i++;
 			}
 
+			if (!Handles.GraphicsFamilyIndex || !Handles.PresentationFamilyIndex)
+			{
+				continue;
+			}
+
+			// 2) Find if the device supports the necessary extensions
 			uint32_t deviceExtensionCount;
 			vkEnumerateDeviceExtensionProperties(device, nullptr, &deviceExtensionCount, nullptr);
 			std::vector<VkExtensionProperties> availableDeviceExtensions(deviceExtensionCount);
@@ -420,13 +427,56 @@ namespace PixelPack
 				requiredDeviceExtensions.erase(extension.extensionName);
 			}
 
-			if (GraphicsFamilyIndex && PresentationFamilyIndex && requiredDeviceExtensions.empty())
+			if (!requiredDeviceExtensions.empty())
 			{
-				PhysicalDevice = device;
-				break;
+				continue;
 			}
+
+			// 3) Find if the device supports the necessary surface formats
+			uint32_t formatCount;
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, Handles.Surface, &formatCount, nullptr);
+			std::vector<VkSurfaceFormatKHR> availableSurfaceFormats(formatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, Handles.Surface, &formatCount, availableSurfaceFormats.data());
+
+			for (const auto& format : availableSurfaceFormats)
+			{
+				if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+				{
+					Handles.SurfaceFormat = format;
+					break;
+				}
+			}
+
+			if (!Handles.SurfaceFormat)
+			{
+				Handles.SurfaceFormat = availableSurfaceFormats[0];
+			}
+
+			// 4) Find if device supports the necessary presentation modes
+			uint32_t modeCount;
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, Handles.Surface, &modeCount, nullptr);
+			std::vector<VkPresentModeKHR> availablePresentModes(modeCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, Handles.Surface, &modeCount, availablePresentModes.data());
+
+			for (const auto& mode : availablePresentModes)
+			{
+				if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
+				{
+					Handles.PresentMode = mode;
+					break;
+				}
+			}
+
+			if (!Handles.PresentMode)
+			{
+				Handles.PresentMode = VK_PRESENT_MODE_FIFO_KHR;
+			}
+
+			// Final: assign the device if all previous conditions met
+			Handles.PhysicalDevice = device;
+			break;
 		}
-		PXPK_ASSERT_ENGINE(PhysicalDevice != VK_NULL_HANDLE, "Failed to find suitable GPU!");
+		PXPK_ASSERT_ENGINE(Handles.PhysicalDevice != VK_NULL_HANDLE, "Failed to find suitable GPU!");
 	}
 	
 	void WindowsWindow::CreateLogicalDevice()
@@ -435,8 +485,8 @@ namespace PixelPack
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> queueFamilySet = 
 		{
-			GraphicsFamilyIndex.value(),
-			PresentationFamilyIndex.value()
+			Handles.GraphicsFamilyIndex.value(),
+			Handles.PresentationFamilyIndex.value()
 		};
 
 		float queuePriority = 1.0f;
@@ -464,15 +514,147 @@ namespace PixelPack
 		deviceCreateInfo.ppEnabledExtensionNames = DeviceExtensions.data();
 
 		// Create the logical device
-		PXPK_VERIFY_ENGINE(vkCreateDevice(PhysicalDevice, &deviceCreateInfo, nullptr, &Device) == VK_SUCCESS, "Failed to create Vulkan logical device!");
+		PXPK_VERIFY_ENGINE(vkCreateDevice(Handles.PhysicalDevice, &deviceCreateInfo, nullptr, &Handles.LogicalDevice) == VK_SUCCESS, "Failed to create Vulkan logical device!");
 
 		// Grab queues from the device
-		vkGetDeviceQueue(Device, GraphicsFamilyIndex.value(), 0, &GraphicsQueue);
-		vkGetDeviceQueue(Device, PresentationFamilyIndex.value(), 0, &PresentationQueue);
+		vkGetDeviceQueue(Handles.LogicalDevice, Handles.GraphicsFamilyIndex.value(), 0, &Handles.GraphicsQueue);
+		vkGetDeviceQueue(Handles.LogicalDevice, Handles.PresentationFamilyIndex.value(), 0, &Handles.PresentationQueue);
 	}
 
 	void WindowsWindow::CreateSurface()
 	{
-		PXPK_VERIFY_ENGINE(glfwCreateWindowSurface(VulkanInstance, ptr_Window, nullptr, &Surface) == VK_SUCCESS, "Failed to create a Vulkan surface!");
+		PXPK_VERIFY_ENGINE(glfwCreateWindowSurface(Handles.Instance, ptr_Window, nullptr, &Handles.Surface) == VK_SUCCESS, "Failed to create a Vulkan surface!");
+	}
+
+	void WindowsWindow::CreateSwapchain()
+	{
+		VkSurfaceCapabilitiesKHR surfaceCapabilities;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(Handles.PhysicalDevice, Handles.Surface, &surfaceCapabilities);
+
+		if (surfaceCapabilities.currentExtent.width != UINT32_MAX)
+		{
+			// If not maxed out, assign current extent
+			Handles.Extent = surfaceCapabilities.currentExtent;
+		}
+		else
+		{
+			// Get real extent from GLFW
+			int width, height;
+			glfwGetFramebufferSize(ptr_Window, &width, &height);
+
+			VkExtent2D actualExtent = {
+				static_cast<uint32_t>(width),
+				static_cast<uint32_t>(height)
+			};
+
+			// Enforce Vulkan's max/min bounds
+			actualExtent.width = std::max(surfaceCapabilities.minImageExtent.width, std::min(surfaceCapabilities.maxImageExtent.width, actualExtent.width));
+			actualExtent.height = std::max(surfaceCapabilities.minImageExtent.height, std::min(surfaceCapabilities.maxImageExtent.height, actualExtent.height));
+
+		}
+
+		uint32_t imageCount = surfaceCapabilities.minImageCount + 1;
+		if (surfaceCapabilities.maxImageCount > 0 && imageCount > surfaceCapabilities.maxImageCount)
+		{
+			imageCount = surfaceCapabilities.maxImageCount;
+		}
+
+		VkSwapchainCreateInfoKHR swapchainCreateInfo{};
+		swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+		swapchainCreateInfo.surface = Handles.Surface;
+		swapchainCreateInfo.minImageCount = imageCount;
+		swapchainCreateInfo.imageFormat = Handles.SurfaceFormat.value().format;
+		swapchainCreateInfo.imageColorSpace = Handles.SurfaceFormat.value().colorSpace;
+		swapchainCreateInfo.imageExtent = Handles.Extent.value();
+		swapchainCreateInfo.imageArrayLayers = 1;
+		swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+		uint32_t queueFamilies[] = { Handles.GraphicsFamilyIndex.value(), Handles.PresentationFamilyIndex.value() };
+
+		if (Handles.GraphicsFamilyIndex != Handles.PresentationFamilyIndex)
+		{
+			swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+			swapchainCreateInfo.queueFamilyIndexCount = 2;
+			swapchainCreateInfo.pQueueFamilyIndices = queueFamilies;
+		}
+		else
+		{
+			swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+			swapchainCreateInfo.queueFamilyIndexCount = 0;
+			swapchainCreateInfo.pQueueFamilyIndices = nullptr;
+		}
+
+		swapchainCreateInfo.preTransform = surfaceCapabilities.currentTransform;
+		swapchainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
+		swapchainCreateInfo.presentMode = Handles.PresentMode.value();
+
+		swapchainCreateInfo.clipped = VK_TRUE;
+		swapchainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
+
+		PXPK_VERIFY_ENGINE(vkCreateSwapchainKHR(Handles.LogicalDevice, &swapchainCreateInfo, nullptr, &Handles.Swapchain) == VK_SUCCESS, "Failed to create Vulkan swapchain!");
+
+		vkGetSwapchainImagesKHR(Handles.LogicalDevice, Handles.Swapchain, &imageCount, nullptr);
+		Handles.SwapchainImages.resize(imageCount);
+		vkGetSwapchainImagesKHR(Handles.LogicalDevice, Handles.Swapchain, &imageCount, Handles.SwapchainImages.data());
+	}
+
+	void WindowsWindow::CreateImageViews()
+	{
+		Handles.SwapchainImageViews.resize(Handles.SwapchainImages.size());
+
+		for (size_t i = 0; i < Handles.SwapchainImages.size(); i++)
+		{
+			VkImageViewCreateInfo imageViewCreateInfo{};
+			imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			imageViewCreateInfo.image = Handles.SwapchainImages[i];
+			imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			imageViewCreateInfo.format = Handles.SurfaceFormat.value().format;
+
+			imageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+			imageViewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+			imageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+			imageViewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+			imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+			imageViewCreateInfo.subresourceRange.levelCount = 1;
+			imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+			imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+			PXPK_VERIFY_ENGINE(vkCreateImageView(Handles.LogicalDevice, &imageViewCreateInfo, nullptr, &Handles.SwapchainImageViews[i]) == VK_SUCCESS, "Failed to create Vulkan image view!");
+		}
+	}
+
+	void WindowsWindow::CreateRenderPass()
+	{
+		VkAttachmentDescription colorAttatchment{};
+	}
+
+	// TODO: Set this up to better fit my process
+	void WindowsWindow::CreateDescriptorPool()
+	{
+		std::vector<VkDescriptorPoolSize> descriptorPoolSizes =
+		{
+			{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+			{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+			{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+			{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+			{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+		};
+		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};
+		descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		descriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+		descriptorPoolCreateInfo.maxSets = 1000 * descriptorPoolSizes.size();
+		descriptorPoolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
+		descriptorPoolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
+
+		PXPK_VERIFY_ENGINE(vkCreateDescriptorPool(Handles.LogicalDevice, &descriptorPoolCreateInfo, nullptr, &Handles.DescriptorPool) == VK_SUCCESS, "Failed to create Vulkan descriptor pool!");
 	}
 }

@@ -18,8 +18,8 @@ namespace PixelPack
 
 		InitDispatcher();
 
-		uptr_Window = std::unique_ptr<WindowInterface>(WindowInterface::Create());
-		uptr_Window->SetEventDispatcher(sptr_Dispatcher);
+		sptr_Window = std::unique_ptr<WindowInterface>(WindowInterface::Create());
+		sptr_Window->SetEventDispatcher(sptr_Dispatcher);
 	}
 
 	EngineApp::~EngineApp()
@@ -38,7 +38,7 @@ namespace PixelPack
 				layer->Update();
 			}
 
-			uptr_Window->OnUpdate();
+			sptr_Window->OnUpdate();
 		}
 	}
 
@@ -60,6 +60,16 @@ namespace PixelPack
 	void EngineApp::PopOverlay(std::shared_ptr<LayerInterface> sptr_overlay)
 	{
 		LayerStack.PopOverlay(sptr_overlay);
+	}
+
+	EngineApp& EngineApp::Get()
+	{
+		return *ptr_Instance;
+	}
+
+	std::shared_ptr<WindowInterface> EngineApp::GetWindow()
+	{
+		return sptr_Window;
 	}
 
 	void EngineApp::InitDispatcher()

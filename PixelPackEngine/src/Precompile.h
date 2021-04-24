@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 #include <optional>
+#include <cstdint>
+#include <algorithm>
 
 // External Third-Party resources
 #include <spdlog\spdlog.h>
