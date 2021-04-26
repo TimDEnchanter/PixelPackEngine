@@ -8,6 +8,7 @@
 #include "events\input\MouseButtonEvent.h"
 #include "events\input\MouseScrollEvent.h"
 #include "events\input\MouseMoveEvent.h"
+#include "shaders\ShaderManager.h"
 
 namespace PixelPack
 {
@@ -162,7 +163,9 @@ namespace PixelPack
 
 	WindowsWindow::~WindowsWindow()
 	{
-		vkDestroyDescriptorPool(Handles.LogicalDevice, Handles.DescriptorPool, nullptr);
+		ShaderManager::GetInstance().clear();
+
+		//vkDestroyDescriptorPool(Handles.LogicalDevice, Handles.DescriptorPool, nullptr);
 
 		for (auto imageView : Handles.SwapchainImageViews)
 		{
@@ -263,7 +266,9 @@ namespace PixelPack
 		CreateLogicalDevice();
 		CreateSwapchain();
 		CreateImageViews();
-		CreateDescriptorPool();
+		CreateDefaultPipeline();
+		CreateRenderPass();
+		//CreateDescriptorPool();
 	}
 
 	void WindowsWindow::CreateVulkanInstance()
@@ -624,6 +629,56 @@ namespace PixelPack
 
 			PXPK_VERIFY_ENGINE(vkCreateImageView(Handles.LogicalDevice, &imageViewCreateInfo, nullptr, &Handles.SwapchainImageViews[i]) == VK_SUCCESS, "Failed to create Vulkan image view!");
 		}
+	}
+
+	void WindowsWindow::CreateDefaultPipeline()
+	{
+		entt::resource_handle<ShaderResource> vertHandle =  ShaderManager::GetInstance().Add(DefaultVertPath, Handles.LogicalDevice);
+		VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+		vertShaderStageInfo.module = vertHandle->ShaderModule;
+		vertShaderStageInfo.pName = "main";
+
+		entt::resource_handle<ShaderResource> fragHandle =  ShaderManager::GetInstance().Add(DefaultFragPath, Handles.LogicalDevice);
+		VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+		fragShaderStageInfo.module = fragHandle->ShaderModule;
+		fragShaderStageInfo.pName = "main";
+
+		VkPipelineShaderStageCreateInfo shaderSatages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+		VkPipelineVertexInputStateCreateInfo vertexInputStateInfo{};
+		vertexInputStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		vertexInputStateInfo.vertexBindingDescriptionCount = 0;
+		vertexInputStateInfo.pVertexBindingDescriptions = nullptr; // Optional
+		vertexInputStateInfo.vertexAttributeDescriptionCount = 0;
+		vertexInputStateInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		VkPipelineInputAssemblyStateCreateInfo InputAssemblyStateInfo{};
+		InputAssemblyStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		InputAssemblyStateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		InputAssemblyStateInfo.primitiveRestartEnable = VK_FALSE;
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)Handles.Extent.value().width;
+		viewport.height = (float)Handles.Extent.value().height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = Handles.Extent.value();
+
+		VkPipelineViewportStateCreateInfo viewportStateInfo{};
+		viewportStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		viewportStateInfo.viewportCount = 1;
+		viewportStateInfo.pViewports = &viewport;
+		viewportStateInfo.scissorCount = 1;
+		viewportStateInfo.pScissors = &scissor;
 	}
 
 	void WindowsWindow::CreateRenderPass()

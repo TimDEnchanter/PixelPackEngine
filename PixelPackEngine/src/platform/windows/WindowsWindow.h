@@ -46,7 +46,6 @@ namespace PixelPack
 		virtual void* GetPlatformWindow() const override;
 		virtual void* GetPlatformData() const override;
 
-		// TODO: determine the event input for window/input event
 		virtual void SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher) override;
 
 		virtual void OnUpdate() override;
@@ -62,6 +61,10 @@ namespace PixelPack
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 
+		std::filesystem::path DefaultVertPath = "D:/Documents/PixelPack/dev/PixelPackEngine/src/shaders/default.vert";
+		std::filesystem::path DefaultFragPath = "D:/Documents/PixelPack/dev/PixelPackEngine/src/shaders/default.frag";
+
+
 	private:
 		void InitWindow();
 
@@ -72,6 +75,7 @@ namespace PixelPack
 		void CreateSurface();
 		void CreateSwapchain();
 		void CreateImageViews();
+		void CreateDefaultPipeline();
 		void CreateRenderPass();
 		void CreateDescriptorPool();
 	};

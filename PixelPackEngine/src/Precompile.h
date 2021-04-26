@@ -5,10 +5,12 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <optional>
 #include <cstdint>
 #include <algorithm>
+#include <filesystem>
 
 // External Third-Party resources
 #include <spdlog\spdlog.h>
@@ -27,6 +29,8 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+
+#include <shaderc\shaderc.hpp>
 
 // Local project resources - DO NOT INCLUDE IN-DEV CODE HERE
 #include "core\ApiCore.h"

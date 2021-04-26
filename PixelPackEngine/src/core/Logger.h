@@ -43,10 +43,10 @@ namespace PixelPack
 	// Assertion log macros
 	#ifdef PXPK_PLATFORM_WINDOWS
 
-		#define PXPK_ASSERT_ENGINE(x, ...) { if(!(x)) { PXPK_LOG_ENGINE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-		#define PXPK_VERIFY_ENGINE(x, ...) { if(!(x)) { PXPK_LOG_ENGINE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-		#define PXPK_ASSERT(x, ...) { if(!(x)) { PXPK_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-		#define PXPK_VERIFY(x, ...) { if(!(x)) { PXPK_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+		#define PXPK_ASSERT_ENGINE(x, ...) { if(!(x)) { PXPK_LOG_ENGINE_ERROR(__VA_ARGS__); __debugbreak(); } }
+		#define PXPK_VERIFY_ENGINE(x, ...) { if(!(x)) { PXPK_LOG_ENGINE_ERROR(__VA_ARGS__); __debugbreak(); } }
+		#define PXPK_ASSERT(x, ...) { if(!(x)) { PXPK_LOG_ERROR(__VA_ARGS__); __debugbreak(); } }
+		#define PXPK_VERIFY(x, ...) { if(!(x)) { PXPK_LOG_ERROR(__VA_ARGS__); __debugbreak(); } }
 
 	#else
 
