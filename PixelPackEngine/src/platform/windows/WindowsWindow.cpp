@@ -163,6 +163,16 @@ namespace PixelPack
 
 	WindowsWindow::~WindowsWindow()
 	{
+		for (auto framebuffer : Handles.SwapchainFramebuffers)
+		{
+			vkDestroyFramebuffer(Handles.LogicalDevice, framebuffer, nullptr);
+		}
+
+		vkDestroyPipeline(Handles.LogicalDevice, Handles.Pipeline, nullptr);
+		vkDestroyPipelineLayout(Handles.LogicalDevice, Handles.PipelineLayout, nullptr);
+
+		vkDestroyRenderPass(Handles.LogicalDevice, Handles.RenderPass, nullptr);
+
 		ShaderManager::GetInstance().clear();
 
 		//vkDestroyDescriptorPool(Handles.LogicalDevice, Handles.DescriptorPool, nullptr);
@@ -266,8 +276,9 @@ namespace PixelPack
 		CreateLogicalDevice();
 		CreateSwapchain();
 		CreateImageViews();
-		CreateDefaultPipeline();
 		CreateRenderPass();
+		CreateDefaultPipeline();
+		CreateFramebuffers();
 		//CreateDescriptorPool();
 	}
 
@@ -631,6 +642,37 @@ namespace PixelPack
 		}
 	}
 
+	void WindowsWindow::CreateRenderPass()
+	{
+		VkAttachmentDescription colorAttachment{};
+		colorAttachment.format = Handles.SurfaceFormat.value().format;
+		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+		VkAttachmentReference attachmentReference{};
+		attachmentReference.attachment = 0;
+		attachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		VkSubpassDescription subpassDescription{};
+		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpassDescription.colorAttachmentCount = 1;
+		subpassDescription.pColorAttachments = &attachmentReference;
+
+		VkRenderPassCreateInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassInfo.attachmentCount = 1;
+		renderPassInfo.pAttachments = &colorAttachment;
+		renderPassInfo.subpassCount = 1;
+		renderPassInfo.pSubpasses = &subpassDescription;
+
+		PXPK_VERIFY_ENGINE(vkCreateRenderPass(Handles.LogicalDevice, &renderPassInfo, nullptr, &Handles.RenderPass) == VK_SUCCESS, "Failed to create Vulkan render pass!");
+	}
+
 	void WindowsWindow::CreateDefaultPipeline()
 	{
 		entt::resource_handle<ShaderResource> vertHandle =  ShaderManager::GetInstance().Add(DefaultVertPath, Handles.LogicalDevice);
@@ -647,19 +689,19 @@ namespace PixelPack
 		fragShaderStageInfo.module = fragHandle->ShaderModule;
 		fragShaderStageInfo.pName = "main";
 
-		VkPipelineShaderStageCreateInfo shaderSatages[] = { vertShaderStageInfo, fragShaderStageInfo };
+		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
 		VkPipelineVertexInputStateCreateInfo vertexInputStateInfo{};
 		vertexInputStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputStateInfo.vertexBindingDescriptionCount = 0;
-		vertexInputStateInfo.pVertexBindingDescriptions = nullptr; // Optional
+		vertexInputStateInfo.pVertexBindingDescriptions = nullptr;
 		vertexInputStateInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputStateInfo.pVertexAttributeDescriptions = nullptr; // Optional
+		vertexInputStateInfo.pVertexAttributeDescriptions = nullptr;
 
-		VkPipelineInputAssemblyStateCreateInfo InputAssemblyStateInfo{};
-		InputAssemblyStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		InputAssemblyStateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-		InputAssemblyStateInfo.primitiveRestartEnable = VK_FALSE;
+		VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateInfo{};
+		inputAssemblyStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		inputAssemblyStateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		inputAssemblyStateInfo.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -679,11 +721,110 @@ namespace PixelPack
 		viewportStateInfo.pViewports = &viewport;
 		viewportStateInfo.scissorCount = 1;
 		viewportStateInfo.pScissors = &scissor;
+
+		VkPipelineRasterizationStateCreateInfo rasterizationStateInfo{};
+		rasterizationStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+		rasterizationStateInfo.depthClampEnable = VK_FALSE;
+		rasterizationStateInfo.rasterizerDiscardEnable = VK_FALSE;
+		rasterizationStateInfo.polygonMode = VK_POLYGON_MODE_FILL;
+		rasterizationStateInfo.lineWidth = 1.0f;
+		rasterizationStateInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		rasterizationStateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		rasterizationStateInfo.depthBiasEnable = VK_FALSE;
+		rasterizationStateInfo.depthBiasConstantFactor = 0.0f;
+		rasterizationStateInfo.depthBiasClamp = 0.0f;
+		rasterizationStateInfo.depthBiasSlopeFactor = 0.0f;
+
+		VkPipelineMultisampleStateCreateInfo multisampleStateInfo{};
+		multisampleStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+		multisampleStateInfo.sampleShadingEnable = VK_FALSE;
+		multisampleStateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		multisampleStateInfo.minSampleShading = 1.0f;
+		multisampleStateInfo.pSampleMask = nullptr;
+		multisampleStateInfo.alphaToCoverageEnable = VK_FALSE;
+		multisampleStateInfo.alphaToOneEnable = VK_FALSE;
+
+		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+		colorBlendAttachment.blendEnable = VK_TRUE;
+		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+		VkPipelineColorBlendStateCreateInfo colorBlendStateInfo{};
+		colorBlendStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+		colorBlendStateInfo.logicOpEnable = VK_FALSE;
+		colorBlendStateInfo.logicOp = VK_LOGIC_OP_COPY;
+		colorBlendStateInfo.attachmentCount = 1;
+		colorBlendStateInfo.pAttachments = &colorBlendAttachment;
+		colorBlendStateInfo.blendConstants[0] = 0.0f;
+		colorBlendStateInfo.blendConstants[1] = 0.0f;
+		colorBlendStateInfo.blendConstants[2] = 0.0f;
+		colorBlendStateInfo.blendConstants[3] = 0.0f;
+
+		VkDynamicState dynamicStates[] =
+		{
+			VK_DYNAMIC_STATE_VIEWPORT,
+			VK_DYNAMIC_STATE_LINE_WIDTH
+		};
+
+		VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
+		dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+		dynamicStateInfo.dynamicStateCount = 2;
+		dynamicStateInfo.pDynamicStates = dynamicStates;
+
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		pipelineLayoutInfo.setLayoutCount = 0;
+		pipelineLayoutInfo.pSetLayouts = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 0;
+		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+
+		PXPK_VERIFY_ENGINE(vkCreatePipelineLayout(Handles.LogicalDevice, &pipelineLayoutInfo, nullptr, &Handles.PipelineLayout) == VK_SUCCESS, "Failed to create Vulkan pipeline layout!");
+
+		VkGraphicsPipelineCreateInfo pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		pipelineInfo.stageCount = 2;
+		pipelineInfo.pStages = shaderStages;
+		pipelineInfo.pVertexInputState = &vertexInputStateInfo;
+		pipelineInfo.pInputAssemblyState = &inputAssemblyStateInfo;
+		pipelineInfo.pViewportState = &viewportStateInfo;
+		pipelineInfo.pRasterizationState = &rasterizationStateInfo;
+		pipelineInfo.pMultisampleState = &multisampleStateInfo;
+		pipelineInfo.pDepthStencilState = nullptr;
+		pipelineInfo.pColorBlendState = &colorBlendStateInfo;
+		pipelineInfo.pDynamicState = nullptr;
+		pipelineInfo.layout = Handles.PipelineLayout;
+		pipelineInfo.renderPass = Handles.RenderPass;
+		pipelineInfo.subpass = 0;
+		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+		pipelineInfo.basePipelineIndex = -1;
+
+		PXPK_VERIFY_ENGINE(vkCreateGraphicsPipelines(Handles.LogicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &Handles.Pipeline) == VK_SUCCESS, "Failed to create Vulkan pipeline!");
 	}
 
-	void WindowsWindow::CreateRenderPass()
+	void WindowsWindow::CreateFramebuffers()
 	{
-		VkAttachmentDescription colorAttatchment{};
+		Handles.SwapchainFramebuffers.resize(Handles.SwapchainImageViews.size());
+
+		for (size_t i = 0; i < Handles.SwapchainImageViews.size(); i++)
+		{
+			VkImageView attachments[] = { Handles.SwapchainImageViews[i] };
+
+			VkFramebufferCreateInfo framebufferInfo{};
+			framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			framebufferInfo.renderPass = Handles.RenderPass;
+			framebufferInfo.attachmentCount = 1;
+			framebufferInfo.pAttachments = attachments;
+			framebufferInfo.width = Handles.Extent.value().width;
+			framebufferInfo.height = Handles.Extent.value().height;
+			framebufferInfo.layers = 1;
+
+			PXPK_VERIFY_ENGINE(vkCreateFramebuffer(Handles.LogicalDevice, &framebufferInfo, nullptr, &Handles.SwapchainFramebuffers[i]) == VK_SUCCESS, "Failed to create Vulkan framebuffer!");
+		}
 	}
 
 	// TODO: Set this up to better fit my process

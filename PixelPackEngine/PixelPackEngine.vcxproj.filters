@@ -125,4 +125,7 @@
     <None Include="src\shaders\default.frag" />
     <None Include="src\shaders\default.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\shaders\EXCLUDE.txt" />
+  </ItemGroup>
 </Project>

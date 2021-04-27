@@ -26,8 +26,11 @@ namespace PixelPack
 		VkSwapchainKHR Swapchain = VK_NULL_HANDLE;
 		std::vector<VkImage> SwapchainImages;
 		std::vector<VkImageView> SwapchainImageViews;
+		std::vector<VkFramebuffer> SwapchainFramebuffers;
 
 		VkRenderPass RenderPass = VK_NULL_HANDLE;
+		VkPipelineLayout PipelineLayout = VK_NULL_HANDLE;
+		VkPipeline Pipeline = VK_NULL_HANDLE;
 
 		VkDescriptorPool DescriptorPool = VK_NULL_HANDLE;
 	};
@@ -61,8 +64,8 @@ namespace PixelPack
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 
-		std::filesystem::path DefaultVertPath = "D:/Documents/PixelPack/dev/PixelPackEngine/src/shaders/default.vert";
-		std::filesystem::path DefaultFragPath = "D:/Documents/PixelPack/dev/PixelPackEngine/src/shaders/default.frag";
+		std::filesystem::path DefaultVertPath = "./shaders/default.vert";
+		std::filesystem::path DefaultFragPath = "./shaders/default.frag";
 
 
 	private:
@@ -75,8 +78,9 @@ namespace PixelPack
 		void CreateSurface();
 		void CreateSwapchain();
 		void CreateImageViews();
-		void CreateDefaultPipeline();
 		void CreateRenderPass();
+		void CreateDefaultPipeline();
+		void CreateFramebuffers();
 		void CreateDescriptorPool();
 	};
 }

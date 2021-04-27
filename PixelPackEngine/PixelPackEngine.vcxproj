@@ -41,7 +41,6 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="PixelPackEngine.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -72,10 +71,10 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;shaderc_combinedd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(OutputPath)PixelPackEngine.dll $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackStudio\</Command>
+      <Command>xcopy /y /i $(ProjectDir)src\shaders $(OutputPath)shaders /exclude:$(ProjectDir)src\shaders\EXCLUDE.txt</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy output DLL to dependent projects</Message>
+      <Message>Copy resource files to output directory</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -99,6 +98,10 @@
       <AdditionalLibraryDirectories>$(VK_SDK_PATH)\Lib;$(SolutionDir)external\glfw\build\src\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i $(ProjectDir)src\shaders $(OutputPath)shaders /exclude:$(ProjectDir)src\shaders\EXCLUDE.txt</Command>
+      <Message>Copy resource files to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\shaders\ShaderManager.h" />
@@ -166,6 +169,9 @@
     <None Include="cpp.hint" />
     <None Include="src\shaders\default.frag" />
     <None Include="src\shaders\default.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\shaders\EXCLUDE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

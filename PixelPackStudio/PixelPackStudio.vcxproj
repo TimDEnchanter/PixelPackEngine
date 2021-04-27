@@ -47,11 +47,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin_int\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>PreBuildEvent</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin_int\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>PreBuildEvent</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -84,6 +86,14 @@
       <Message>
       </Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>copy /y $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\PixelPackEngine.dll $(OutputPath)
+xcopy /y /i $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\shaders $(OutputPath)shaders</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copy dependent files from engine build output</Message>
+      <Outputs>NONEXIST</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -105,10 +115,12 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\PixelPackEngine.dll $(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy referenced dependencies</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -118,6 +130,14 @@
       <Message>
       </Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>copy /y $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\PixelPackEngine.dll $(OutputPath)
+xcopy /y /i $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\shaders $(OutputPath)shaders</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copy dependent files from engine build output</Message>
+      <Outputs>NONEXIST</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\PixelPackEngine\PixelPackEngine.vcxproj">
