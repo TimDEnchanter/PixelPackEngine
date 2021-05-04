@@ -39,9 +39,20 @@ namespace PixelPack
 		initInfo.Device = handles->LogicalDevice;
 		initInfo.QueueFamily = handles->GraphicsFamilyIndex.value();
 		initInfo.Queue = handles->GraphicsQueue;
-		initInfo.DescriptorPool = handles->DescriptorPool;
+		//initInfo.PipelineCache = VK_NULL_HANDLE;
+		//initInfo.DescriptorPool = VK_NULL_HANDLE;
+		initInfo.MinImageCount = 2;
+		initInfo.ImageCount = handles->SwapchainImages.size();
 
-		//ImGui_ImplVulkan_Init(&initInfo, )
+		ImGui_ImplVulkan_Init(&initInfo, handles->RenderPass);
+
+		PXPK_VERIFY_ENGINE(vkResetCommandPool(handles->LogicalDevice, handles->CommandPool, 0) == VK_SUCCESS, "Failed to reset command pool!");
+
+		VkCommandBufferBeginInfo begin_info = {};
+		begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		begin_info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+		//PXPK_VERIFY_ENGINE(vkBeginCommandBuffer(handles->CommandBuffers))
 	}
 
 	void ImGuiLayer::Detach()

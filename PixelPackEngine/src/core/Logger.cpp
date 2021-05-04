@@ -8,7 +8,7 @@ namespace PixelPack
 
 	void Logger::Init()
 	{
-		spdlog::set_pattern("%^[%T] (%s:%#) %n: %v%$");
+		spdlog::set_pattern("%^[%T] %n:%s:%# (%l): %v%$");
 		sptr_EngineLogger = spdlog::stdout_color_mt("PixelPackEngine");
 		sptr_EngineLogger->set_level(spdlog::level::trace);
 

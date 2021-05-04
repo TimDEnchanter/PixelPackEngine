@@ -6,6 +6,7 @@ namespace PixelPack
 	struct VulkanHandles
 	{
 		bool EnableValidationLayers = false;
+		size_t CurrentFrame = 0;
 
 		VkInstance Instance = VK_NULL_HANDLE;
 		VkDebugUtilsMessengerEXT DebugMessenger = VK_NULL_HANDLE;
@@ -30,7 +31,15 @@ namespace PixelPack
 
 		VkRenderPass RenderPass = VK_NULL_HANDLE;
 		VkPipelineLayout PipelineLayout = VK_NULL_HANDLE;
-		VkPipeline Pipeline = VK_NULL_HANDLE;
+		VkPipeline GraphicsPipeline = VK_NULL_HANDLE;
+
+		VkCommandPool CommandPool = VK_NULL_HANDLE;
+		std::vector<VkCommandBuffer> CommandBuffers;
+
+		std::vector<VkSemaphore> ImageAvailableSemaphores;
+		std::vector<VkSemaphore> RenderCompleteSemaphores;
+		std::vector<VkFence> InFlightFences;
+		std::vector<VkFence> ImagesInFlight;
 
 		VkDescriptorPool DescriptorPool = VK_NULL_HANDLE;
 	};
@@ -67,6 +76,9 @@ namespace PixelPack
 		std::filesystem::path DefaultVertPath = "./shaders/default.vert";
 		std::filesystem::path DefaultFragPath = "./shaders/default.frag";
 
+		VkClearValue ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		const int MaxFramesInFlight = 2;
 
 	private:
 		void InitWindow();
@@ -81,6 +93,9 @@ namespace PixelPack
 		void CreateRenderPass();
 		void CreateDefaultPipeline();
 		void CreateFramebuffers();
+		void CreateCommandPool();
+		void CreateCommandBuffers();
+		void CreateSemaphores();
 		void CreateDescriptorPool();
 	};
 }
