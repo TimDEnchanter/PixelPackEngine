@@ -12,6 +12,7 @@ public:
 	virtual void Attatch() override;
 	virtual void Detach() override;
 	virtual void Update() override;
+	virtual void Draw() override;
 
 	virtual void SetEnabled(bool enabled) override;
 	virtual bool IsEnabled() const override;

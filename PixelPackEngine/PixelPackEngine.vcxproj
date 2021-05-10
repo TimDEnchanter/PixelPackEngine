@@ -47,11 +47,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin_int\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin_int\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -71,11 +73,20 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;shaderc_combinedd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /i $(ProjectDir)src\shaders $(OutputPath)shaders /exclude:$(ProjectDir)src\shaders\EXCLUDE.txt</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy resource files to output directory</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>xcopy /y /i $(ProjectDir)src\shaders $(OutputPath)shaders /exclude:$(ProjectDir)src\shaders\EXCLUDE.txt</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copy resource files to output directory</Message>
+      <Outputs>NONEXIST</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -99,9 +110,18 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /i $(ProjectDir)src\shaders $(OutputPath)shaders /exclude:$(ProjectDir)src\shaders\EXCLUDE.txt</Command>
-      <Message>Copy resource files to output directory</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>xcopy /y /i $(ProjectDir)src\shaders $(OutputPath)shaders /exclude:$(ProjectDir)src\shaders\EXCLUDE.txt</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copy resource files to output directory</Message>
+      <Outputs>NONEXIST</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\shaders\ShaderManager.h" />

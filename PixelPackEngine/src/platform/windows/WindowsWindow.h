@@ -7,6 +7,7 @@ namespace PixelPack
 	{
 		bool EnableValidationLayers = false;
 		size_t CurrentFrame = 0;
+		uint32_t NextImage = 0;
 
 		VkInstance Instance = VK_NULL_HANDLE;
 		VkDebugUtilsMessengerEXT DebugMessenger = VK_NULL_HANDLE;
@@ -60,7 +61,8 @@ namespace PixelPack
 
 		virtual void SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher) override;
 
-		virtual void OnUpdate() override;
+		virtual void Update() override;
+		virtual void Draw() override;
 
 	private:
 		GLFWwindow* ptr_Window;

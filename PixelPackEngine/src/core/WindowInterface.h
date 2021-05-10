@@ -44,6 +44,7 @@ namespace PixelPack
 
 		virtual void SetEventDispatcher(std::shared_ptr<entt::dispatcher> sptr_dispatcher) = 0;
 
-		virtual void OnUpdate() = 0;
+		virtual void Update() = 0;
+		virtual void Draw() = 0;
 	};
 }

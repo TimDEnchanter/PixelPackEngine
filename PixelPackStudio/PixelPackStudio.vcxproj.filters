@@ -21,9 +21,15 @@
     <ClCompile Include="src\TestLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Precompile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\TestLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Precompile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

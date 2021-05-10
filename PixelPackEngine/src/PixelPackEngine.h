@@ -5,6 +5,8 @@
 #include "core\Logger.h"
 #include "core\LayerInterface.h"
 
+#include "layers\ImGuiLayer.h"
+
 #include "events\input\KeyEvent.h"
 #include "events\input\MouseButtonEvent.h"
 #include "events\input\MouseMoveEvent.h"

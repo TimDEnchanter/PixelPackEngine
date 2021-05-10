@@ -63,6 +63,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\PixelPackEngine\src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\imgui;$(VK_SDK_PATH)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,6 +107,8 @@ xcopy /y /i $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\shade
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\PixelPackEngine\src;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\entt\single_include;$(SolutionDir)external\glfw\include;$(SolutionDir)external\glm;$(SolutionDir)external\imgui;$(VK_SDK_PATH)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,10 +149,15 @@ xcopy /y /i $(SolutionDir)bin\$(Configuration)_$(Platform)\PixelPackEngine\shade
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Precompile.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\StudioApp.cpp" />
     <ClCompile Include="src\TestLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Precompile.h" />
     <ClInclude Include="src\TestLayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

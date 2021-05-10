@@ -1,3 +1,5 @@
+#include "Precompile.h"
+
 #include <PixelPackEngine.h>
 #include <core\EntryPoint.h>
 
@@ -9,6 +11,7 @@ public:
 	StudioApp()
 	{
 		PushLayer(std::shared_ptr<TestLayer>(new TestLayer()));
+		PushOverlay(std::shared_ptr<PixelPack::ImGuiLayer>(new PixelPack::ImGuiLayer()));
 	}
 
 	~StudioApp()

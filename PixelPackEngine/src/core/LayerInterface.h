@@ -16,6 +16,7 @@ namespace PixelPack
 		virtual void Attatch() = 0;
 		virtual void Detach() = 0;
 		virtual void Update() = 0;
+		virtual void Draw() = 0;
 
 		virtual void SetEnabled(bool enabled) = 0;
 		virtual bool IsEnabled() const = 0;

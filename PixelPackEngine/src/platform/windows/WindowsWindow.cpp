@@ -166,6 +166,8 @@ namespace PixelPack
 		// ALWAYS WAIT
 		vkDeviceWaitIdle(Handles.LogicalDevice);
 
+		//vkDestroyDescriptorPool(Handles.LogicalDevice, Handles.DescriptorPool, nullptr);
+
 		for (size_t i = 0; i < MaxFramesInFlight; i++)
 		{
 			vkDestroySemaphore(Handles.LogicalDevice, Handles.RenderCompleteSemaphores[i], nullptr);
@@ -186,8 +188,6 @@ namespace PixelPack
 		vkDestroyRenderPass(Handles.LogicalDevice, Handles.RenderPass, nullptr);
 
 		ShaderManager::GetInstance().clear();
-
-		//vkDestroyDescriptorPool(Handles.LogicalDevice, Handles.DescriptorPool, nullptr);
 
 		for (auto imageView : Handles.SwapchainImageViews)
 		{
@@ -248,7 +248,7 @@ namespace PixelPack
 		Properties.sptr_Dispatcher = sptr_dispatcher;
 	}
 
-	void WindowsWindow::OnUpdate()
+	void WindowsWindow::Update()
 	{
 		// Check for GLFW input events
 		glfwPollEvents();
@@ -256,15 +256,35 @@ namespace PixelPack
 		// Send Vulkan commands to GPU
 		vkWaitForFences(Handles.LogicalDevice, 1, &Handles.InFlightFences[Handles.CurrentFrame], VK_TRUE, UINT64_MAX);
 
-		uint32_t nextImageIndex;
-		PXPK_VERIFY_ENGINE(vkAcquireNextImageKHR(Handles.LogicalDevice, Handles.Swapchain, UINT64_MAX, Handles.ImageAvailableSemaphores[Handles.CurrentFrame], VK_NULL_HANDLE, &nextImageIndex) == VK_SUCCESS, "Failed to fetch next Vulkan image!");
+		PXPK_VERIFY_ENGINE(vkAcquireNextImageKHR(Handles.LogicalDevice, Handles.Swapchain, UINT64_MAX, Handles.ImageAvailableSemaphores[Handles.CurrentFrame], VK_NULL_HANDLE, &Handles.NextImage) == VK_SUCCESS, "Failed to fetch next Vulkan image!");
 
-		if (Handles.ImagesInFlight[nextImageIndex] != VK_NULL_HANDLE)
+		if (Handles.ImagesInFlight[Handles.NextImage] != VK_NULL_HANDLE)
 		{
-			vkWaitForFences(Handles.LogicalDevice, 1, &Handles.ImagesInFlight[nextImageIndex], VK_TRUE, UINT64_MAX);
+			vkWaitForFences(Handles.LogicalDevice, 1, &Handles.ImagesInFlight[Handles.NextImage], VK_TRUE, UINT64_MAX);
 		}
 
-		Handles.ImagesInFlight[nextImageIndex] = Handles.InFlightFences[Handles.CurrentFrame];
+		Handles.ImagesInFlight[Handles.NextImage] = Handles.InFlightFences[Handles.CurrentFrame];
+
+		VkCommandBufferBeginInfo commandBufferBeginInfo{};
+		commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		//commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+		VkRenderPassBeginInfo renderPassBeginInfo{};
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.renderPass = Handles.RenderPass;
+		renderPassBeginInfo.framebuffer = Handles.SwapchainFramebuffers[Handles.CurrentFrame];
+		renderPassBeginInfo.renderArea.offset = { 0, 0 };
+		renderPassBeginInfo.renderArea.extent = Handles.Extent.value();
+		renderPassBeginInfo.clearValueCount = 1;
+		renderPassBeginInfo.pClearValues = &ClearColor;
+
+		PXPK_VERIFY_ENGINE(vkResetCommandBuffer(Handles.CommandBuffers[Handles.NextImage], 0) == VK_SUCCESS, "Failed to clear Vulkan command buffer!");
+		PXPK_VERIFY_ENGINE(vkBeginCommandBuffer(Handles.CommandBuffers[Handles.NextImage], &commandBufferBeginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
+	}
+
+	void WindowsWindow::Draw()
+	{
+		PXPK_VERIFY_ENGINE(vkEndCommandBuffer(Handles.CommandBuffers[Handles.NextImage]) == VK_SUCCESS, "Failed to record command buffer!");
 
 		VkSemaphore waitSemaphores[] = { Handles.ImageAvailableSemaphores[Handles.CurrentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -277,7 +297,7 @@ namespace PixelPack
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &Handles.CommandBuffers[nextImageIndex];
+		submitInfo.pCommandBuffers = &Handles.CommandBuffers[Handles.NextImage];
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -293,7 +313,7 @@ namespace PixelPack
 		presentInfo.pWaitSemaphores = signalSemaphores;
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapchains;
-		presentInfo.pImageIndices = &nextImageIndex;
+		presentInfo.pImageIndices = &Handles.NextImage;
 		presentInfo.pResults = nullptr;
 
 		PXPK_VERIFY_ENGINE(vkQueuePresentKHR(Handles.PresentationQueue, &presentInfo) == VK_SUCCESS, "Failed to present Vulkan image!");
@@ -632,7 +652,7 @@ namespace PixelPack
 
 		}
 
-		uint32_t imageCount = surfaceCapabilities.minImageCount + 1;
+		uint32_t imageCount = MaxFramesInFlight;
 		if (surfaceCapabilities.maxImageCount > 0 && imageCount > surfaceCapabilities.maxImageCount)
 		{
 			imageCount = surfaceCapabilities.maxImageCount;
@@ -715,7 +735,7 @@ namespace PixelPack
 		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 		VkAttachmentReference attachmentReference{};
 		attachmentReference.attachment = 0;
@@ -905,7 +925,7 @@ namespace PixelPack
 		VkCommandPoolCreateInfo commandPoolInfo{};
 		commandPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		commandPoolInfo.queueFamilyIndex = Handles.GraphicsFamilyIndex.value();
-		commandPoolInfo.flags = 0;
+		commandPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 		PXPK_VERIFY_ENGINE(vkCreateCommandPool(Handles.LogicalDevice, &commandPoolInfo, nullptr, &Handles.CommandPool) == VK_SUCCESS, "Failed to create Vulkan command pool!");
 	}
@@ -922,30 +942,30 @@ namespace PixelPack
 
 		PXPK_VERIFY_ENGINE(vkAllocateCommandBuffers(Handles.LogicalDevice, &commandBufferInfo, Handles.CommandBuffers.data()) == VK_SUCCESS, "Failed to allocate Vulkan command buffer!");
 
-		for (size_t i = 0; i < Handles.CommandBuffers.size(); i++)
-		{
-			VkCommandBufferBeginInfo commandBufferBeginInfo{};
-			commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-			//commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		//for (size_t i = 0; i < Handles.CommandBuffers.size(); i++)
+		//{
+		//	VkCommandBufferBeginInfo commandBufferBeginInfo{};
+		//	commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		//	//commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 
-			VkRenderPassBeginInfo renderPassBeginInfo{};
-			renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassBeginInfo.renderPass = Handles.RenderPass;
-			renderPassBeginInfo.framebuffer = Handles.SwapchainFramebuffers[i];
-			renderPassBeginInfo.renderArea.offset = { 0, 0 };
-			renderPassBeginInfo.renderArea.extent = Handles.Extent.value();
-			renderPassBeginInfo.clearValueCount = 1;
-			renderPassBeginInfo.pClearValues = &ClearColor;
+		//	VkRenderPassBeginInfo renderPassBeginInfo{};
+		//	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		//	renderPassBeginInfo.renderPass = Handles.RenderPass;
+		//	renderPassBeginInfo.framebuffer = Handles.SwapchainFramebuffers[i];
+		//	renderPassBeginInfo.renderArea.offset = { 0, 0 };
+		//	renderPassBeginInfo.renderArea.extent = Handles.Extent.value();
+		//	renderPassBeginInfo.clearValueCount = 1;
+		//	renderPassBeginInfo.pClearValues = &ClearColor;
 
-			PXPK_VERIFY_ENGINE(vkBeginCommandBuffer(Handles.CommandBuffers[i], &commandBufferBeginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
-			vkCmdBeginRenderPass(Handles.CommandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-			{
-				vkCmdBindPipeline(Handles.CommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, Handles.GraphicsPipeline);
-				vkCmdDraw(Handles.CommandBuffers[i], 3, 1, 0, 0);
-			}
-			vkCmdEndRenderPass(Handles.CommandBuffers[i]);
-			PXPK_VERIFY_ENGINE(vkEndCommandBuffer(Handles.CommandBuffers[i]) == VK_SUCCESS, "Failed to record command buffer!");
-		}
+		//	PXPK_VERIFY_ENGINE(vkBeginCommandBuffer(Handles.CommandBuffers[i], &commandBufferBeginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
+		//	vkCmdBeginRenderPass(Handles.CommandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		//	{
+		//		vkCmdBindPipeline(Handles.CommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, Handles.GraphicsPipeline);
+		//		vkCmdDraw(Handles.CommandBuffers[i], 3, 1, 0, 0);
+		//	}
+		//	vkCmdEndRenderPass(Handles.CommandBuffers[i]);
+		//	PXPK_VERIFY_ENGINE(vkEndCommandBuffer(Handles.CommandBuffers[i]) == VK_SUCCESS, "Failed to record command buffer!");
+		//}
 	}
 
 	void WindowsWindow::CreateSemaphores()

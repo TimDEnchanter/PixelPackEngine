@@ -38,7 +38,14 @@ namespace PixelPack
 				layer->Update();
 			}
 
-			sptr_Window->OnUpdate();
+			sptr_Window->Update();
+
+			for (std::shared_ptr<LayerInterface> layer : LayerStack)
+			{
+				layer->Draw();
+			}
+
+			sptr_Window->Draw();
 		}
 	}
 
